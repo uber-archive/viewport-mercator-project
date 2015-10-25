@@ -10,7 +10,7 @@ libraries that support floating point zoom levels.
 ````js
 // Create a new viewport.
 var ViewportMercator = require('viewport-mercator-project');
-// NOTE: `ViewportMercator` objects are immutable by design.
+// NOTE: The `viewport` object returned from `ViewportMercator` are immutable by design.
 var viewport = ViewportMercator({
   center: [0, 0],
   zoom: 0,
