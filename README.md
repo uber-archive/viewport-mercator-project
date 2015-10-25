@@ -2,15 +2,15 @@
 
 Utility for converting to and from latitude and longitude coordinates, given a
 map viewport projection. Initially built for use with
-[MapboxGL](https://github.com/mapbox/mapbox-gl-js) but useful for most web mapping
+[react-map-gl](https://github.com/uber/react-map-gl) but useful for most web mapping
 libraries that support floating point zoom levels.
 
 ## Example usage
 
 ````js
+// Create a new viewport.
 var ViewportMercator = require('viewport-mercator-project');
-// Create a new viewport. NOTE: `ViewportMercator` objects are immutable.
-// Instead, create a new viewport.
+// NOTE: `ViewportMercator` objects are immutable by design.
 var viewport = ViewportMercator({
   center: [0, 0],
   zoom: 0,
@@ -28,3 +28,8 @@ viewport.unproject(pixels); // returns [0, 0]
 
     npm install viewport-mercator-project --save
 
+
+## To run the tests
+
+
+    npm run test
