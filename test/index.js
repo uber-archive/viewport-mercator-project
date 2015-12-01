@@ -33,10 +33,12 @@ function equalPoints(point1, point2) {
 function createViewport(opt) {
   opt = opt || {};
   return ViewportMercator({
-    center: opt.center || [0, 0],
+    latitude: 0,
+    longitude: 0,
     zoom: opt.zoom || 0,
     tileSize: opt.tileSize || 512,
-    dimensions: opt.dimensions || [512, 512]
+    width: opt.width || 512,
+    height: opt.height || 512
   });
 }
 
@@ -47,14 +49,13 @@ test('viewport exists', function tt(t) {
 });
 
 test('forward and reverse projection (0,0) at z=0', function tt(t) {
-  var dimensions = [512, 512];
-  var viewport = createViewport({dimensions: dimensions});
+  var size = 512;
+  var viewport = createViewport({width: size, height: size});
   var lngLat = [0, 0];
   var pixel = viewport.project(lngLat);
-  var expectedPixel = [dimensions[0] / 2, dimensions[1] / 2];
   // With the above project, a lngLat of (0, 0) should be in the center of
   // the screen.
-  t.deepEqual(pixel, expectedPixel);
+  t.deepEqual(pixel, [size / 2, size / 2]);
   // We should be able to convert back to lngLat, (0, 0) using the center pixel
   // coordinates.
   t.deepEqual(viewport.unproject(pixel), lngLat);
@@ -62,37 +63,38 @@ test('forward and reverse projection (0,0) at z=0', function tt(t) {
 });
 
 test('corners with 512x512 viewport at z=0', function tt(t) {
-  var dim = [512, 512];
-  var MAX_LAT = 85.05113;
+  var size = 512;
   var MAX_LNG = 180.00000;
-  var viewport = createViewport({dimensions: dim});
+  var MAX_LAT = 85.05113;
+  var viewport = createViewport({});
   t.ok(equalPoints(viewport.unproject([0, 0]), [-MAX_LNG, MAX_LAT]));
-  t.ok(equalPoints(viewport.unproject([dim[0], 0]), [MAX_LNG, MAX_LAT]));
-  t.ok(equalPoints(viewport.unproject(dim), [MAX_LNG, -MAX_LAT]));
-  t.ok(equalPoints(viewport.unproject([0, dim[1]]), [-MAX_LNG, -MAX_LAT]));
+  t.ok(equalPoints(viewport.unproject([size, 0]), [MAX_LNG, MAX_LAT]));
+  t.ok(equalPoints(viewport.unproject([size, size]), [MAX_LNG, -MAX_LAT]));
+  t.ok(equalPoints(viewport.unproject([0, size]), [-MAX_LNG, -MAX_LAT]));
   t.end();
 });
 
 test('corners with 512x512 viewport at z=1', function tt(t) {
-  var dim = [512, 512];
+  var size = 512;
   var MAX_LNG = 90.00000;
   var MAX_LAT = 66.51326;
-  var viewport = createViewport({dimensions: dim, zoom: 1});
+  var viewport = createViewport({width: size, height: size, zoom: 1});
   t.ok(equalPoints(viewport.unproject([0, 0]), [-MAX_LNG, MAX_LAT]));
-  t.ok(equalPoints(viewport.unproject([dim[0], 0]), [MAX_LNG, MAX_LAT]));
-  t.ok(equalPoints(viewport.unproject(dim), [MAX_LNG, -MAX_LAT]));
-  t.ok(equalPoints(viewport.unproject([0, dim[1]]), [-MAX_LNG, -MAX_LAT]));
+  t.ok(equalPoints(viewport.unproject([size, 0]), [MAX_LNG, MAX_LAT]));
+  t.ok(equalPoints(viewport.unproject([size, size]), [MAX_LNG, -MAX_LAT]));
+  t.ok(equalPoints(viewport.unproject([0, size]), [-MAX_LNG, -MAX_LAT]));
   t.end();
 });
 
 test('unproject corners with 800x600 viewport at z=0', function tt(t) {
-  var dim = [800, 600];
+  var width = 800;
+  var height = 600;
   var MAX_LNG = 281.250000;
   var MAX_LAT = 87.114758;
-  var viewport = createViewport({dimensions: dim});
+  var viewport = createViewport({width: width, height: height});
   t.ok(equalPoints(viewport.unproject([0, 0]), [-MAX_LNG, MAX_LAT]));
-  t.ok(equalPoints(viewport.unproject([dim[0], 0]), [MAX_LNG, MAX_LAT]));
-  t.ok(equalPoints(viewport.unproject(dim), [MAX_LNG, -MAX_LAT]));
-  t.ok(equalPoints(viewport.unproject([0, dim[1]]), [-MAX_LNG, -MAX_LAT]));
+  t.ok(equalPoints(viewport.unproject([width, 0]), [MAX_LNG, MAX_LAT]));
+  t.ok(equalPoints(viewport.unproject([width, height]), [MAX_LNG, -MAX_LAT]));
+  t.ok(equalPoints(viewport.unproject([0, height]), [-MAX_LNG, -MAX_LAT]));
   t.end();
 });
