@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/uber/viewport-mercator-project.git"
+    "url": "git+https://github.com/uber-common/viewport-mercator-project.git"
   },
   "author": "Uber Technologies, Inc.",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/uber/viewport-mercator-project/issues"
+    "url": "https://github.com/uber-common/viewport-mercator-project/issues"
   },
-  "homepage": "https://github.com/uber/viewport-mercator-project#readme",
+  "homepage": "https://github.com/uber-common/viewport-mercator-project#readme",
   "devDependencies": {
     "tape": "^4.2.2",
     "round-precision": "^1.0.0"
