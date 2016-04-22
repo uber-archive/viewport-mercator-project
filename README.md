@@ -26,6 +26,9 @@ var pixels = viewport.project(lnglat); // returns [300, 400]
 
 // A width, height pair as an array.
 viewport.unproject(pixels); // returns [0, 0]
+
+// Test if a lnglat is within the viewport
+viewport.contains(lnglat); // true
 ````
 
 ## Installation
