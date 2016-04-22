@@ -108,11 +108,14 @@ test('contains a given point', function tt(t) {
     longitude: 0,
     zoom: 12
   });
+
   // Center should be in
   t.true(viewport.contains([0, 0]));
+
   // Test the boundaries are in
   t.true(viewport.contains(viewport.unproject([0, 0])));
   t.true(viewport.contains(viewport.unproject([512, 512])));
+
   // Outside in either direction is false
   t.false(viewport.contains(viewport.unproject([-1, 256])));
   t.false(viewport.contains(viewport.unproject([256, -1])));
