@@ -37,6 +37,12 @@ viewport.unproject(pixels); // returns [0, 0]
 
     npm run test
 
+## Notes on Projection
+
+The coordinate system of the viewport is defined as a cartesian plane with the origin in the top left,
+where the positive x-axis goes right, and the positive y-axis goes down.
+
+That is, the top left corner is `[0, 0]` and the bottom right corner is `[width, height]`.
 
 ## Change log
 
