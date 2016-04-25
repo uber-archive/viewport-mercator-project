@@ -98,3 +98,32 @@ test('unproject corners with 800x600 viewport at z=0', function tt(t) {
   t.ok(equalPoints(viewport.unproject([0, height]), [-MAX_LNG, -MAX_LAT]));
   t.end();
 });
+
+test('contains a given point', function tt(t) {
+  var size = 512;
+  var viewport = createViewport({
+    width: size,
+    height: size,
+    latitude: 0,
+    longitude: 0,
+    zoom: 12
+  });
+
+  // Center should be in
+  t.true(viewport.contains([0, 0]));
+
+  // Test the boundaries are in
+  t.true(viewport.contains(viewport.unproject([0, 0])));
+  t.true(viewport.contains(viewport.unproject([512, 512])));
+
+  // Outside in either direction is false
+  t.false(viewport.contains(viewport.unproject([-1, 256])));
+  t.false(viewport.contains(viewport.unproject([256, -1])));
+  t.false(viewport.contains(viewport.unproject([256, 513])));
+  t.false(viewport.contains(viewport.unproject([513, 256])));
+
+  // Both under and over
+  t.false(viewport.contains(viewport.unproject([513, 513])));
+  t.false(viewport.contains(viewport.unproject([-1, -1])));
+  t.end();
+});
