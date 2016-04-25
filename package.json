@@ -1,6 +1,6 @@
 {
   "name": "viewport-mercator-project",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Convert to and from lat/lng and pixels in web mercator at arbitrary floating point zoom levels.",
   "main": "index.js",
   "scripts": {
