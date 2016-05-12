@@ -69,7 +69,13 @@ function ViewportMercator(opts) {
     );
   }
 
-  return {project: project, unproject: unproject, contains: contains};
+  function bounds() {
+    var SE = unproject([0, opts.height]);
+    var NW = unproject([opts.width, 0]);
+    return [SE[0], SE[1], NW[0], NW[1]];
+  }
+
+  return {project: project, unproject: unproject, contains: contains, bounds: bounds};
 }
 
 module.exports = ViewportMercator;
