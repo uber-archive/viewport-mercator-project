@@ -22,7 +22,7 @@ var viewport = ViewportMercator({
 
 // A longitude, latitude pair as an array.
 var lnglat = [0, 0];
-var pixels = viewport.project(lnglat); // returns [300, 400]
+var pixels = viewport.project(lnglat); // returns [300, 250]
 
 // A width, height pair as an array.
 viewport.unproject(pixels); // returns [0, 0]
