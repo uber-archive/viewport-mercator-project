@@ -1,2 +1,10 @@
 npm-debug.log
 node_modules
+dist/*
+build/*
+.project
+.idea
+.DS_Store
+*.zip
+*.rar
+.exit_code
