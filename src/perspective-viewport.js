@@ -264,7 +264,6 @@ export default class Viewport {
     // Calculate matrices and scales needed for projection
     this._calculateDistanceScales();
     this._calculateTransformationMatrices();
-    this._calculateWebGLMatrices();
   }
   /* eslint-enable max-statements */
 
