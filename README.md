@@ -164,15 +164,15 @@ Manages coordinate system transformations.
 | ---- | ---- | ---- | ---- |
 | mercator | Boolean | true | Whether to use mercator projection |
 | opt.width | Number | 1 | Width of "viewport" or window |
-| opt.heigh | Number | 1 | Height of "viewport" or window |
-| opt.center | Array | [0, 0]| Center of viewport |
-  [longitude, latitude] or [x, y]
+| opt.height | Number | 1 | Height of "viewport" or window |
+| opt.center | Array | [0, 0] | Center of viewport [longitude, latitude] or [x, y] |
 | opt.scale=1 | Number | | Either use scale or zoom |
 | opt.pitch=0 | Number | | Camera angle in degrees (0 is straight down) |
 | opt.bearing=0 | Number | | Map rotation in degrees (0 means north is up) |
 | opt.altitude= | Number | | Altitude of camera in screen units |
 
 Web mercator projection short-hand parameters
+
 | Parameter | Type | Default | Description |
 | ---- | ---- | ---- | ---- |
 | opt.latitude | Number | | Center of viewport on map (alternative to opt.center) |
