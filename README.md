@@ -202,4 +202,4 @@ Parameters:
 
 Returns:
 
- - `[lat, lng]`
+ - `[lng, lat]`

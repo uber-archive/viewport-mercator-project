@@ -184,13 +184,10 @@ export default class Viewport {
   }
 
   /**
-   * Unproject world point [x,y] on map onto {lat, lon} on sphere
+   * Unproject world point [x,y] on map onto [lng, lat] on sphere
    *
-   * @param {object|Vector} xy - object with {x,y} members
-   *  representing point on projected map plane
-   * @return {GeoCoordinates} - object with {lat,lon} of point on sphere.
-   *   Has toArray method if you need a GeoJSON Array.
-   *   Per cartographic tradition, lat and lon are specified as degrees.
+   * @param {Array} [x, y] representing point on projected map plane.
+   * @return {Array} - [lng, lat] of point on sphere.
    */
   @autobind
   unprojectFlat([x, y], scale = this.scale) {
