@@ -1,24 +1,27 @@
+<p align="right">
+  <a href="https://npmjs.org/package/viewport-mercator-project">
+    <img src="https://img.shields.io/npm/v/viewport-mercator-project.svg?style=flat-square" alt="version" />
+  </a>
+  <a href="https://travis-ci.org/uber/viewport-mercator-project">
+    <img src="https://img.shields.io/travis/uber/viewport-mercator-project/master.svg?style=flat-square" alt="build" />
+  </a>
+  <a href="https://npmjs.org/package/viewport-mercator-project">
+    <img src="https://img.shields.io/npm/dm/viewport-mercator-project.svg?style=flat-square" alt="downloads" />
+  </a>
+  <a href="http://starveller.sigsev.io/uber/viewport-mercator-project">
+    <img src="http://starveller.sigsev.io/api/repos/uber/viewport-mercator-project/badge" alt="stars" />
+  </a>
+</p>
+
 # viewport-mercator-project
 
-##
+Utility for converting to and from map (latitude and longitude)
+or world coordinates to screen coordinates and back
+using the Web Mercator Projection.
 
-Utility for converting to and from map or world coordinates to screen
-coordinates and back.
-given a map viewport projection. latitude and longitude coordinates, 
-
-Comes with a simple, extremely fast `FlatViewport` for non-perspective
-Web Mercator projection and unprojection, and an "advanced"
-`PerspectiveViewport` class.
-
-### Features
-
-- 
-- 
-- Generates WebGL compatible projection matrices (column-major Float32Arrays)
-
-Notes:
-- Per cartographic tradition, all angles including lat and lon are specified
-  as degrees.
+Provides two options:
+- A simple, fast `FlatViewport` for flat Web Mercator projection and unprojection
+- An "advanced" perspective-enabled `PerspectiveViewport` class.
 
 
 ### Who is this for?
@@ -66,44 +69,49 @@ npm install viewport-mercator-project --save
 npm run test
 ```
 
-## Notes on Projection
+## Documentation
 
-The coordinate system of the viewport is defined as a cartesian plane with
-the origin in the top left, where the positive x-axis goes right, and the
-positive y-axis goes down.
+### Features
 
-That is, the top left corner is `[0, 0]` and the bottom right corner is
-`[width, height]`.
+- Generates WebGL compatible projection matrices (column-major Float32Arrays)
 
-Unless otherwise noted, angles are specified in degrees, not radians.
+# API notes
 
-Coordinates are specified in "long-lat" format [lng, lat, z] format which
-most closely corresponds to [x, y, z] coords.
+The default coordinate system of the viewport is defined as a cartesian
+plane with the origin in the top left, where the positive x-axis goes
+right, and the positive y-axis goes down. That is, the top left corner
+is `[0, 0]` and the bottom right corner is `[width, height]`.
+
+Coordinates are specified in "lng-lat" format [lng, lat, z] format which
+most closely corresponds to [x, y, z] coords, with lng and lat specified
+in degrees and z specified in meters above sea level.
+
+Unless otherwise noted, per cartographic tradition, all angles
+including latitude and longitude are specified in degrees, not radians
 
 
-## Perspective Viewport and Coordinate Systems
+## PerspectiveViewport and Coordinate Systems
 
-A Viewport can be configured to work with positions specified in
+A PerspectiveViewport can be configured to work with positions specified in
 different units.
-
-### Projection Modes
 
 - **longitude/latitude/altitude** (`LNGLAT`) -
   positions are interpreted as Web Mercator coordinates:
-  [longitude, latitude, altitude]. Longitude and latitude
-  are specified in degrees from Greenwich meridian / equator respectively,
-  and altitude is specified in meters above sea level.
+  [longitude, latitude, altitude].
 - **meter offsets** (`METERS`) -
   positions are given in meter offsets from a reference point
   that is specified separately.
-
-The perspective viewport can also supports working in a standard
-(i.e. unprojected) linear coordinate system although the support for
-specifying scales and extents is still rudimentary
-(this will be improved in future versions).
+- **world** -  The perspective viewport can also supports working
+  in a standard (i.e. unprojected) linear coordinate system although
+  the support for specifying scales and extents is still rudimentary
+  (this will be improved in future versions).
 
 
 ## About the mercator projection
+
+Longitude and latitude
+are specified in degrees from Greenwich meridian / equator respectively,
+and altitude is specified in meters above sea level.
 
 ### Distances
 
@@ -113,67 +121,24 @@ web mercator projection
 so scaling will depend on the viewport center and any linear scale factor
 should only be expected to be locally correct.
 
-// We define a couple of coordinate systems:
-// ------
-// LatLon                      [lng, lat] = [-180 - 180, -81 - 81]
-// Mercator World (zoom 0)     [x, y] = [0-512, y: 0-512]
-// Mercator Zoomed (zoom N)    [x, y] = [0 - 512*2**N, 0 - 512*2**N]
-// Translated                  [x, y] = zero centered
-// Clip Space                  unit cube around view
-// ------
-
-
-
-## About Meter Offset projection
-
-
-
-## About World projection
-
-
-
-## Coordinate System concepts
-
-To be able to provide seamless support for the Web Mercator projection,
-PerspectiveViewport works with two concepts:
-- **positions** - represent points on the map. In web mercator mode
-  position coordinates are specified in degrees longitude followed by degrees
-  latitude.
-  In linear mode, positions are simply world coordinates, [x, y, z].
-- **distances** - distances represent either the distance between two points,
-  or just a general sizes, like a radius or similar. Distances are specified in
-  meters in mercator mode, and simply in world coordinate deltas in
-  linear mode).
-
-As a user, you should mainly make sure to scan a layer defintion to
-make sure you understand where you are expect to pass in [lng, lat]
-coordinates.
-
-
-## Map Changes
-- **center**:
 - **zoom**: At zoom 0, the world is 512 pixels wide.
   Every zoom level magnifies by a factor of 2. Maps typically support zoom
   levels 0 (world) to 20 (sub meter pixels).
 
+## About Meter Offset projection
 
-## Linear Coordinate System
+TBA
+
+## About World projection
 
 In this mode, which does not offer any synchronization with maps, the
 application specifies its world size (the number of pixels that the world
 occupies
 
-At zoom 0, one world unit represents one pixel unit.
-deck.gl can create a projection matrix from zoom level and center,
-(as well as pitch, bearing and altiude), to move around in the map.
-The interaction layer handles this by default.
 
-You can of course supply your own projectionMatrix and scaling uniforms.
+## PerspectiveViewport API
 
-
-Manages coordinate system transformations.
-
-## Viewport Constructor
+### Constructor
 
 | Parameter | Type | Default | Description |
 | ---- | ---- | ---- | ---- |
@@ -194,7 +159,7 @@ Web mercator projection short-hand parameters
 | opt.longitude | Number | | Center of viewport on map (alternative to opt.center) |
 | opt.zoom | Number | | Scale = Math.pow(2,zoom) on map (alternative to opt.scale) |
 
-Notes:
+Remarks:
  - Only one of center or [latitude, longitude] can be specified
  - [latitude, longitude] can only be specified when "mercator" is true
  - Altitude has a default value that matches assumptions in mapbox-gl
@@ -204,7 +169,7 @@ Notes:
 -  When using mercatorProjection, per cartographic tradition, longitudes and
    latitudes are specified as degrees.
 
-## Viewport.project
+### PerspectiveViewport.project
 
 Projects latitude and longitude to pixel coordinates in window
 using viewport projection parameters
@@ -216,74 +181,19 @@ Note: By default, returns top-left coordinates for canvas/SVG type render
 - opts.topLeft - Object - true - Whether projected coords are top left
 - returns [x, y] or [x, y, z] in top left coords
 
-## Viewport.unproject
+### PerspectiveViewport.unproject
 
 Unproject pixel coordinates on screen onto [lon, lat] on map.
 - [x, y] => [lng, lat]
 - [x, y, z] => [lng, lat, Z]
 
+Params
 - xyz - Array
 returns
 - object with {lat,lon} of point on sphere.
 
 
-### constructor
-
-Manages coordinate system transformations for deck.gl.
-
-Note: The Viewport is immutable in the sense that it only has accessors.
-A new viewport instance should be created if any parameters have changed.
-
-* {Object} opt - options
-* {Boolean} mercator=true - Whether to use mercator projection
-
-* {Number} opt.width=1 - Width of "viewport" or window
-* {Number} opt.height=1 - Height of "viewport" or window
-* {Array} opt.center=[0, 0] - Center of viewport
-  [longitude, latitude] or [x, y]
-* {Number} opt.scale=1 - Either use scale or zoom
-* {Number} opt.pitch=0 - Camera angle in degrees (0 is straight down)
-* {Number} opt.bearing=0 - Map rotation in degrees (0 means north is up)
-* {Number} opt.altitude= - Altitude of camera in screen units
-
-Web mercator projection short-hand parameters
-* {Number} opt.latitude - Center of viewport on map (alternative to opt.center)
-* {Number} opt.longitude - Center of viewport on map (alternative to opt.center)
-* {Number} opt.zoom - Scale = Math.pow(2,zoom) on map (alternative to opt.scale)
-
-Notes:
- - Only one of center or [latitude, longitude] can be specified
- - [latitude, longitude] can only be specified when "mercator" is true
- - Altitude has a default value that matches assumptions in mapbox-gl
- - width and height are forced to 1 if supplied as 0, to avoid
-   division by zero. This is intended to reduce the burden of apps to
-   to check values before instantiating a Viewport.
-
-
-### project(lngLatZ, {topLeft = true} = {})
-
-Projects latitude and longitude to pixel coordinates in window
-using viewport projection parameters
-- [longitude, latitude] to [x, y]
-- [longitude, latitude, Z] => [x, y, z]
-Note: By default, returns top-left coordinates for canvas/SVG type render
-
-* {Array} lngLatZ - [lng, lat] or [lng, lat, Z]
-* {Object} opts - options
-* {Object} opts.topLeft=true - Whether projected coords are top left
-Returns {Array} - [x, y] or [x, y, z] in top left coords
-
-
-### unproject(xyz, {topLeft = true} = {})
-
-Unprojects pixel coordinates on screen onto [lon, lat] on map.
-- [x, y] => [lng, lat]
-- [x, y, z] => [lng, lat, Z]
-* {Array} xyz -
-Returns {Array} - [lng, lat, Z] or [X, Y, Z]
-
-
-### projectFlat([lng, lat], scale = this.scale)
+#### PerspectiveViewport.projectFlat([lng, lat], scale = this.scale)
 
 Project [lng,lat] on sphere onto "screen pixel" coordinates [x,y] without
 considering any perspective (effectively ignoring pitch, bearing and altitude).
@@ -293,11 +203,10 @@ considering any perspective (effectively ignoring pitch, bearing and altitude).
 * `returns` - [x,y] - An Array of Numbers representing map or world coordinates.
 
 
-### unprojectFlat([x, y], scale = this.scale)
+#### PerspectiveViewport.unprojectFlat([x, y], scale = this.scale)
 
 Unprojects a screen point [x,y] on the map or world [lon, lat on sphere
 
 array xy - object with {x,y} members representing a "point on projected map
 plane
 * `returns` [lat, lon] or [x, y] of point on sphere.
-
