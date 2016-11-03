@@ -61,7 +61,7 @@ export default class Viewport {
    * @param {Number} opt.scale=1 - Either use scale or zoom
    * @param {Number} opt.pitch=0 - Camera angle in degrees (0 is straight down)
    * @param {Number} opt.bearing=0 - Map rotation in degrees (0 means north is up)
-   * @param {Number} opt.altitude= - Altitude of camera in screen units
+   * @param {Number} opt.altitude=1.5 - Altitude of camera in screen units
    *
    * Web mercator projection short-hand parameters
    * @param {Number} opt.latitude - Center of viewport on map (alternative to opt.center)
