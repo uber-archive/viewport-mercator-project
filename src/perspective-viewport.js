@@ -173,7 +173,8 @@ export default class Viewport {
     const scale = 1 / v[3];
 
     vec4.multiply(v, v, [scale, scale, scale, scale]);
-    const [x0, y0, z0] = this.unprojectFlat(v);
+    const [x0, y0] = this.unprojectFlat(v);
+    const [, , z0] = v;
 
     return [x0, y0, z0];
   }
