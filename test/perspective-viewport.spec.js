@@ -48,16 +48,28 @@ test('Viewport.projectFlat', t => {
   t.end();
 });
 
+test('Viewport.project#2D', t => {
+  for (const tc of VIEWPORT_TEST_DATA) {
+    const {mapState} = tc;
+    const viewport = new Viewport(mapState);
+    const lnglatIn = [tc.mapState.longitude + 5, tc.mapState.latitude + 5];
+    const xy = viewport.project(lnglatIn);
+    const lnglat = viewport.unproject(xy);
+    t.comment(`Comparing [${lnglatIn}] to [${lnglat}]`);
+    t.ok(vec2.equals(lnglatIn, lnglat));
+  }
+  t.end();
+});
 
-// test('Viewport.project#3D', t => {
-//   for (const tc of VIEWPORT_TEST_DATA) {
-//     const {mapState} = tc;
-//     const viewport = new Viewport(mapState);
-//     const lnglatIn = [tc.mapState.longitude + 5, tc.mapState.latitude + 5];
-//     const xy = viewport.project(lnglatIn);
-//     const lnglat = viewport.unproject(xy);
-//     t.comment(`Comparing [${lnglatIn}] to [${lnglat}]`);
-//     t.ok(vec2.equals(lnglatIn, lnglat));
-//   }
-//   t.end();
-// });
+test('Viewport.project#3D', t => {
+  for (const tc of VIEWPORT_TEST_DATA) {
+    const {mapState} = tc;
+    const viewport = new Viewport(mapState);
+    const lnglatIn = [tc.mapState.longitude + 5, tc.mapState.latitude + 5, 0];
+    const xyz = viewport.project(lnglatIn);
+    const lnglat = viewport.unproject(xyz);
+    t.comment(`Comparing [${lnglatIn}] to [${lnglat}]`);
+    t.ok(vec2.equals(lnglatIn, lnglat));
+  }
+  t.end();
+});
