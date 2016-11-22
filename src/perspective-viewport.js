@@ -135,6 +135,7 @@ export default class Viewport {
     vec4.transformMat4(v, v, this.pixelProjectionMatrix);
     // Divide by w
     const scale = 1 / v[3];
+
     vec4.multiply(v, v, [scale, scale, scale, scale]);
     const [x, y, z] = v;
     // const y2 = topLeft ? this.height - 1 - y : y;
@@ -151,16 +152,66 @@ export default class Viewport {
    */
   @autobind
   unproject(xyz, {topLeft = true} = {}) {
+
+    return xyz.length === 3 ? this.unproject3d(xyz, {topLeft}) :
+      this.unproject2d(xyz, {topLeft});
+  }
+
+  /**
+   * Unproject 3d pixel coordinates on screen onto [lon, lat] on map.
+   * - [x, y, z] => [lng, lat, Z]
+   * @param {Array} xyz -
+   * @return {Array} - [lng, lat, Z]
+   */
+  @autobind
+  unproject3d(xyz, {topLeft = true} = {}) {
     const [x = 0, y = 0, z = 0] = xyz;
-    // const y2 = topLeft ? this.height - 1 - y : y;
     const y2 = topLeft ? this.height - y : y;
+
     const v = [x, y2, z, 1];
     vec4.transformMat4(v, v, this.pixelUnprojectionMatrix);
     const scale = 1 / v[3];
+
     vec4.multiply(v, v, [scale, scale, scale, scale]);
-    const [x0, y0] = this.unprojectFlat(v);
-    const [, , z0] = v;
-    return xyz.length === 2 ? [x0, y0] : [x0, y0, z0];
+    const [x0, y0, z0] = this.unprojectFlat(v);
+
+    return [x0, y0, z0];
+  }
+
+  /**
+   * Unproject 2d pixel coordinates on screen onto [lon, lat] on map.
+   * - [x, y] => [lng, lat]
+   * @param {Array} xy -
+   * @return {Array} - [lng, lat]
+   */
+  @autobind
+  unproject2d(xy, {topLeft = true} = {}) {
+    // same implementation as in mapbox.gl transform
+    const [x = 0, y = 0] = xy;
+    const y2 = topLeft ? this.height - y : y;
+
+    const targetZ = 0;
+    // since we don't know the correct projected z value for the point,
+    // unproject two points to get a line and then find the point on that
+    // line with z=0
+
+    const coord0 = [x, y2, 0, 1];
+    const coord1 = [x, y2, 1, 1];
+
+    vec4.transformMat4(coord0, coord0, this.pixelUnprojectionMatrix);
+    vec4.transformMat4(coord1, coord1, this.pixelUnprojectionMatrix);
+
+    const [w0, w1] = [coord0[3], coord1[3]];
+    const [x0, x1] = [coord0[0] / w0, coord1[0] / w1];
+    const [y0, y1] = [coord0[1] / w0, coord1[1] / w1];
+    const [z0, z1] = [coord0[2] / w0, coord1[2] / w1];
+
+    const t = z0 === z1 ? 0 : (targetZ - z0) / (z1 - z0);
+
+    const X = (x0 * (1 - t)) + (x1 * t);
+    const Y = (y0 * (1 - t)) + (y1 * t);
+
+    return this.unprojectFlat([X, Y]);
   }
 
   /**
@@ -361,7 +412,7 @@ export default class Viewport {
     mat4.scale(m, m, [this.width, this.height, 1]);
     // Convert to (0, 1)
     mat4.translate(m, m, [0.5, 0.5, 0]);
-    mat4.scale(m, m, [0.5, 0.5, 0]);
+    mat4.scale(m, m, [0.5, 0.5, 1]);
     // Project to clip space (-1, 1)
     mat4.multiply(m, m, this.viewProjectionMatrix);
     this.pixelProjectionMatrix = m;
