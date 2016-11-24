@@ -32,26 +32,28 @@ support Web Mercator Projection with floating point zoom levels.
 
 ## Example usage
 
-    const ViewportMercator = require('viewport-mercator-project');
+```javascript
+const ViewportMercator = require('viewport-mercator-project');
 
-    // NOTE: The `viewport` object returned from `ViewportMercator` is immutable.
-    const viewport = ViewportMercator({
-      longitude: 0,
-      latitude: 0,
-      zoom: 0,
-      width: 600,
-      height: 500
-    });
+// NOTE: The `viewport` object returned from `ViewportMercator` is immutable.
+const viewport = ViewportMercator({
+  longitude: 0,
+  latitude: 0,
+  zoom: 0,
+  width: 600,
+  height: 500
+});
 
-    // A longitude, latitude pair as an array.
-    const lnglat = [0, 0];
-    const pixels = viewport.project(lnglat); // returns [300, 250]
+// A longitude, latitude pair as an array.
+const lnglat = [0, 0];
+const pixels = viewport.project(lnglat); // returns [300, 250]
 
-    // A width, height pair as an array.
-    viewport.unproject(pixels); // returns [0, 0]
+// A width, height pair as an array.
+viewport.unproject(pixels); // returns [0, 0]
 
-    // Test if a lnglat is within the viewport
-    viewport.contains(lnglat); // true
+// Test if a lnglat is within the viewport
+viewport.contains(lnglat); // true
+```
 
 ## Documentation
 
