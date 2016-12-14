@@ -1,9 +1,7 @@
 import Viewport from './viewport';
 import {mat4} from 'gl-matrix';
 
-const DEGREES_TO_RADIANS = Math.PI / 180;
-
-export default class PerspectiveViewport extends Viewport {
+export default class OrthographicViewport extends Viewport {
   constructor({
     // viewport arguments
     width, // Width of viewport
@@ -13,17 +11,20 @@ export default class PerspectiveViewport extends Viewport {
     lookAt = [0, 0, 0], // Which point is camera looking at, default origin
     up = [0, 1, 0], // Defines up direction, default positive y axis
     // projection matrix arguments
-    fovy = 75, // Field of view covered by camera
     near = 1, // Distance of near clipping plane
     far = 100, // Distance of far clipping plane
+    fovy = 75, // Field of view covered by camera
+    left, // Left bound of the frustum
+    top, // Top bound of the frustum
     // automatically calculated
-    aspect = null // Aspect ratio (set to viewport widht/height)
+    right = null, // Right bound of the frustum
+    bottom = null // Bottom bound of the frustum
   }) {
-    const fovyRadians = fovy * DEGREES_TO_RADIANS;
-    aspect = Number.isFinite(aspect) ? aspect : width / height;
+    right = Number.isFinite(right) ? right : left + width;
+    bottom = Number.isFinite(bottom) ? right : top + height;
     super({
       view: mat4.lookAt([], eye, lookAt, up),
-      projection: mat4.perspective([], fovyRadians, aspect, near, far),
+      projection: mat4.ortho([], left, right, bottom, top, near, far),
       width,
       height
     });

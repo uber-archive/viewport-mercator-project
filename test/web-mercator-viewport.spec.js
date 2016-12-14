@@ -1,9 +1,9 @@
 import test from 'tape-catch';
 import {vec2} from 'gl-matrix';
-import Viewport from '../src/perspective-viewport';
+import {WebMercatorViewport} from '../src';
 
 /* eslint-disable */
-const VIEWPORT_TEST_DATA = [
+const TEST_DATA = [
   {
     mapState: {
       width: 793,
@@ -18,27 +18,30 @@ const VIEWPORT_TEST_DATA = [
   }
 ];
 
-test('Viewport#constructor', t => {
-  t.ok(new Viewport() instanceof Viewport,
-    'Created new Viewport with default args');
+test('WebMercatorViewport#imports', t => {
+  t.ok(WebMercatorViewport, 'WebMercatorViewport import ok');
+
+test('WebMercatorViewport#constructor', t => {
+  t.ok(new WebMercatorViewport() instanceof WebMercatorViewport,
+    'Created new WebMercatorViewport with default args');
   t.end();
 });
 
-test('Viewport#constructor - 0 width/height', t => {
-  const viewport = new Viewport({
-    ...VIEWPORT_TEST_DATA.mapState,
+test('WebMercatorViewport#constructor - 0 width/height', t => {
+  const viewport = new WebMercatorViewport({
+    ...TEST_DATA.mapState,
     width: 0,
     height: 0
   });
-  t.ok(viewport instanceof Viewport,
-    'Viewport constructed successfully with 0 width and height');
+  t.ok(viewport instanceof WebMercatorViewport,
+    'WebMercatorViewport constructed successfully with 0 width and height');
   t.end();
 });
 
-test('Viewport.projectFlat', t => {
-  for (const tc of VIEWPORT_TEST_DATA) {
+test('WebMercatorViewport.projectFlat', t => {
+  for (const tc of TEST_DATA) {
     const {mapState} = tc;
-    const viewport = new Viewport(mapState);
+    const viewport = new WebMercatorViewport(mapState);
     const lnglatIn = [tc.mapState.longitude + 5, tc.mapState.latitude + 5];
     const xy = viewport.projectFlat(lnglatIn);
     const lnglat = viewport.unprojectFlat(xy);
@@ -48,10 +51,10 @@ test('Viewport.projectFlat', t => {
   t.end();
 });
 
-test('Viewport.project#2D', t => {
-  for (const tc of VIEWPORT_TEST_DATA) {
+test('WebMercatorViewport.project#2D', t => {
+  for (const tc of TEST_DATA) {
     const {mapState} = tc;
-    const viewport = new Viewport(mapState);
+    const viewport = new WebMercatorViewport(mapState);
     const lnglatIn = [tc.mapState.longitude + 5, tc.mapState.latitude + 5];
     const xy = viewport.project(lnglatIn);
     const lnglat = viewport.unproject(xy);
@@ -61,10 +64,10 @@ test('Viewport.project#2D', t => {
   t.end();
 });
 
-test('Viewport.project#3D', t => {
-  for (const tc of VIEWPORT_TEST_DATA) {
+test('WebMercatorViewport.project#3D', t => {
+  for (const tc of TEST_DATA) {
     const {mapState} = tc;
-    const viewport = new Viewport(mapState);
+    const viewport = new WebMercatorViewport(mapState);
     const lnglatIn = [tc.mapState.longitude + 5, tc.mapState.latitude + 5, 0];
     const xyz = viewport.project(lnglatIn);
     const lnglat = viewport.unproject(xyz);
