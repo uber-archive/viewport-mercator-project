@@ -1,1 +1,1 @@
-module.exports = require('./src/flat-viewport');
+module.exports = require('./src/index');
