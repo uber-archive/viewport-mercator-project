@@ -81,43 +81,30 @@ that only use 2D map projections.
 
 ## Viewport
 
-<<<<<<< 5a6cd74acc6a018c7adb3d3630ff1a767adaa10e
-Coordinates are specified in an lng-lat format `[lng, lat, z]` format which
-most closely corresponds to `[x, y, z]` coords, with `lng` and `lat` specified
-in degrees and `z` specified in meters above sea level.
-=======
 Manages projection and unprojection of coordinates between world and viewport
 coordinates.
->>>>>>> Viewport separation to make mercator parameters optional
 
 It provides both direct project/unproject function members as well as
 projection matrices including `view` and `projection matrices`, and
 can generate their inverses as well to facilitate e.g. lighting calculations
 in WebGL shaders.
 
-<<<<<<< 5a6cd74acc6a018c7adb3d3630ff1a767adaa10e
-## PerspectiveViewport and Coordinate Systems
-=======
 Remarks:
 * The `Viewport` class perhaps best thought of as the counterpart of the
   typical `Camera` class found in most 3D libraries. The main addition is that
   to support pixel project/unproject functions (in addition to the
   clipspace projection that Camera classes typically manage), the `Viewport`
   is also aware of the viewport extents.
-* Can generate WebGL compatible projection matrices (column-major)
+* Can generate WebGL compatible projection matrices (column-major) - Note
+  that these still need to be converted to typed arrays.
+
 
 ### `Viewport.constructor`
->>>>>>> Viewport separation to make mercator parameters optional
 
 `new Viewport({view, projection, width, height})`
 
 view matrix arguments
 
-
-## ScaledViewport
-
-TBD - This could be a "flat" 3d viewport without the complication of
-the non-linear web mercator projection, to simplify WebMercatorViewport
 
 | Parameter | Type    | Default | Description                                   |
 | --------- | ------- | ------- | --------------------------------------------- |
@@ -132,18 +119,10 @@ the non-linear web mercator projection, to simplify WebMercatorViewport
 ### `Viewport.getMatrices`
 
 Returns an object with various matrices
->>>>>>> Viewport separation to make mercator parameters optional
 
 `Viewport.getMatrices({model = IDENTITY})`
 
-<<<<<<< 5a6cd74acc6a018c7adb3d3630ff1a767adaa10e
-Note that that distance scales are latitude dependent under
-web mercator projection ([see](http://wiki.openstreetmap.org/wiki/Zoom_levels)),
-so scaling will depend on the viewport center and any linear scale factor
-should only be expected to be locally correct.
-=======
 The returned object will contain the following key/values:
->>>>>>> Viewport separation to make mercator parameters optional
 
 Clip space projection
 * `model` (Matrix4) - transforms model to world space
