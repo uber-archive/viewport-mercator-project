@@ -222,6 +222,10 @@ export default class WebMercatorViewport extends Viewport {
 
   // INTERNAL METHODS
 
+  _getParams() {
+    return getDistanceScales();
+  }
+
   /**
    * Builds matrices that converts preprojected lngLats to screen pixels
    * and vice versa.

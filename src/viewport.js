@@ -144,29 +144,38 @@ export default class Viewport {
     return [x / scale, y / scale];
   }
 
-  @autobind getMatrices({model = null}) {
-    const modelViewProjection =
-      model ? mat4.multiply([], this.viewProjection, model) : this.viewProjection;
+  @autobind getMatrices({modelMatrix = null, ...opts} = {}) {
+    const modelViewProjectionMatrix = model ?
+      mat4.multiply([], this.viewProjectionMatrix, modelMatrix) :
+      this.viewProjectionMatrix;
 
     const matrices = {
-      modelViewProjection,
+      modelViewProjectionMatrix,
       viewProjectionMatrix: this.viewProjectionMatrix,
-      viewMatrix: this.view,
-      projectionMatrix: this.projection,
+      viewMatrix: this.viewMatrix,
+      projectionMatrix: this.projectionMatrix,
 
       // project to a pixel to world
+      // TODO - should be recomputed if model matrix is supplied
       pixelProjectionMatrix: this.pixelProjectionMatrix,
       // unproject from a pixel to world
       pixelUnprojectionMatrix: this.pixelUnprojectionMatrix,
 
       width: this.width,
-      height: this.height
+      height: this.height,
+
+      ...this._getParams()
     };
 
     return matrices;
   }
 
   // INTERNAL METHODS
+
+  // Can be subclassed to add additional fields to `getMatrices`
+  _getParams() {
+    return {};
+  }
 
   _calculateTransformationMatrices() {
     // Note: As usual, matrix operations should be applied in "reverse" order

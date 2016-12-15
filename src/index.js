@@ -1,4 +1,5 @@
 // Classic web-mercator-project
+export {default as ViewportMercatorProject} from './flat-viewport';
 export {default as FlatViewport} from './flat-viewport';
 
 // 3D viewports
