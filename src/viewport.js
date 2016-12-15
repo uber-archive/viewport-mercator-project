@@ -113,16 +113,18 @@ export default class Viewport {
    * @param {Object} opts.topLeft=true - Whether projected coords are top left
    * @return {Array} - [x, y] or [x, y, z] in top left coords
    */
-  @autobind project(xyz, {topLeft = true} = {}) {
+  @autobind project(xyz, {topLeft = false} = {}) {
     const Z = xyz[2] || 0;
+    // console.error('projecting non-linear', xyz);
     const [X, Y] = this.projectFlat(xyz);
     const v = [X, Y, Z, 1];
+    // console.error('projecting linear', v);
     // vec4.sub(v, v, [this.centerX, this.centerY, 0, 0]);
     vec4.transformMat4(v, v, this.pixelProjectionMatrix);
     // Divide by w
     const scale = 1 / v[3];
     vec4.multiply(v, v, [scale, scale, scale, scale]);
-
+    // console.error('projected', v);
     const [x, , z] = v;
     const y = topLeft ? this.height - v[1] : v[1];
     return xyz.length === 2 ? [x, y] : [x, y, z];
@@ -136,7 +138,8 @@ export default class Viewport {
    * @param {Array} xyz -
    * @return {Array} - [lng, lat, Z] or [X, Y, Z]
    */
-  @autobind unproject(xyz, {topLeft = true} = {}) {
+  @autobind unproject(xyz, {topLeft = false} = {}) {
+    // console.error('unprojecting linear', xyz);
     const [x = 0, y = 0, z = 0] = xyz;
     // const y2 = topLeft ? this.height - 1 - y : y;
     const y2 = topLeft ? this.height - y : y;
@@ -144,7 +147,9 @@ export default class Viewport {
     vec4.transformMat4(v, v, this.pixelUnprojectionMatrix);
     const scale = 1 / v[3];
     vec4.multiply(v, v, [scale, scale, scale, scale]);
+    // console.error('unprojecting non-linear', v);
     const [x0, y0] = this.unprojectFlat(v);
+    // console.error('unprojected', [x0, y0]);
     const [, , z0] = v;
     return xyz.length === 2 ? [x0, y0] : [x0, y0, z0];
   }
@@ -177,13 +182,13 @@ export default class Viewport {
     return this._unprojectFlat(...arguments);
   }
 
-  _projectFlat(xyz, scale = this.scale) {
-    return xyz;
-  }
+  // _projectFlat(xyz, scale = this.scale) {
+  //   return xyz;
+  // }
 
-  _unprojectFlat(xyz, scale = this.scale) {
-    return xyz;
-  }
+  // _unprojectFlat(xyz, scale = this.scale) {
+  //   return xyz;
+  // }
 
   @autobind getMatrices({modelMatrix = null, ...opts} = {}) {
     let modelViewProjectionMatrix = this.viewProjectionMatrix;
