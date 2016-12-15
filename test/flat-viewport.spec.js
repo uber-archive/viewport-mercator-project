@@ -19,8 +19,8 @@
 // THE SOFTWARE.
 'use strict';
 
-var ViewportMercator = require('../');
-var test = require('tape');
+var ViewportMercator = require('../').FlatViewport;
+var test = require('tape-catch');
 var round = require('round-precision');
 var PRECISION = 4;
 
@@ -42,13 +42,13 @@ function createViewport(opt) {
   });
 }
 
-test('viewport exists', function tt(t) {
+test('FlatViewport#exists', function tt(t) {
   var viewport = createViewport();
   t.ok(viewport);
   t.end();
 });
 
-test('forward and reverse projection (0,0) at z=0', function tt(t) {
+test('FlatViewport#forward and reverse projection (0,0) at z=0', function tt(t) {
   var size = 512;
   var viewport = createViewport({width: size, height: size});
   var lngLat = [0, 0];
@@ -62,7 +62,7 @@ test('forward and reverse projection (0,0) at z=0', function tt(t) {
   t.end();
 });
 
-test('corners with 512x512 viewport at z=0', function tt(t) {
+test('FlatViewport#corners with 512x512 viewport at z=0', function tt(t) {
   var size = 512;
   var MAX_LNG = 180.00000;
   var MAX_LAT = 85.05113;
@@ -74,7 +74,7 @@ test('corners with 512x512 viewport at z=0', function tt(t) {
   t.end();
 });
 
-test('corners with 512x512 viewport at z=1', function tt(t) {
+test('FlatViewport#corners with 512x512 viewport at z=1', function tt(t) {
   var size = 512;
   var MAX_LNG = 90.00000;
   var MAX_LAT = 66.51326;
@@ -86,7 +86,7 @@ test('corners with 512x512 viewport at z=1', function tt(t) {
   t.end();
 });
 
-test('unproject corners with 800x600 viewport at z=0', function tt(t) {
+test('FlatViewport#unproject corners with 800x600 viewport at z=0', function tt(t) {
   var width = 800;
   var height = 600;
   var MAX_LNG = 281.250000;
@@ -99,7 +99,7 @@ test('unproject corners with 800x600 viewport at z=0', function tt(t) {
   t.end();
 });
 
-test('contains a given point', function tt(t) {
+test('FlatViewport#contains a given point', function tt(t) {
   var size = 512;
   var viewport = createViewport({
     width: size,

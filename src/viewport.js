@@ -6,16 +6,7 @@
 import {mat4, vec4} from 'gl-matrix';
 import autobind from 'autobind-decorator';
 
-// EXPORTS
-
-export const COORDINATE_SYSTEM = {
-  // Positions are interpreted as [lng,lat,elevation], distances as meters
-  LNGLAT: 1.0,
-  // Positions are interpreted as meter offsets, distances as meters
-  METERS: 2.0,
-  // Positions and distances are not transformed
-  IDENTITY: 0.0
-};
+const IDENTITY = createMat4();
 
 export default class Viewport {
   /**
@@ -46,19 +37,22 @@ export default class Viewport {
   /* eslint-disable complexity */
   constructor({
     // Window width/height in pixels (for pixel projection)
-    width,
-    height,
+    width = 1,
+    height = 1,
     // Desc
-    view,
-    projection
+    viewMatrix = IDENTITY,
+    projectionMatrix = IDENTITY
   } = {}) {
     // Silently allow apps to send in 0,0
-    this.width = this.width || 1;
-    this.height = this.height || 1;
+    this.width = width || 1;
+    this.height = height || 1;
+
+    this.viewMatrix = viewMatrix;
+    this.projectionMatrix = projectionMatrix;
 
     // Calculate matrices and scales needed for projection
     this._calculateTransformationMatrices();
-    // this._calculateDistanceScales();
+    this._calculatePixelProjectionMatrices();
   }
   /* eslint-enable complexity */
 
@@ -71,8 +65,8 @@ export default class Viewport {
 
     return viewport.width === this.width &&
       viewport.height === this.height &&
-      mat4.equals(viewport.projection, this.projection) &&
-      mat4.equals(viewport.view, this.view);
+      mat4.equals(viewport.projectionMatrix, this.projectionMatrix) &&
+      mat4.equals(viewport.viewMatrix, this.viewMatrix);
   }
 
   /**
@@ -183,21 +177,6 @@ export default class Viewport {
     mat4.multiply(vpm, vpm, this.projectionMatrix);
     mat4.multiply(vpm, vpm, this.viewMatrix);
     this.viewProjectionMatrix = vpm;
-
-    // PIXEL PROJECTION MATRIX
-    const m = createMat4();
-    // Scale with viewport window's width and height in pixels
-    mat4.scale(m, m, [this.width, this.height, 1]);
-    // Convert to (0, 1)
-    mat4.translate(m, m, [0.5, 0.5, 0]);
-    mat4.scale(m, m, [0.5, 0.5, 0]);
-    // Project to clip space (-1, 1)
-    mat4.multiply(m, m, this.viewProjectionMatrix);
-    this.pixelProjectionMatrix = m;
-
-    const mInverse = createMat4();
-    mat4.invert(mInverse, m);
-    this.pixelUnprojectionMatrix = mInverse;
   }
 
   /**

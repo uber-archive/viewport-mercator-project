@@ -1,6 +1,6 @@
 import test from 'tape-catch';
 import {vec2} from 'gl-matrix';
-import {WebMercatorViewport} from '../src';
+import {WebMercatorViewport, COORDINATE_SYSTEM} from '../src';
 
 /* eslint-disable */
 const TEST_DATA = [
@@ -20,6 +20,9 @@ const TEST_DATA = [
 
 test('WebMercatorViewport#imports', t => {
   t.ok(WebMercatorViewport, 'WebMercatorViewport import ok');
+  t.ok(COORDINATE_SYSTEM, 'COORDINATE_SYSTEM import ok');
+  t.end();
+});
 
 test('WebMercatorViewport#constructor', t => {
   t.ok(new WebMercatorViewport() instanceof WebMercatorViewport,

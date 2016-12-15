@@ -109,17 +109,17 @@ export default class WebMercatorViewport extends Viewport {
       projection: matrices.projection
     });
 
-    this.calculateDistanceScales();
-
     // Save parameters
-    this.width = width;
-    this.height = height;
     this.latitude = latitude;
     this.longitude = longitude;
     this.zoom = zoom;
     this.pitch = pitch;
     this.bearing = bearing;
     this.altitude = altitude;
+
+    this.scale = Math.pow(2, zoom);
+
+    this._calculateDistanceScales();
 
     // Object.seal(this);
     // Object.freeze(this);
@@ -140,8 +140,7 @@ export default class WebMercatorViewport extends Viewport {
    */
   @autobind
   project(lngLatZ, {topLeft = true} = {}) {
-    const [X, Y] = this.mercatorEnabled || this.mercator ?
-      this.projectFlat(lngLatZ) : lngLatZ;
+    const [X, Y] = this.projectFlat(lngLatZ);
     const v = [X, Y, lngLatZ[2] || 0, 1];
 
     // vec4.sub(v, v, [this.centerX, this.centerY, 0, 0]);
@@ -211,17 +210,6 @@ export default class WebMercatorViewport extends Viewport {
     const lambda2 = x / scale - PI;
     const phi2 = 2 * (Math.atan(Math.exp(PI - y / scale)) - PI_4);
     return [lambda2 * RADIANS_TO_DEGREES, phi2 * RADIANS_TO_DEGREES];
-  }
-
-  @autobind
-  getProjections() {
-    return {
-      pixelProjectionMatrix: this.pixelProjectionMatrix,
-      pixelUnprojectionMatrix: this.pixelUnprojectionMatrix,
-      viewProjectionMatrix: this.viewProjectionMatrix,
-      viewMatrix: this.viewMatrix,
-      projectionMatrix: this.projectionMatrix
-    };
   }
 
   @autobind

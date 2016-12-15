@@ -35,7 +35,7 @@ function degrees(value) {
   return value * RADIANS_TO_DEGREES;
 }
 // see: https://en.wikipedia.org/wiki/Web_Mercator
-function ViewportMercator(opts) {
+function ViewportMercator(opts = {}) {
   var scale = (opts.tileSize || 512) * 0.5 / PI * pow(2, opts.zoom);
   var lamda = radians(opts.longitude);
   var phi = radians(opts.latitude);
