@@ -213,6 +213,7 @@ export default class Viewport {
 
       width: this.width,
       height: this.height,
+      scale: this.scale,
 
       // Subclass can add additional params
       // TODO - Fragile: better to make base Viewport class aware of all params
