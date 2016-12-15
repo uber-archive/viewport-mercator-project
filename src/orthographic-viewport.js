@@ -23,8 +23,8 @@ export default class OrthographicViewport extends Viewport {
     right = Number.isFinite(right) ? right : left + width;
     bottom = Number.isFinite(bottom) ? right : top + height;
     super({
-      view: mat4.lookAt([], eye, lookAt, up),
-      projection: mat4.ortho([], left, right, bottom, top, near, far),
+      viewMatrix: mat4.lookAt([], eye, lookAt, up),
+      projectionMatrix: mat4.ortho([], left, right, bottom, top, near, far),
       width,
       height
     });

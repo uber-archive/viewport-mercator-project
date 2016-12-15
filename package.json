@@ -25,10 +25,11 @@
     "build-src": "babel src -d dist --source-maps inline",
     "lint": "eslint src",
     "precommit": "npm test",
-    "mypublish": "npm run build && npm run test && npm publish",
+    "publish-prod": "npm run build && npm run test && npm publish",
+    "publish-beta": "npm run build && npm run test && npm publish --tag beta",
     "test": "npm run lint && npm run build && npm run test-babel",
     "test-babel": "babel-node --only=viewport-mercator-project/test,viewport-mercator-project/src test/index.js",
-    "test-browser": "budo src/test/browser.js:build/test-bundle.js --dir test --live --open --port 3001 --watch-glob '**/*.{html,css,scss,js,glsl}' -- -t babelify -t glslify",
+    "test-browser": "budo test/browser.js:build/test-bundle.js --dir test --live --open --port 3001 --watch-glob '**/*.{html,css,scss,js,glsl}' -- -t babelify",
     "profile-discify": "browserify src/bundle.js --full-paths -t babelify -t glslify | uglifyjs | discify --open"
   },
   "devDependencies": {

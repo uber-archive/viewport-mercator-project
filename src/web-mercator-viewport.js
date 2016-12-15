@@ -91,23 +91,30 @@ export default class WebMercatorViewport extends Viewport {
     width = width || 1;
     height = height || 1;
 
-    const matrices = makeMatricesFromMercatorParams({
+    // Altitude - prevent division by 0
+    // TODO - should we just throw an Error instead?
+    altitude = Math.max(0.75, altitude);
+
+    const viewMatrix = makeViewMatrixFromMercatorParams({
       width,
       height,
-      latitude,
       longitude,
+      latitude,
       zoom,
       pitch,
       bearing,
       altitude
     });
 
-    super({
+    const projectionMatrix = makeProjectionMatrixFromMercatorParams({
       width,
       height,
-      view: matrices.view,
-      projection: matrices.projection
+      pitch,
+      bearing,
+      altitude
     });
+
+    super({width, height, viewMatrix, projectionMatrix});
 
     // Save parameters
     this.latitude = latitude;
@@ -127,55 +134,6 @@ export default class WebMercatorViewport extends Viewport {
   /* eslint-enable complexity */
 
   /**
-   * Projects latitude and longitude to pixel coordinates in window
-   * using viewport projection parameters
-   * - [longitude, latitude] to [x, y]
-   * - [longitude, latitude, Z] => [x, y, z]
-   * Note: By default, returns top-left coordinates for canvas/SVG type render
-   *
-   * @param {Array} lngLatZ - [lng, lat] or [lng, lat, Z]
-   * @param {Object} opts - options
-   * @param {Object} opts.topLeft=true - Whether projected coords are top left
-   * @return {Array} - [x, y] or [x, y, z] in top left coords
-   */
-  @autobind
-  project(lngLatZ, {topLeft = true} = {}) {
-    const [X, Y] = this.projectFlat(lngLatZ);
-    const v = [X, Y, lngLatZ[2] || 0, 1];
-
-    // vec4.sub(v, v, [this.centerX, this.centerY, 0, 0]);
-    vec4.transformMat4(v, v, this.pixelProjectionMatrix);
-    // Divide by w
-    const scale = 1 / v[3];
-    vec4.multiply(v, v, [scale, scale, scale, scale]);
-    const [x, y, z] = v;
-    // const y2 = topLeft ? this.height - 1 - y : y;
-    const y2 = topLeft ? this.height - y : y;
-    return lngLatZ.length === 2 ? [x, y2] : [x, y2, z];
-  }
-
-  /**
-   * Unproject pixel coordinates on screen onto [lon, lat] on map.
-   * - [x, y] => [lng, lat]
-   * - [x, y, z] => [lng, lat, Z]
-   * @param {Array} xyz -
-   * @return {Array} - [lng, lat, Z] or [X, Y, Z]
-   */
-  @autobind
-  unproject(xyz, {topLeft = true} = {}) {
-    const [x = 0, y = 0, z = 0] = xyz;
-    // const y2 = topLeft ? this.height - 1 - y : y;
-    const y2 = topLeft ? this.height - y : y;
-    const v = [x, y2, z, 1];
-    vec4.transformMat4(v, v, this.pixelUnprojectionMatrix);
-    const scale = 1 / v[3];
-    vec4.multiply(v, v, [scale, scale, scale, scale]);
-    const [x0, y0] = this.unprojectFlat(v);
-    const [, , z0] = v;
-    return xyz.length === 2 ? [x0, y0] : [x0, y0, z0];
-  }
-
-  /**
    * Project [lng,lat] on sphere onto [x,y] on 512*512 Mercator Zoom 0 tile.
    * Performs the nonlinear part of the web mercator projection.
    * Remaining projection is done with 4x4 matrices which also handles
@@ -185,8 +143,7 @@ export default class WebMercatorViewport extends Viewport {
    *   Specifies a point on the sphere to project onto the map.
    * @return {Array} [x,y] coordinates.
    */
-  @autobind
-  projectFlat([lng, lat], scale = this.scale) {
+  _projectFlat([lng, lat], scale = this.scale) {
     scale = scale * WORLD_SCALE;
     const lambda2 = lng * DEGREES_TO_RADIANS;
     const phi2 = lat * DEGREES_TO_RADIANS;
@@ -204,8 +161,7 @@ export default class WebMercatorViewport extends Viewport {
    *   Has toArray method if you need a GeoJSON Array.
    *   Per cartographic tradition, lat and lon are specified as degrees.
    */
-  @autobind
-  unprojectFlat([x, y], scale = this.scale) {
+  _unprojectFlat([x, y], scale = this.scale) {
     scale = scale * WORLD_SCALE;
     const lambda2 = x / scale - PI;
     const phi2 = 2 * (Math.atan(Math.exp(PI - y / scale)) - PI_4);
@@ -223,34 +179,7 @@ export default class WebMercatorViewport extends Viewport {
   // INTERNAL METHODS
 
   _getParams() {
-    return getDistanceScales();
-  }
-
-  /**
-   * Builds matrices that converts preprojected lngLats to screen pixels
-   * and vice versa.
-   *
-   * Note: Currently returns bottom-left coordinates!
-   * Note: Starts with the GL projection matrix and adds steps to the
-   *       scale and translate that matrix onto the window.
-   * Note: WebGL controls clip space to screen projection with gl.viewport
-   *       and does not need this step.
-   */
-  _calculatePixelProjectionMatrices() {
-    const m = createMat4();
-
-    // Scale with viewport window's width and height in pixels
-    mat4.scale(m, m, [this.width, this.height, 1]);
-    // Convert to (0, 1)
-    mat4.translate(m, m, [0.5, 0.5, 0]);
-    mat4.scale(m, m, [0.5, 0.5, 0]);
-    // Project to clip space (-1, 1)
-    mat4.multiply(m, m, this.viewProjectionMatrix);
-    this.pixelProjectionMatrix = m;
-
-    const mInverse = createMat4();
-    mat4.invert(mInverse, m);
-    this.pixelUnprojectionMatrix = mInverse;
+    return this.getDistanceScales();
   }
 
   /**
@@ -319,27 +248,13 @@ function projectFlat([lng, lat], scale) {
 // ATTRIBUTION:
 // view and projection matrix creation is intentionally kept compatible with
 // mapbox-gl's implementation to ensure that seamless interoperation
-// with mapbox and react-map-gl.
-// See: transform.js in https://github.com/mapbox/mapbox-gl-js
-function makeMatricesFromMercatorParams({
+// with mapbox and react-map-gl. See: https://github.com/mapbox/mapbox-gl-js
+function makeProjectionMatrixFromMercatorParams({
   width,
   height,
-  longitude,
-  latitude,
-  zoom,
   pitch,
-  bearing,
   altitude
 }) {
-  const scale = Math.pow(2, zoom);
-
-  // Altitude - prevent division by 0
-  // TODO - should we just throw an Error instead?
-  altitude = Math.max(0.75, altitude);
-
-  // Center x, y
-  const [centerX, centerY] = projectFlat([longitude, latitude], scale);
-
   const pitchRadians = pitch * DEGREES_TO_RADIANS;
 
   // PROJECTION MATRIX: PROJECTS FROM CAMERA SPACE TO CLIPSPACE
@@ -360,6 +275,23 @@ function makeMatricesFromMercatorParams({
     farZ * 10.0                                  // far plane
   );
 
+  return projectionMatrix;
+}
+
+function makeViewMatrixFromMercatorParams({
+  width,
+  height,
+  longitude,
+  latitude,
+  zoom,
+  pitch,
+  bearing,
+  altitude
+}) {
+  // Center x, y
+  const scale = Math.pow(2, zoom);
+  const [centerX, centerY] = projectFlat([longitude, latitude], scale);
+
   // VIEW MATRIX: PROJECTS FROM VIRTUAL PIXELS TO CAMERA SPACE
   // Note: As usual, matrix operation orders should be read in reverse
   // since vectors will be multiplied from the right during transformation
@@ -373,14 +305,11 @@ function makeMatricesFromMercatorParams({
   mat4.scale(vm, vm, [1, -1, 1 / height]);
 
   // Rotate by bearing, and then by pitch (which tilts the view)
-  mat4.rotateX(vm, vm, pitchRadians);
+  mat4.rotateX(vm, vm, pitch * DEGREES_TO_RADIANS);
   mat4.rotateZ(vm, vm, -bearing * DEGREES_TO_RADIANS);
 
   const viewMatrix = createMat4();
   mat4.translate(viewMatrix, vm, [-centerX, -centerY, 0]);
 
-  return {
-    viewMatrix,
-    projectionMatrix
-  };
+  return viewMatrix;
 }

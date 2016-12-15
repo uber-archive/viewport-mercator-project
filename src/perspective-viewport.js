@@ -22,8 +22,8 @@ export default class PerspectiveViewport extends Viewport {
     const fovyRadians = fovy * DEGREES_TO_RADIANS;
     aspect = Number.isFinite(aspect) ? aspect : width / height;
     super({
-      view: mat4.lookAt([], eye, lookAt, up),
-      projection: mat4.perspective([], fovyRadians, aspect, near, far),
+      viewMatrix: mat4.lookAt([], eye, lookAt, up),
+      projectionMatrix: mat4.perspective([], fovyRadians, aspect, near, far),
       width,
       height
     });

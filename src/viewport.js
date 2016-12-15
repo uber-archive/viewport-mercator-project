@@ -46,13 +46,45 @@ export default class Viewport {
     // Silently allow apps to send in 0,0
     this.width = width || 1;
     this.height = height || 1;
+    this.scale = 1;
 
     this.viewMatrix = viewMatrix;
     this.projectionMatrix = projectionMatrix;
 
+    // Note: As usual, matrix operations should be applied in "reverse" order
+    // since vectors will be multiplied in from the right during transformation
+    const vpm = createMat4();
+    mat4.multiply(vpm, vpm, this.projectionMatrix);
+    mat4.multiply(vpm, vpm, this.viewMatrix);
+    this.viewProjectionMatrix = vpm;
+
     // Calculate matrices and scales needed for projection
-    this._calculateTransformationMatrices();
-    this._calculatePixelProjectionMatrices();
+    /**
+     * Builds matrices that converts preprojected lngLats to screen pixels
+     * and vice versa.
+     * Note: Currently returns bottom-left coordinates!
+     * Note: Starts with the GL projection matrix and adds steps to the
+     *       scale and translate that matrix onto the window.
+     * Note: WebGL controls clip space to screen projection with gl.viewport
+     *       and does not need this step.
+     */
+    const m = createMat4();
+
+    // Scale with viewport window's width and height in pixels
+    mat4.scale(m, m, [this.width, this.height, 1]);
+    // Convert to (0, 1)
+    mat4.translate(m, m, [0.5, 0.5, 0]);
+    mat4.scale(m, m, [0.5, 0.5, 1]);
+    // Project to clip space (-1, 1)
+    mat4.multiply(m, m, this.viewProjectionMatrix);
+
+    const mInverse = mat4.invert(createMat4(), m);
+    if (!mInverse) {
+      throw new Error('Pixel project matrix not invertible');
+    }
+
+    this.pixelProjectionMatrix = m;
+    this.pixelUnprojectionMatrix = mInverse;
   }
   /* eslint-enable complexity */
 
@@ -70,7 +102,7 @@ export default class Viewport {
   }
 
   /**
-   * Projects latitude and longitude to pixel coordinates in window
+   * Projects xyz (possibly latitude and longitude) to pixel coordinates in window
    * using viewport projection parameters
    * - [longitude, latitude] to [x, y]
    * - [longitude, latitude, Z] => [x, y, z]
@@ -96,7 +128,8 @@ export default class Viewport {
   }
 
   /**
-   * Unproject pixel coordinates on screen onto [lon, lat] on map.
+   * Unproject pixel coordinates on screen onto world coordinates,
+   * (possibly [lon, lat]) on map.
    * - [x, y] => [lng, lat]
    * - [x, y, z] => [lng, lat, Z]
    * @param {Array} xyz -
@@ -115,39 +148,52 @@ export default class Viewport {
     return xyz.length === 2 ? [x0, y0] : [x0, y0, z0];
   }
 
+  // NON_LINEAR PROJECTION HOOKS
+  // Used for web meractor projection
+
   /**
    * Project [lng,lat] on sphere onto [x,y] on 512*512 Mercator Zoom 0 tile.
    * Performs the nonlinear part of the web mercator projection.
    * Remaining projection is done with 4x4 matrices which also handles
    * perspective.
-   *
    * @param {Array} lngLat - [lng, lat] coordinates
    *   Specifies a point on the sphere to project onto the map.
    * @return {Array} [x,y] coordinates.
    */
   @autobind projectFlat([x, y], scale = this.scale) {
-    scale = 1; // scale * WORLD_SCALE;
-    return [x * scale, y * scale];
+    return this._projectFlat(...arguments);
   }
 
   /**
    * Unproject world point [x,y] on map onto {lat, lon} on sphere
-   *
    * @param {object|Vector} xy - object with {x,y} members
    *  representing point on projected map plane
    * @return {GeoCoordinates} - object with {lat,lon} of point on sphere.
    *   Has toArray method if you need a GeoJSON Array.
    *   Per cartographic tradition, lat and lon are specified as degrees.
    */
-  @autobind unprojectFlat([x, y], scale = this.scale) {
-    scale = 1; // scale * WORLD_SCALE;
-    return [x / scale, y / scale];
+  @autobind unprojectFlat(xyz, scale = this.scale) {
+    return this._unprojectFlat(...arguments);
+  }
+
+  _projectFlat(xyz, scale = this.scale) {
+    return xyz;
+  }
+
+  _unprojectFlat(xyz, scale = this.scale) {
+    return xyz;
   }
 
   @autobind getMatrices({modelMatrix = null, ...opts} = {}) {
-    const modelViewProjectionMatrix = model ?
-      mat4.multiply([], this.viewProjectionMatrix, modelMatrix) :
-      this.viewProjectionMatrix;
+    let modelViewProjectionMatrix = this.viewProjectionMatrix;
+    let pixelProjectionMatrix = this.pixelProjectionMatrix;
+    let pixelUnprojectionMatrix = this.pixelUnprojectionMatrix;
+
+    if(modelMatrix) {
+      modelViewProjectionMatrix = mat4.multiply([], this.viewProjectionMatrix, modelMatrix);
+      pixelProjectionMatrix = mat4.multiply([], this.pixelProjectionMatrix, modelMatrix);
+      pixelUnprojectionMatrix = mat4.invert([], pixelProjectionMatrix);
+    }
 
     const matrices = {
       modelViewProjectionMatrix,
@@ -155,15 +201,15 @@ export default class Viewport {
       viewMatrix: this.viewMatrix,
       projectionMatrix: this.projectionMatrix,
 
-      // project to a pixel to world
-      // TODO - should be recomputed if model matrix is supplied
-      pixelProjectionMatrix: this.pixelProjectionMatrix,
-      // unproject from a pixel to world
-      pixelUnprojectionMatrix: this.pixelUnprojectionMatrix,
+      // project/unproject between pixels and world
+      pixelProjectionMatrix,
+      pixelUnprojectionMatrix,
 
       width: this.width,
       height: this.height,
 
+      // Subclass can add additional params
+      // TODO - Fragile: better to make base Viewport class aware of all params
       ...this._getParams()
     };
 
@@ -175,44 +221,6 @@ export default class Viewport {
   // Can be subclassed to add additional fields to `getMatrices`
   _getParams() {
     return {};
-  }
-
-  _calculateTransformationMatrices() {
-    // Note: As usual, matrix operations should be applied in "reverse" order
-    // since vectors will be multiplied in from the right during transformation
-
-    // ViewProjectionMatrix
-    const vpm = createMat4();
-    mat4.multiply(vpm, vpm, this.projectionMatrix);
-    mat4.multiply(vpm, vpm, this.viewMatrix);
-    this.viewProjectionMatrix = vpm;
-  }
-
-  /**
-   * Builds matrices that converts preprojected lngLats to screen pixels
-   * and vice versa.
-   *
-   * Note: Currently returns bottom-left coordinates!
-   * Note: Starts with the GL projection matrix and adds steps to the
-   *       scale and translate that matrix onto the window.
-   * Note: WebGL controls clip space to screen projection with gl.viewport
-   *       and does not need this step.
-   */
-  _calculatePixelProjectionMatrices() {
-    const m = createMat4();
-
-    // Scale with viewport window's width and height in pixels
-    mat4.scale(m, m, [this.width, this.height, 1]);
-    // Convert to (0, 1)
-    mat4.translate(m, m, [0.5, 0.5, 0]);
-    mat4.scale(m, m, [0.5, 0.5, 0]);
-    // Project to clip space (-1, 1)
-    mat4.multiply(m, m, this.viewProjectionMatrix);
-    this.pixelProjectionMatrix = m;
-
-    const mInverse = createMat4();
-    mat4.invert(mInverse, m);
-    this.pixelUnprojectionMatrix = mInverse;
   }
 }
 
