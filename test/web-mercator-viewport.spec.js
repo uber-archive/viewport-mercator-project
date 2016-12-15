@@ -69,8 +69,8 @@ test('WebMercatorViewport#constructor - 0 width/height', t => {
 test('WebMercatorViewport.project#2D', t => {
   for (const tc of TEST_DATA) {
     const {mapState} = tc;
-    const viewport = new WebMercatorViewport(mapState);
-    const lnglatIn = [tc.mapState.longitude, tc.mapState.latitude];
+    const viewport = new WebMercatorViewport({...mapState, latitude: mapState.latitude - 10});
+    const lnglatIn = [tc.mapState.longitude + 10, tc.mapState.latitude + 10];
     const xy = viewport.project(lnglatIn);
     const lnglat = viewport.unproject(xy);
     t.comment(`Comparing [${lnglatIn}] to [${lnglat}]`);

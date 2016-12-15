@@ -114,8 +114,9 @@ export default class Viewport {
    * @return {Array} - [x, y] or [x, y, z] in top left coords
    */
   @autobind project(xyz, {topLeft = true} = {}) {
+    const Z = xyz[2] || 0;
     const [X, Y] = this.projectFlat(xyz);
-    const v = [X, Y, xyz[2] || 0, 1];
+    const v = [X, Y, Z, 1];
     // vec4.sub(v, v, [this.centerX, this.centerY, 0, 0]);
     vec4.transformMat4(v, v, this.pixelProjectionMatrix);
     // Divide by w
@@ -189,7 +190,7 @@ export default class Viewport {
     let pixelProjectionMatrix = this.pixelProjectionMatrix;
     let pixelUnprojectionMatrix = this.pixelUnprojectionMatrix;
 
-    if(modelMatrix) {
+    if (modelMatrix) {
       modelViewProjectionMatrix = mat4.multiply([], this.viewProjectionMatrix, modelMatrix);
       pixelProjectionMatrix = mat4.multiply([], this.pixelProjectionMatrix, modelMatrix);
       pixelUnprojectionMatrix = mat4.invert([], pixelProjectionMatrix);

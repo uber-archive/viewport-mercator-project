@@ -1,7 +1,7 @@
 // View and Projection Matrix calculations for mapbox-js style
 // map view properties
 import Viewport, {createMat4} from './viewport';
-import {mat4, vec2, vec4} from 'gl-matrix';
+import {mat4, vec2} from 'gl-matrix';
 import autobind from 'autobind-decorator';
 
 // CONSTANTS
@@ -308,8 +308,7 @@ function makeViewMatrixFromMercatorParams({
   mat4.rotateX(vm, vm, pitch * DEGREES_TO_RADIANS);
   mat4.rotateZ(vm, vm, -bearing * DEGREES_TO_RADIANS);
 
-  const viewMatrix = createMat4();
-  mat4.translate(viewMatrix, vm, [-centerX, -centerY, 0]);
+  mat4.translate(vm, vm, [-centerX, -centerY, 0]);
 
-  return viewMatrix;
+  return vm;
 }
