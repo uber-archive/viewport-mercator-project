@@ -1,4 +1,5 @@
 // Classic web-mercator-project
+export {default as default} from './flat-viewport';
 export {default as ViewportMercatorProject} from './flat-viewport';
 export {default as FlatViewport} from './flat-viewport';
 
@@ -9,6 +10,3 @@ export {default as OrthographicViewport} from './orthographic-viewport';
 export {default as WebMercatorViewport} from './web-mercator-viewport';
 
 export {COORDINATE_SYSTEM} from './web-mercator-viewport';
-
-// Default export
-export {default as default} from './viewport';
