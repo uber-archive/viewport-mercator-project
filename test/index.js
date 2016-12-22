@@ -1,2 +1,3 @@
-require('./flat-viewport.spec');
-require('./perspective-viewport.spec');
+// require('./flat-viewport.spec');
+// require('./viewport.spec');
+require('./web-mercator-viewport.spec');

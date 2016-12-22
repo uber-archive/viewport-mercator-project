@@ -1,12 +1,20 @@
 ## Change log
 
-## v3 - Perspective mode
+## v3 - Perspective Mode support, WebMercator support optional
 
-Adds new perspective enabled Viewport class
+Adds a new perspective enabled `WebMercatorViewport` class that inherits
+from a "basic" 3D `Viewport` class.
+
+This allows 3D applications to work with familiar `view` and `projection`
+matrices provided by the `Viewport` and optionally use the `WebMercatorViewport`
+for seamless integration with map components.
+
+This split into two classes makes it easier for applications to reason
+about perspective mode and map projections.
 
 ```
-import PerspectiveViewport from 'viewport-mercator-project/perspective';
-var viewport = new PerspectiveViewport({
+import WebMercatorViewport from 'viewport-mercator-project/perspective';
+var viewport = new WebMercatorViewport({
   latitude,
   longitude,
   zoom,
