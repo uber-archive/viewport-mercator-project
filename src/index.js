@@ -8,5 +8,3 @@ export {default as Viewport} from './viewport';
 export {default as PerspectiveViewport} from './perspective-viewport';
 export {default as OrthographicViewport} from './orthographic-viewport';
 export {default as WebMercatorViewport} from './web-mercator-viewport';
-
-export {COORDINATE_SYSTEM} from './web-mercator-viewport';
