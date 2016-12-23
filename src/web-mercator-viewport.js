@@ -21,16 +21,6 @@ const DEFAULT_MAP_STATE = {
   altitude: 1.5
 };
 
-// EXPORTS
-export const COORDINATE_SYSTEM = {
-  // Positions are interpreted as [lng,lat,elevation], distances as meters
-  LNGLAT: 1.0,
-  // Positions are interpreted as meter offsets, distances as meters
-  METERS: 2.0,
-  // Positions and distances are not transformed
-  IDENTITY: 0.0
-};
-
 export default class WebMercatorViewport extends Viewport {
   /**
    * @classdesc
@@ -170,16 +160,68 @@ export default class WebMercatorViewport extends Viewport {
 
   @autobind
   getDistanceScales() {
-    return {
-      pixelsPerMeter: this.pixelsPerMeter,
-      metersPerPixel: this.metersPerPixel
-    };
+    return this._distanceScales;
+  }
+
+  /**
+   * Converts a meter offset to a lnglat offset
+   *
+   * Note: Uses simple linear approximation around the viewport center
+   * Error increases with size of offset (roughly 1% per 100km)
+   *
+   * @param {[Number,Number]|[Number,Number,Number]) xyz - array of meter deltas
+   * @return {[Number,Number]|[Number,Number,Number]) - array of [lng,lat,z] deltas
+   */
+  @autobind
+  metersToLngLatDelta(xyz) {
+    const [x, y, z = 0] = xyz;
+    const {pixelsPerMeter, degreesPerPixel} = this._distanceScales;
+    const deltaLng = x * pixelsPerMeter[0] * degreesPerPixel[0];
+    const deltaLat = y * pixelsPerMeter[1] * degreesPerPixel[1];
+    return xyz.length === 2 ? [deltaLng, deltaLat] : [deltaLng, deltaLat, z];
+  }
+
+  /**
+   * Converts a lnglat offset to a meter offset
+   *
+   * Note: Uses simple linear approximation around the viewport center
+   * Error increases with size of offset (roughly 1% per 100km)
+   *
+   * @param {[Number,Number]|[Number,Number,Number]) deltaLngLatZ - array of [lng,lat,z] deltas
+   * @return {[Number,Number]|[Number,Number,Number]) - array of meter deltas
+   */
+  @autobind
+  lngLatDeltaToMeters(deltaLngLatZ) {
+    const [deltaLng, deltaLat, deltaZ = 0] = deltaLngLatZ;
+    const {pixelsPerDegree, metersPerPixel} = this._distanceScales;
+    const deltaX = deltaLng * pixelsPerDegree[0] * metersPerPixel[0];
+    const deltaY = deltaLat * pixelsPerDegree[1] * metersPerPixel[1];
+    return deltaLngLatZ.length === 2 ? [deltaX, deltaY] : [deltaX, deltaY, deltaZ];
+  }
+
+  /**
+   * Add a meter delta to a base lnglat coordinate, returning a new lnglat array
+   *
+   * Note: Uses simple linear approximation around the viewport center
+   * Error increases with size of offset (roughly 1% per 100km)
+   *
+   * @param {[Number,Number]|[Number,Number,Number]) lngLatZ - base coordinate
+   * @param {[Number,Number]|[Number,Number,Number]) xyz - array of meter deltas
+   * @return {[Number,Number]|[Number,Number,Number]) array of [lng,lat,z] deltas
+   */
+  @autobind
+  addMetersToLngLat(lngLatZ, xyz) {
+    const [lng, lat, Z = 0] = lngLatZ;
+    const [deltaLng, deltaLat, deltaZ = 0] = this.metersToLngLatDelta(xyz);
+    return lngLatZ.length === 2 ?
+      [lng + deltaLng, lat + deltaLat] :
+      [lng + deltaLng, lat + deltaLat, Z + deltaZ];
   }
 
   // INTERNAL METHODS
 
   _getParams() {
-    return this.getDistanceScales();
+    return this._distanceScales;
   }
 
   /**
@@ -213,26 +255,23 @@ export default class WebMercatorViewport extends Viewport {
     const pixelsPerMeterX = pixelsPerDegreeX / metersPerDegree;
     const pixelsPerMeterY = pixelsPerDegreeY / metersPerDegree;
     const pixelsPerMeterZ = (pixelsPerMeterX + pixelsPerMeterY) / 2;
+    // const pixelsPerMeter = [pixelsPerMeterX, pixelsPerMeterY, pixelsPerMeterZ];
 
-    // const scale = 0.95;
-    // const pixelsPerMeter = [
-    //   pixelsPerMeterX * scale, pixelsPerMeterY * scale, pixelsPerMeterZ * scale
-    // ];
     const worldSize = TILE_SIZE * this.scale;
     const altPixelsPerMeter = worldSize / (4e7 * latCosine);
-    const pixelsPerMeter = [
-      altPixelsPerMeter, altPixelsPerMeter, altPixelsPerMeter
-    ];
-    const metersPerPixel = [
-      1 / pixelsPerMeterX, 1 / pixelsPerMeterY, 1 / pixelsPerMeterZ
-    ];
+    const pixelsPerMeter = [altPixelsPerMeter, altPixelsPerMeter, altPixelsPerMeter];
+    const metersPerPixel = [1 / altPixelsPerMeter, 1 / altPixelsPerMeter, 1 / pixelsPerMeterZ];
 
-    // Main results, used for scaling offsets
-    this.pixelsPerMeter = pixelsPerMeter;
-    // Additional results
-    this.metersPerPixel = metersPerPixel;
-    // metersPerDegree,
-    // degreesPerMeter: 1 / metersPerDegree
+    const pixelsPerDegree = [pixelsPerDegreeX, pixelsPerDegreeY, pixelsPerMeterZ];
+    const degreesPerPixel = [1 / pixelsPerDegreeX, 1 / pixelsPerDegreeY, 1 / pixelsPerMeterZ];
+
+    // Main results, used for converting meters to latlng deltas and scaling offsets
+    this._distanceScales = {
+      pixelsPerMeter,
+      metersPerPixel,
+      pixelsPerDegree,
+      degreesPerPixel
+    };
   }
 }
 

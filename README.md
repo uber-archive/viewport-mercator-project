@@ -219,15 +219,62 @@ Unprojects a screen point `[x, y]` on the map or world `[lng, lat]` on sphere.
 * `returns` - [x,y] - An Array of Numbers representing map or world coordinates.
 
 Parameters:
-
  - `pixels` {Array} - `[x, y]`
+
 
 #### `WebMercatorViewport.unprojectFlat([x, y], scale = this.scale)`
 
-Returns:
+
+Parameters:
  - `[lng, lat]` array xy - object with {x,y} members representing a "point on projected map
 plane
-* `returns` [lat, lon] or [x, y] of point on sphere.
+Returns:
+* [lat, lon] or [x, y] of point on sphere.
+
+
+#### `getDistanceScales()`
+
+Returns:
+- An object with precalculated distance scales allowing conversion between
+  lnglat deltas, meters and pixels.
+
+Remarks:
+* The returned scales represent simple linear approximations of the local
+  Web Mercator projection scale around the viewport center. Error increases
+  with distance from viewport center (Very roughly 1% per 100km).
+* When converting numbers to 32 bit floats (e.g. for use in WebGL shaders)
+  distance offsets can sometimes be used to gain additional computational
+  precision, which can greatly outweigh the small linear approximation error
+  mentioned above.
+
+
+#### `metersToLngLatDelta(xyz)`
+
+Converts a meter offset to a lnglat offset using linear approximation.
+For information on numerical precision, see remarks on `getDistanceScales`.
+
+* `xyz` ([Number,Number]|[Number,Number,Number])  - array of meter deltas
+returns ([Number,Number]|[Number,Number,Number]) - array of [lng,lat,z] deltas
+
+
+#### `lngLatDeltaToMeters(deltaLngLatZ)`
+
+Converts a lnglat offset to a meter offset using linear approximation.
+For information on numerical precision, see remarks on `getDistanceScales`.
+
+* `deltaLngLatZ` ([Number,Number]|[Number,Number,Number])  - array of [lng,lat,z] deltas
+Returns ([Number,Number]|[Number,Number,Number]) - array of meter deltas
+
+
+#### `addMetersToLngLat(lngLatZ, xyz)`
+
+Add a meter delta to a base lnglat coordinate, returning a new lnglat array,
+using linear approximation.
+For information on numerical precision, see remarks on `getDistanceScales`.
+
+* `lngLatZ` ([Number,Number]|[Number,Number,Number]) - base coordinate
+* `xyz` ([Number,Number]|[Number,Number,Number])  - array of meter deltas
+Returns ([Number,Number]|[Number,Number,Number]) array of [lng,lat,z] deltas
 
 
 ## Viewport
