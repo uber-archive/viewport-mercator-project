@@ -1,6 +1,8 @@
 ## Change log
 
-## v3 - Perspective Mode support, WebMercator support optional
+## v4 Simplificaton - Removes non-essential classes from v3 beta
+
+## v3 (beta only) - Perspective Mode support, WebMercator support optional
 
 Adds a new perspective enabled `WebMercatorViewport` class that inherits
 from a "basic" 3D `Viewport` class.
