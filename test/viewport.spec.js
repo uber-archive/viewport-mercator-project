@@ -1,5 +1,5 @@
 import test from 'tape-catch';
-import {Viewport} from '../src';
+import Viewport from '../src/viewport';
 import {mat4} from 'gl-matrix';
 
 const TEST_DATA = {
