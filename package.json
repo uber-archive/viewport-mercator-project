@@ -2,7 +2,7 @@
   "name": "viewport-mercator-project",
   "version": "4.0.0-alpha.1",
   "description": "Convert to and from lat/lng and pixels in web mercator at arbitrary floating point zoom levels.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/uber-common/viewport-mercator-project.git"
