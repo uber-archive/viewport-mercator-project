@@ -2,7 +2,7 @@
 // map view properties
 import Viewport, {createMat4} from './viewport';
 import {mat4, vec2} from 'gl-matrix';
-import autobind from 'autobind-decorator';
+import autobind from './autobind';
 
 // CONSTANTS
 const PI = Math.PI;
@@ -122,6 +122,7 @@ export default class WebMercatorViewport extends Viewport {
 
     this._distanceScales = distanceScales;
 
+    autobind(this);
     Object.freeze(this);
   }
   /* eslint-enable complexity */
@@ -153,7 +154,6 @@ export default class WebMercatorViewport extends Viewport {
     return unprojectFlat(xy, scale);
   }
 
-  @autobind
   getDistanceScales() {
     return this._distanceScales;
   }
@@ -167,7 +167,6 @@ export default class WebMercatorViewport extends Viewport {
    * @param {[Number,Number]|[Number,Number,Number]) xyz - array of meter deltas
    * @return {[Number,Number]|[Number,Number,Number]) - array of [lng,lat,z] deltas
    */
-  @autobind
   metersToLngLatDelta(xyz) {
     const [x, y, z = 0] = xyz;
     const {pixelsPerMeter, degreesPerPixel} = this._distanceScales;
@@ -185,7 +184,6 @@ export default class WebMercatorViewport extends Viewport {
    * @param {[Number,Number]|[Number,Number,Number]) deltaLngLatZ - array of [lng,lat,z] deltas
    * @return {[Number,Number]|[Number,Number,Number]) - array of meter deltas
    */
-  @autobind
   lngLatDeltaToMeters(deltaLngLatZ) {
     const [deltaLng, deltaLat, deltaZ = 0] = deltaLngLatZ;
     const {pixelsPerDegree, metersPerPixel} = this._distanceScales;
@@ -204,7 +202,6 @@ export default class WebMercatorViewport extends Viewport {
    * @param {[Number,Number]|[Number,Number,Number]) xyz - array of meter deltas
    * @return {[Number,Number]|[Number,Number,Number]) array of [lng,lat,z] deltas
    */
-  @autobind
   addMetersToLngLat(lngLatZ, xyz) {
     const [lng, lat, Z = 0] = lngLatZ;
     const [deltaLng, deltaLat, deltaZ = 0] = this.metersToLngLatDelta(xyz);

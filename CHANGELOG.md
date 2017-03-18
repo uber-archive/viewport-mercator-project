@@ -1,6 +1,8 @@
 ## Change log
 
-## v4 Simplificaton - Removes non-essential classes from v3 beta
+## v4 Simplificaton
+- Removes non-essential classes from v3 beta
+- Adopt buble compiler for smaller transpiled code
 
 ## v3 (beta only) - Perspective Mode support, WebMercator support optional
 
