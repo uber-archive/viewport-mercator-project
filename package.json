@@ -17,6 +17,7 @@
     "dist-es6"
   ],
   "scripts": {
+    "start": "npm run test",
     "build": "npm run clean && mkdir -p dist dist-es6 && buble src -o dist-es6 --no modules --y dangerousForOf --objectAssign -m inline && webpack -d",
     "clean": "rm -fr dist/* dist-es6/*",
     "lint": "eslint src",
