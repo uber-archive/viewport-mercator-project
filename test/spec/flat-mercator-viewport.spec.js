@@ -17,9 +17,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+/* eslint-disable */ // ES5 code doesn't lint under ES6 settings
 'use strict';
 
-var ViewportMercator = require('../').FlatViewport;
+var ViewportMercator = require('viewport-mercator-project').default;
 var test = require('tape-catch');
 var round = require('round-precision');
 var PRECISION = 4;

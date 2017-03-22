@@ -1,7 +1,9 @@
+dist/*
+dist-es6/
+
 npm-debug.log
 node_modules
-dist/*
-build/*
+
 .project
 .idea
 .DS_Store

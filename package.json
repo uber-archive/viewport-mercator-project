@@ -2,26 +2,23 @@
   "name": "viewport-mercator-project",
   "version": "4.0.0-alpha.2",
   "description": "Convert to and from lat/lng and pixels in web mercator at arbitrary floating point zoom levels.",
-  "main": "dist/index.js",
+  "author": "Uber Technologies, Inc.",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/uber-common/viewport-mercator-project.git"
   },
-  "author": "Uber Technologies, Inc.",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/uber-common/viewport-mercator-project/issues"
-  },
   "homepage": "https://github.com/uber-common/viewport-mercator-project#readme",
+  "main": "dist/index.js",
+  "module": "dist-es6/index.js",
   "files": [
-    "dist",
     "src",
-    "index.js",
-    "perspective.js"
+    "dist",
+    "dist-es6"
   ],
   "scripts": {
-    "build": "rm -fr dist && buble src -o dist --no modules --y dangerousForOf --objectAssign && webpack -d",
-    "build-clean": "rm -fr dist/*",
+    "build": "npm run clean && mkdir -p dist dist-es6 && buble src -o dist-es6 --no modules --y dangerousForOf --objectAssign -m inline && webpack -d",
+    "clean": "rm -fr dist/* dist-es6/*",
     "lint": "eslint src",
     "precommit": "npm test",
     "publish-prod": "npm run build && npm run test && npm publish",
@@ -31,6 +28,10 @@
     "test-browser": "webpack-dev-server --env.browser --progress --hot --open",
     "profile-discify": "browserify src/bundle.js --full-paths -t babelify -t glslify | uglifyjs | discify --open"
   },
+  "dependencies": {
+    "gl-matrix": "^2.3.2",
+    "mapbox-gl": "0.26.0"
+  },
   "devDependencies": {
     "babel-eslint": "^6.0.0",
     "buble": "^0.15.2",
@@ -38,16 +39,17 @@
     "eslint": "^3.0.0",
     "eslint-config-uber-es2015": "^3.0.0",
     "faucet": "0.0.1",
+    "gl": "^4.0.3",
+    "jsdom": "~9.9.1",
     "module-alias": "^2.0.0",
+    "pre-commit": "^1.2.2",
     "reify": "^0.5.4",
     "round-precision": "^1.0.0",
+    "sinon": "^1.17.7",
     "tap-browser-color": "^0.1.2",
     "tape": "^4.6.0",
     "tape-catch": "^1.0.4",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.4.2"
-  },
-  "dependencies": {
-    "gl-matrix": "^2.3.2"
   }
 }

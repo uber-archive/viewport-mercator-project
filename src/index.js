@@ -1,4 +1,4 @@
 // Classic web-mercator-project
-export {default as default} from './flat-viewport';
-export {default as FlatViewport} from './flat-viewport';
-export {default as PerspectiveViewport} from './perspective-viewport';
+export {default as default} from './flat-mercator-viewport';
+export {default as FlatMercatorViewport} from './flat-mercator-viewport';
+export {default as PerspectiveMercatorViewport} from './perspective-mercator-viewport';
