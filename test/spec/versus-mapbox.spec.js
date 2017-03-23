@@ -3,6 +3,9 @@ import {MapboxTransform} from '../utils/mapbox-transform';
 import {PerspectiveMercatorViewport} from 'viewport-mercator-project';
 import test from 'tape-catch';
 import {toLowPrecision} from '../utils/test-utils';
+import {vec2, vec3} from 'gl-matrix';
+// const glMatrix = require('gl-matrix');
+// glMatrix.EPSILON = 1e-6;
 
 const VIEWPORT_PROPS = {
   flat: {
@@ -175,3 +178,50 @@ test('Viewport project/unproject', t => {
   }
   t.end();
 });
+
+
+test('PerspectiveMercatorViewport.project#3D', t => {
+  for (const viewportName in VIEWPORT_PROPS) {
+    const viewportProps = VIEWPORT_PROPS[viewportName];
+    const viewport = new PerspectiveMercatorViewport(viewportProps);
+
+    const transform = new MapboxTransform(viewportProps);
+
+    for (const offset of [0, 0.5, 1.0, 5.0]) {
+      const mapState = viewportProps;
+      const lnglatIn = [mapState.longitude + offset, mapState.latitude + offset];
+      const xyz = viewport.project(lnglatIn);
+      const lnglat = viewport.unproject(xyz);
+      t.ok(vec2.equals(lnglatIn, lnglat), `Project/unproject ${lnglatIn} to ${lnglat}`);
+
+      const lnglatIn3 = [mapState.longitude + offset, mapState.latitude + offset, 0];
+      const xyz3m = transform.mapboxProject(lnglatIn3);
+      const lnglat3m = transform.mapboxUnproject(xyz3m);
+      t.ok(vec3.equals(lnglatIn3, lnglat3m),
+        `Project/unproject ${lnglatIn3}=>${xyz3m}=>${lnglat3m}`);
+
+      const xyz3 = viewport.project(lnglatIn3);
+      const lnglat3 = viewport.unproject(xyz3);
+      t.ok(vec3.equals(lnglatIn3, lnglat3),
+        `Project/unproject ${lnglatIn3}=>${xyz3}=>${lnglat3}`);
+    }
+  }
+  t.end();
+});
+
+// test('Viewport/Mapbox getLocationAtPoint', t => {
+//   for (const viewportName in VIEWPORT_PROPS) {
+//     const viewportProps = VIEWPORT_PROPS[viewportName];
+//     for (const {title, lngLat} of TEST_CASES) {
+//       const viewport = new PerspectiveMercatorViewport(viewportProps);
+//       const llp = viewport.getLocationAtPoint({lngLat, pos: [100, 100]});
+
+//       const transform = new MapboxTransform(viewportProps);
+//       const llm = transform.mapboxGetLngLatAtPoint({lngLat, pos: [100, 100]});
+
+//       t.deepEquals(toLowPrecision(llp), toLowPrecision(llm),
+//         `getLocationAtPoint(${title}, ${viewportName})) - viewport/mapbox match`);
+//     }
+//   }
+//   t.end();
+// });

@@ -78,21 +78,23 @@ export class MapboxTransform extends Transform {
   /* eslint-enable complexity */
 
   // Uses map to unproject a coordinate
-  mapboxProject([lng, lat]) {
+  mapboxProject(lngLatZ) {
+    const [lng, lat] = lngLatZ;
     const lngLat = new LngLat(lng, lat);
     const point = this.locationPoint(lngLat);
     const {x, y} = point;
     // console.log('Project', [x, y], [lng, lat]);
-    return [x, y];
+    return lngLatZ.length === 3 ? [x, y, 0] : [x, y];
   }
 
   // Uses map to unproject a coordinate
-  mapboxUnproject([x, y]) {
+  mapboxUnproject(xyz) {
+    const [x, y] = xyz;
     const point = new Point(x, y);
     const latLng = this.pointLocation(point);
     const {lng, lat} = latLng;
     // console.log('Unproject', [x, y], [lng, lat]);
-    return [lng, lat];
+    return xyz.length === 3 ? [lng, lat, 0] : [lng, lat];
   }
 
   // Uses map to project a coordinate

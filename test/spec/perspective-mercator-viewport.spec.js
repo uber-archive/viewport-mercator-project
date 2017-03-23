@@ -2,8 +2,6 @@ import test from 'tape-catch';
 import {vec2, vec3} from 'gl-matrix';
 import {PerspectiveMercatorViewport} from 'viewport-mercator-project';
 
-const RUN_BROKEN_TESTS = false;
-
 /* eslint-disable */
 const TEST_VIEWPORTS = [
   {
@@ -83,19 +81,15 @@ test('PerspectiveMercatorViewport.project#3D', t => {
       const lnglat = viewport.unproject(xyz);
       t.ok(vec2.equals(lnglatIn, lnglat), `Project/unproject ${lnglatIn} to ${lnglat}`);
 
-      if (RUN_BROKEN_TESTS) {
-        const lnglatIn3 = [vc.mapState.longitude + offset, vc.mapState.latitude + offset, 0];
-        const xyz3 = viewport.project(lnglatIn3);
-        const lnglat3 = viewport.unproject(xyz3);
-        t.ok(vec3.equals(lnglatIn3, lnglat3),
-          `Project/unproject ${lnglatIn3}=>${xyz3}=>${lnglat3}`);
-      }
+      const lnglatIn3 = [vc.mapState.longitude + offset, vc.mapState.latitude + offset, 0];
+      const xyz3 = viewport.project(lnglatIn3);
+      const lnglat3 = viewport.unproject(xyz3);
+      t.ok(vec3.equals(lnglatIn3, lnglat3),
+        `Project/unproject ${lnglatIn3}=>${xyz3}=>${lnglat3}`);
     }
   }
   t.end();
 });
-
-// TODO - this is not working at the moment
 
 test('PerspectiveMercatorViewport.project#2D', t => {
   // Cross check positions

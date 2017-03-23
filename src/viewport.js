@@ -134,9 +134,9 @@ export default class Viewport {
     const [X, Y] = this.projectFlat([x0, y0]);
     const v = this.transformVector(this.pixelProjectionMatrix, [X, Y, z0, 1]);
 
-    const [x, y, z] = v;
+    const [x, y] = v;
     const y2 = topLeft ? this.height - y : y;
-    return xyz.length === 2 ? [x, y2] : [x, y2, z];
+    return xyz.length === 2 ? [x, y2] : [x, y2, 0];
   }
 
   /**
@@ -166,7 +166,7 @@ export default class Viewport {
     // console.error(`unprojecting to non-linear ${v}<=${[x, y2, targetZ]}`);
 
     const vUnprojected = this.unprojectFlat(v);
-    return xyz.length === 2 ? vUnprojected : [vUnprojected[0], vUnprojected[1], v[2]];
+    return xyz.length === 2 ? vUnprojected : [vUnprojected[0], vUnprojected[1], 0];
   }
 
   // TODO - replace with math.gl
