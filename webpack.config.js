@@ -12,7 +12,7 @@ const BASE_CONFIG = {
   // Generate a bundle in dist folder
   output: {
     path: resolve('./dist'),
-    filename: '[name]-bundle.js',
+    filename: 'index.js',
     library: 'react-map-gl',
     libraryTarget: 'umd'
   },
