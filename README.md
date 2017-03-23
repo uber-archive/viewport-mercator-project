@@ -25,16 +25,16 @@ Projection and camera utilities supporting the Web Mercator Projection.
 At its core this is a utility for converting to and from map
 (latitude, longitude) coordinates to screen coordinates and back.
 
-* `FlatViewport` - For 2D applications, a simple, fast utility is provided that
+* `FlatMercatorViewport` - For 2D applications, a simple, fast utility is provided that
   supports the basic flat Web Mercator projection and unprojection between
   geo coordinates and pixels.
 
-* `WebMercatorViewport` - For 3D applications, a subclass
+* `PerspectiveMercatorViewport` - For 3D applications, a subclass
   of a generic `Viewport` class (which is essentially a 3D matrix
   "camera" class of the type you would find in any 3D/WebGL/OpenGL library).
 
 The constructor of this "advanced" perspective-enabled viewport also takes
-the same typical map view parameters as the `FlatViewport`, however it
+the same typical map view parameters as the `FlatMercatorViewport`, however it
 offers perspective enabled/project unproject functions, and generates
 general 4x4 view matrices that correspond to the parameters.
 
@@ -66,7 +66,7 @@ support Web Mercator Projection with floating point zoom levels.
 * Longitude and latitude are specified in degrees from Greenwich meridian and
   the equator respectively, and altitude is specified in meters above sea level.
 
-* It is possible to query the WebMercatorViewport for a meters per pixel scale.
+* It is possible to query the PerspectiveMercatorViewport for a meters per pixel scale.
   Note that that distance scales are latitude dependent under
   web mercator projection [see](http://wiki.openstreetmap.org/wiki/Zoom_levels),
   so scaling will depend on the viewport center and any linear scale factor
@@ -75,9 +75,9 @@ support Web Mercator Projection with floating point zoom levels.
 
 # API Documentation
 
-## FlatViewport
+## FlatMercatorViewport
 
-Note: The `FlatViewport` is completely independent of the other classes
+Note: The `FlatMercatorViewport` is completely independent of the other classes
 in this module and is intended as a fast, simple solution for applications
 that only use 2D map projections.
 
@@ -90,10 +90,10 @@ that only use 2D map projections.
 
 ### Example usage
 
-    import {FlatViewport} from 'viewport-mercator-project';
+    import {FlatMercatorViewport} from 'viewport-mercator-project';
 
-    // NOTE: The `viewport` object returned from `FlatViewport` is immutable.
-    const viewport = FlatViewport({
+    // NOTE: The `viewport` object returned from `FlatMercatorViewport` is immutable.
+    const viewport = FlatMercatorViewport({
       longitude: 0,
       latitude: 0,
       zoom: 0,
@@ -113,23 +113,23 @@ that only use 2D map projections.
 
 
 
-## WebMercatorViewport
+## PerspectiveMercatorViewport
 
-The main purpose of the `WebMercatorViewport` is to enable 3D rendering to
+The main purpose of the `PerspectiveMercatorViewport` is to enable 3D rendering to
 seamlessly overlay on top of map components that take web mercator style
 map coordinates (`lat`, `lon`, `zoom`, `pitch`, `bearing` etc),
 and to facilite the necessary mercator projections by breaking them into a
 minimal non-linear piece followed by a standard projection chain.
 
 Remarks:
-* Because `WebMercatorViewport` a subclass of `Viewport`, an application
+* Because `PerspectiveMercatorViewport` a subclass of `Viewport`, an application
   can implement support for generic 3D `Viewport`s and automatically get
   the ability to accept web mercator style map coordinates
   (`lat`, `lon`, `zoom`, `pitch`, `bearing` etc).
 * A limitation at the moment is that there is no way to extract
   web mercator parameters from a "generic" viewport, so for map synchronization
   applications (rendering on top of a typical map component that only accepts
-  web mercator parameters) the `WebMercatorViewport` is necessary.
+  web mercator parameters) the `PerspectiveMercatorViewport` is necessary.
 
 ### Constructor
 
@@ -164,7 +164,7 @@ Remarks:
    latitudes are specified as degrees.
 
 
-### `WebMercatorViewport.project`
+### `PerspectiveMercatorViewport.project`
 
 Projects latitude and longitude to pixel coordinates in window
 using viewport projection parameters
@@ -185,7 +185,7 @@ Remarks:
   rendering.
 
 
-### `WebMercatorViewport.unproject`
+### `PerspectiveMercatorViewport.unproject`
 
 Unproject pixel coordinates on screen onto [lon, lat] on map.
 
@@ -198,7 +198,7 @@ Returns: Unprojected coordinates in array from, depending on input:
 - `[x, y, z]` => `[lng, lat, Z]`
 
 
-#### `WebMercatorViewport.projectFlat([lng, lat], scale = this.scale)`
+#### `PerspectiveMercatorViewport.projectFlat([lng, lat], scale = this.scale)`
 
 Project `[lng, lat]` on sphere onto "screen pixel" coordinates `[x, y]` without
 considering any perspective (effectively ignoring pitch, bearing and altitude).
@@ -211,7 +211,7 @@ Returns:
 
  - `[x, y]`, representing map or world coordinates.
 
-#### `PerspectiveViewport.unprojectFlat`
+#### `PerspectiveMercatorViewport.unprojectFlat`
 
 Unprojects a screen point `[x, y]` on the map or world `[lng, lat]` on sphere.
 * `lnglat` - Array `[lng, lat]` or `[xmap, ymap]` coordinates
@@ -222,7 +222,7 @@ Parameters:
  - `pixels` {Array} - `[x, y]`
 
 
-#### `WebMercatorViewport.unprojectFlat([x, y], scale = this.scale)`
+#### `PerspectiveMercatorViewport.unprojectFlat([x, y], scale = this.scale)`
 
 
 Parameters:
@@ -275,148 +275,3 @@ For information on numerical precision, see remarks on `getDistanceScales`.
 * `lngLatZ` ([Number,Number]|[Number,Number,Number]) - base coordinate
 * `xyz` ([Number,Number]|[Number,Number,Number])  - array of meter deltas
 Returns ([Number,Number]|[Number,Number,Number]) array of [lng,lat,z] deltas
-
-
-## Viewport
-
-Manages projection and unprojection of coordinates between world and viewport
-coordinates.
-
-It provides both direct project/unproject function members as well as
-projection matrices including `view` and `projection matrices`, and
-can generate their inverses as well to facilitate e.g. lighting calculations
-in WebGL shaders.
-
-Remarks:
-* The `Viewport` class perhaps best thought of as the counterpart of the
-  typical `Camera` class found in most 3D libraries.
-* The main addition is that to support pixel project/unproject functions
-  (in addition to the clipspace projection that Camera classes typically manage),
-  the `Viewport` is also aware of the viewport extents.
-* Also, it can generate WebGL compatible projection matrices (column-major) - Note
-  that these still need to be converted to typed arrays.
-
-
-### `Viewport.constructor`
-
-`new Viewport({viewMatrix, projectionMatrix, width, height})`
-
-| Parameter    | Type        | Default | Description                                   |
-| ------------ | ----------- | ------- | --------------------------------------------- |
-| `width`      | `Number`    | 1       | Width of "viewport" or window                 |
-| `height`     | `Number`    | 1       | Height of "viewport" or window                |
-| `viewMatrix` | `Array[16]` | [0, 0]  | Center of viewport [x, y]                     |
-| `projectionMatrix` | `Array[16]` | 1 | Either use scale or zoom                      |
-
-
-### `Viewport.getMatrices`
-
-Returns an object with various matrices
-
-`Viewport.getMatrices({modelMatrix = })`
-
-| Parameter     | Type        | Default  | Description                                   |
-| ------------- | ----------- | -------- | --------------------------------------------- |
-| `modelMatrix` | `Number`    | IDENTITY | Width of "viewport" or window                 |
-
-* `modelMatrix` (Matrix4) - transforms model to world space
-* `viewMatrix` (Matrix4) - transforms world to camera space
-* `projectionMatrix` (Matrix4) - transforms camera to clip space
-* `viewProjectionMatrix` (Matrix4)  - transforms world to clip space
-* `modelViewProjectionMatrix` (Matrix4) - transforms model to clip space
-
-* `pixelProjectionMatrix` (Matrix4)  - transforms world to pixel space
-* `pixelUnprojectionMatrix` (Matrix4) - transforms pixel to world space
-* `width` (Number) - Width of viewport
-* `height` (Height) - Height of viewport
-
-
-#### `Viewport.project`
-
-Projects latitude, longitude (and altitude) to pixel coordinates in window using
-viewport projection parameters.
-
-Parameters:
-
-  - `coordinates` {Array} - `[lng, lat, altitude]` Passing an altitude is optional.
-  - `opts` {Object}
-    - `topLeft` {Boolean} - Whether projected coords are top left.
-
-Returns:
-
-  - Either `[x, y]` or `[x, y, z]` if an altitude was given.
-
-Note: By default, returns top-left coordinates for canvas/SVG type render
-
-
-#### `Viewport.unproject`
-
-Unproject pixel coordinates on screen onto [lng, lat, altitude] on map.
-
-Parameters:
-
-  - `pixels` {Array} - `[x, y, z]` Passing a `z` is optional.
-
-Returns:
-
-  - Either `[lng, lat]` or `[lng, lat, altitude]` if a `z` was given.
-
-
-## PerspectiveViewport
-
-A subclass of `Viewport` that creates a perspective view based on typical
-affine perspective projection matrix parameters (`fov`, `aspect`, `near`, `far`).
-
-Remarks:
-* This class is just a convenience, the application can use `Viewport` directly
-  together with e.g. the `mat4.perspective` and `mat4.lookAt` functions from the
-  `gl-matrix` module.
-
-
-### `PerspectiveViewport.constructor`
-
-`new PerspectiveViewport({lookAt, eye, up, fov, aspect, near, far, width, height})`
-
-| Parameter    | Type        | Default | Description                                   |
-| ------------ | ----------- | ------- | --------------------------------------------- |
-| `width`      | `Number`    | 1       | Width of "viewport" or window                 |
-| `height`     | `Number`    | 1       | Height of "viewport" or window                |
-view matrix arguments
-* `eye` (Vector3) - Defines eye position
-* `lookAt` (Vector3 = [0, 0, 0]) - Which point is camera looking at, default origin
-* `up` (Vector3 = [0, 1, 0]) - Defines up direction, default positive y axis
-projection matrix arguments
-* `fov` (Number = 75) - Field of view covered by camera
-* `near` (Number = 1) - Distance of near clipping plane
-* `far` (Number = 100) - Distance of far clipping plane
-automatically calculated
-* `aspect` (Number) - Aspect ratio (set to viewport widht/height)
-
-
-## OrthographicViewport
-
-A subclass of `Viewport` that creates an orthogonal matrix
-
-`new OrthographicViewport({lookAt, eye, up, left, right, bottom, top, width, height})`
-
-| Parameter    | Type        | Default | Description                                   |
-| ------------ | ----------- | ------- | --------------------------------------------- |
-| `width`      | `Number`    | 1       | Width of "viewport" or window                 |
-| `height`     | `Number`    | 1       | Height of "viewport" or window                |
-view matrix arguments
-* `eye` (Vector3) - Defines eye position
-* `lookAt` (Vector3 = [0, 0, 0]) - Which point is camera looking at, default origin
-* `up` (Vector3 = [0, 1, 0]) - Defines up direction, default positive y axis
-projection matrix arguments
-* `near` (Number = 1) - Distance of near clipping plane
-* `far` (Number = 100) - Distance of far clipping plane
-* `left` (Number) - Left bound of the frustum
-* `top` (Number) - Top bound of the frustum
-automatically calculated
-* `right` (Number) - Right bound of the frustum
-* `bottom` (Number) - Bottom bound of the frustum
-
-Remarks:
-* This class is just a convenience, the application can use `Viewport` directly
-  together with e.g. the `mat4.ortho` and `mat4.lookAt` functions from the
-  `gl-matrix` module.
