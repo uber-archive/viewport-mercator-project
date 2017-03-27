@@ -1,6 +1,6 @@
 {
   "name": "viewport-mercator-project",
-  "version": "4.0.0-alpha.4",
+  "version": "4.0.0-alpha.5",
   "description": "Convert to and from lat/lng and pixels in web mercator at arbitrary floating point zoom levels.",
   "author": "Uber Technologies, Inc.",
   "license": "MIT",
@@ -19,7 +19,7 @@
   "scripts": {
     "start": "npm run test",
     "build": "npm run clean && npm run build-es5 && npm run build-es6",
-    "build-es5": "mkdir -p dist && babel src --out-dir dist --modules=transform-es2015-modules-commonjs --source-maps inline",
+    "build-es5": "mkdir -p dist && babel src --out-dir dist --plugins=transform-es2015-modules-commonjs --source-maps inline",
     "build-es6": "mkdir -p dist-es6 && babel src --out-dir dist-es6 --source-maps inline",
     "clean": "rm -fr dist/* dist-es6/*",
     "lint": "eslint src",
