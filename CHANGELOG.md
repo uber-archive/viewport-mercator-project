@@ -1,6 +1,15 @@
 ## Change log
 
-## v3 - Perspective Mode support, WebMercator support optional
+## v4 Simplificaton
+- Removes non-essential classes from v3 beta
+- Adopt buble compiler for smaller transpiled code
+
+### v4.0.0-alpha.5 - Another transpilation fix
+### v4.0.0-alpha.4 - Revert to babel for all compilation
+### v4.0.0-alpha.3 - Fixes `dist/index.js` export
+### v4.0.0-alpha.2 - Fixes projection tests, add `getLngLatFromPos`
+
+## v3 (beta only) - Perspective Mode support, WebMercator support optional
 
 Adds a new perspective enabled `WebMercatorViewport` class that inherits
 from a "basic" 3D `Viewport` class.
