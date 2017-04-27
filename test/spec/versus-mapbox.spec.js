@@ -209,19 +209,19 @@ test('PerspectiveMercatorViewport.project#3D', t => {
   t.end();
 });
 
-// test('Viewport/Mapbox getLocationAtPoint', t => {
-//   for (const viewportName in VIEWPORT_PROPS) {
-//     const viewportProps = VIEWPORT_PROPS[viewportName];
-//     for (const {title, lngLat} of TEST_CASES) {
-//       const viewport = new PerspectiveMercatorViewport(viewportProps);
-//       const llp = viewport.getLocationAtPoint({lngLat, pos: [100, 100]});
+test('Viewport/Mapbox getLocationAtPoint', t => {
+  for (const viewportName in VIEWPORT_PROPS) {
+    const viewportProps = VIEWPORT_PROPS[viewportName];
+    for (const {title, lngLat} of TEST_CASES) {
+      const viewport = new PerspectiveMercatorViewport(viewportProps);
+      const llp = viewport.getLocationAtPoint({lngLat, pos: [100, 100]});
 
-//       const transform = new MapboxTransform(viewportProps);
-//       const llm = transform.mapboxGetLngLatAtPoint({lngLat, pos: [100, 100]});
+      const transform = new MapboxTransform(viewportProps);
+      const llm = transform.mapboxGetLngLatAtPoint({lngLat, pos: [100, 100]});
 
-//       t.deepEquals(toLowPrecision(llp), toLowPrecision(llm),
-//         `getLocationAtPoint(${title}, ${viewportName})) - viewport/mapbox match`);
-//     }
-//   }
-//   t.end();
-// });
+      t.deepEquals(toLowPrecision(llp), toLowPrecision(llm),
+        `getLocationAtPoint(${title}, ${viewportName})) - viewport/mapbox match`);
+    }
+  }
+  t.end();
+});
