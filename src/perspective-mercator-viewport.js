@@ -163,15 +163,11 @@ export default class WebMercatorViewport extends Viewport {
   }
 
   getLocationAtPoint({lngLat, pos}) {
-    const c = this.project(lngLat, {topLeft: false});
-    const coordCenter = this.project([this.longitude, this.latitude], {topLeft: false});
-    const coordAtPoint = pos;
-    const translate = vec2.sub([], coordAtPoint, c);
-    const newPos = vec2.sub([], coordCenter, translate);
-    const newLngLat = this.unproject(newPos, {topLeft: false});
-    // console.log(
-    //   `vp.GetLoc [${newLngLat}] ${newPos} c=${c} ${coordCenter} ${coordAtPoint} ${translate}`);
-    return newLngLat;
+    const fromLngLat = this.unproject(pos);
+    const center = [this.longitude, this.latitude];
+
+    const translate = vec2.sub([], lngLat, fromLngLat);
+    return vec2.add(center, center, translate);
   }
 
   /*
