@@ -162,12 +162,25 @@ export default class WebMercatorViewport extends Viewport {
     return unprojectFlat(xy, scale);
   }
 
+  /**
+   * Get the map center that place a given [lng, lat] coordinate at screen
+   * point [x, y]
+   *
+   * @param {Array} lngLat - [lng,lat] coordinates
+   *   Specifies a point on the sphere.
+   * @param {Array} pos - [x,y] coordinates
+   *   Specifies a point on the screen.
+   * @return {Array} [lng,lat] new map center.
+   */
   getLocationAtPoint({lngLat, pos}) {
-    const fromLngLat = this.unproject(pos);
-    const center = [this.longitude, this.latitude];
+    const fromLocation = this.projectFlat(this.unproject(pos));
+    const toLocation = this.projectFlat(lngLat);
 
-    const translate = vec2.sub([], lngLat, fromLngLat);
-    return vec2.add(center, center, translate);
+    const center = this.projectFlat([this.longitude, this.latitude]);
+
+    const translate = vec2.sub([], toLocation, fromLocation);
+    const newCenter = vec2.add([], center, translate);
+    return this.unprojectFlat(newCenter);
   }
 
   /*

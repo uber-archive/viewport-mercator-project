@@ -219,7 +219,7 @@ test('Viewport/Mapbox getLocationAtPoint', t => {
       const transform = new MapboxTransform(viewportProps);
       const llm = transform.mapboxGetLngLatAtPoint({lngLat, pos: [100, 100]});
 
-      t.deepEquals(toLowPrecision(llp, 5), toLowPrecision(llm, 5),
+      t.deepEquals(toLowPrecision(llp), toLowPrecision(llm),
         `getLocationAtPoint(${title}, ${viewportName})) - viewport/mapbox match`);
     }
   }
