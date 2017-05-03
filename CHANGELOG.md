@@ -1,8 +1,17 @@
-## Change log
+# Change Log
 
-## v4 Simplificaton
-- Removes non-essential classes from v3 beta
-- Adopt buble compiler for smaller transpiled code
+## 4.0 Minor Releases
+
+### 4.0.2
+- FIX Make mapbox a devDependency instead of a dependency (only used for testing)
+
+### 4.0.1
+- FIX getLocationAtPoint
+
+## v4.0.0 Official Release
+- Simplificaton
+  - Removes non-essential classes from v3 beta (moved to deck.gl)
+  - Adopt buble compiler for smaller transpiled code
 
 ### v4.0.0-alpha.5 - Another transpilation fix
 ### v4.0.0-alpha.4 - Revert to babel for all compilation
