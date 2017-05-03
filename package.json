@@ -1,6 +1,6 @@
 {
   "name": "viewport-mercator-project",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Convert to and from lat/lng and pixels in web mercator at arbitrary floating point zoom levels.",
   "author": "Uber Technologies, Inc.",
   "license": "MIT",
@@ -31,8 +31,7 @@
     "test-browser": "webpack-dev-server --env.browser --progress --hot --open"
   },
   "dependencies": {
-    "gl-matrix": "^2.3.2",
-    "mapbox-gl": "0.26.0"
+    "gl-matrix": "^2.3.2"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",
@@ -45,6 +44,7 @@
     "faucet": "0.0.1",
     "gl": "^4.0.3",
     "jsdom": "~9.9.1",
+    "mapbox-gl": "0.26.0",
     "module-alias": "^2.0.0",
     "pre-commit": "^1.2.2",
     "reify": "^0.5.4",
