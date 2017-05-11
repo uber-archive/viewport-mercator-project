@@ -81,6 +81,8 @@ Note: The `FlatMercatorViewport` is completely independent of the other classes
 in this module and is intended as a fast, simple solution for applications
 that only use 2D map projections.
 
+| Parameter     |   Type   | Default | Description                                                |
+| ------------- | -------- | ------- | ---------------------------------------------------------- |
 | `latitude`    | `Number` | 37      | Center of viewport on map (alternative to center)          |
 | `longitude`   | `Number` | -122    | Center of viewport on map (alternative to center)          |
 | `zoom`        | `Number` | 11      | Scale = Math.pow(2,zoom) on map (alternative to opt.scale) |
@@ -132,10 +134,6 @@ Remarks:
   web mercator parameters) the `PerspectiveMercatorViewport` is necessary.
 
 ### Constructor
-
-| Parameter    |   Type  | Default | Description                                        |
-| ------------ | ------- | ------- | -------------------------------------------------- |
-
 
 | Parameter     |  Type    | Default | Description                                                |
 | ------------- | -------- | ------- | ---------------------------------------------------------- |
