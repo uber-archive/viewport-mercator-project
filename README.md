@@ -273,3 +273,14 @@ For information on numerical precision, see remarks on `getDistanceScales`.
 * `lngLatZ` ([Number,Number]|[Number,Number,Number]) - base coordinate
 * `xyz` ([Number,Number]|[Number,Number,Number])  - array of meter deltas
 Returns ([Number,Number]|[Number,Number,Number]) array of [lng,lat,z] deltas
+
+
+#### `fitBounds(bounds, options)`
+
+Get a new flat viewport that fits around the given bounding box.
+
+* `bounds` ([[Number,Number],[Number,Number]]) - an array of two opposite corners of
+the bounding box. Each corner is specified in `[lon, lat]`.
+* `options` (Object)
+  + `options.padding` (Number, optional) - The amount of padding in pixels to add to the given bounds from the edge of the viewport.
+  + `options.offset` ([Number,Number], optional) - The center of the given bounds relative to the viewport's center, `[x, y]` measured in pixels.

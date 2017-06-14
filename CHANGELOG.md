@@ -2,6 +2,9 @@
 
 ## 4.0 Minor Releases
 
+[TBD]
+- NEW: `PerspectiveMercatorViewport.fitBounds` method
+
 ### 4.0.2
 - FIX Make mapbox a devDependency instead of a dependency (only used for testing)
 
