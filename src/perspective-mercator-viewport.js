@@ -253,9 +253,8 @@ export default class WebMercatorViewport extends Viewport {
   }
 
   /**
-   * Returns map settings {latitude, longitude, zoom}
-   * that will contain the provided corners within the provided
-   * width.
+   * Returns a new viewport that fit around the given rectangle.
+   * Only supports non-perspective mode.
    * @param {Array} bounds - [[lon, lat], [lon, lat]]
    * @param {Number} [options.padding] - The amount of padding in pixels to add to the given bounds.
    * @param {Array} [options.offset] - The center of the given bounds relative to the map's center,
@@ -440,8 +439,8 @@ function makeViewMatrixFromMercatorParams({
 
 /**
  * Returns map settings {latitude, longitude, zoom}
- * that will contain the provided corners within the provided
- * width.
+ * that will contain the provided corners within the provided width.
+ * Only supports non-perspective mode.
  * @param {Number} width - viewport width
  * @param {Number} height - viewport height
  * @param {Array} bounds - [[lon, lat], [lon, lat]]
