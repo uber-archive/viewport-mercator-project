@@ -2,7 +2,7 @@
 
 ## 4.0 Minor Releases
 
-[TBD]
+### 4.1.0
 - NEW: `PerspectiveMercatorViewport.fitBounds` method
 
 ### 4.0.2

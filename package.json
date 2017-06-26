@@ -1,6 +1,6 @@
 {
   "name": "viewport-mercator-project",
-  "version": "4.0.2",
+  "version": "4.1.0",
   "description": "Convert to and from lat/lng and pixels in web mercator at arbitrary floating point zoom levels.",
   "author": "Uber Technologies, Inc.",
   "license": "MIT",
