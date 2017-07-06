@@ -60,9 +60,12 @@ test('PerspectiveMercatorViewport.fitBounds', (t) => {
     const result = viewport.fitBounds(input.bounds, input);
 
     t.ok(result instanceof PerspectiveMercatorViewport, 'get viewport');
-    t.equals(toLowPrecision(result.longitude), toLowPrecision(expected.longitude), 'get correct longitude');
-    t.equals(toLowPrecision(result.latitude), toLowPrecision(expected.latitude), 'get correct latitude');
-    t.equals(toLowPrecision(result.zoom), toLowPrecision(expected.zoom), 'get correct zoom');
+    t.equals(toLowPrecision(result.longitude), toLowPrecision(expected.longitude),
+      'get correct longitude');
+    t.equals(toLowPrecision(result.latitude), toLowPrecision(expected.latitude),
+      'get correct latitude');
+    t.equals(toLowPrecision(result.zoom), toLowPrecision(expected.zoom),
+      'get correct zoom');
   }
   t.end();
 });

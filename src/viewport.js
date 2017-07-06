@@ -1,9 +1,15 @@
 // View and Projection Matrix management
 
-// gl-matrix is a large dependency for a small module.
-// However since it is used by mapbox etc, it should already be present
-// in most target application bundles.
-import {mat4, vec4, vec2} from 'gl-matrix';
+/* eslint-disable camelcase */
+import mat4_scale from 'gl-mat4/scale';
+import mat4_translate from 'gl-mat4/translate';
+import mat4_multiply from 'gl-mat4/multiply';
+import mat4_invert from 'gl-mat4/invert';
+import vec4_multiply from 'gl-vec4/multiply';
+import vec4_transformMat4 from 'gl-vec4/transformMat4';
+import vec2_lerp from 'gl-vec2/lerp';
+import equals from './equals';
+
 import autobind from './autobind';
 import assert from 'assert';
 
@@ -57,8 +63,8 @@ export default class Viewport {
     // Note: As usual, matrix operations should be applied in "reverse" order
     // since vectors will be multiplied in from the right during transformation
     const vpm = createMat4();
-    mat4.multiply(vpm, vpm, this.projectionMatrix);
-    mat4.multiply(vpm, vpm, this.viewMatrix);
+    mat4_multiply(vpm, vpm, this.projectionMatrix);
+    mat4_multiply(vpm, vpm, this.viewMatrix);
     this.viewProjectionMatrix = vpm;
 
     // Calculate matrices and scales needed for projection
@@ -73,24 +79,13 @@ export default class Viewport {
      */
     const m = createMat4();
 
-   // matrix for conversion from location to screen coordinates
-    mat4.scale(m, m, [this.width / 2, -this.height / 2, 1]);
-    mat4.translate(m, m, [1, -1, 0]);
+    // matrix for conversion from location to screen coordinates
+    mat4_scale(m, m, [this.width / 2, -this.height / 2, 1]);
+    mat4_translate(m, m, [1, -1, 0]);
 
-    // Scale with viewport window's width and height in pixels
-    // mat4.scale(m, m, [this.width, this.height, 1]);
-    // Convert to (0, 1)
-    // mat4.translate(m, m, [0.5, 0.5, 0]);
-    // mat4.scale(m, m, [0.5, 0.5, 1]);
-    // Project to clip space (-1, 1)
-    mat4.multiply(m, m, this.viewProjectionMatrix);
+    mat4_multiply(m, m, this.viewProjectionMatrix);
 
-    // console.log(`vec ${[this.width / 2, this.height / 2, 1]}`);
-    // console.log(`View ${this.viewMatrix}`);
-    // console.log(`VPM ${vpm}`);
-    // console.log(`Pixel ${m}`);
-
-    const mInverse = mat4.invert(createMat4(), m);
+    const mInverse = mat4_invert(createMat4(), m);
     if (!mInverse) {
       throw new Error('Pixel project matrix not invertible');
     }
@@ -111,8 +106,8 @@ export default class Viewport {
 
     return viewport.width === this.width &&
       viewport.height === this.height &&
-      mat4.equals(viewport.projectionMatrix, this.projectionMatrix) &&
-      mat4.equals(viewport.viewMatrix, this.viewMatrix);
+      equals(viewport.projectionMatrix, this.projectionMatrix) &&
+      equals(viewport.viewMatrix, this.viewMatrix);
   }
 
   /**
@@ -161,9 +156,7 @@ export default class Viewport {
     const z1 = coord1[2];
 
     const t = z0 === z1 ? 0 : (targetZ - z0) / (z1 - z0);
-    const v = vec2.lerp([], coord0, coord1, t);
-
-    // console.error(`unprojecting to non-linear ${v}<=${[x, y2, targetZ]}`);
+    const v = vec2_lerp([], coord0, coord1, t);
 
     const vUnprojected = this.unprojectFlat(v);
     return xyz.length === 2 ? vUnprojected : [vUnprojected[0], vUnprojected[1], 0];
@@ -171,9 +164,9 @@ export default class Viewport {
 
   // TODO - replace with math.gl
   transformVector(matrix, vector) {
-    const result = vec4.transformMat4([0, 0, 0, 0], vector, matrix);
+    const result = vec4_transformMat4([0, 0, 0, 0], vector, matrix);
     const scale = 1 / result[3];
-    vec4.multiply(result, result, [scale, scale, scale, scale]);
+    vec4_multiply(result, result, [scale, scale, scale, scale]);
     return result;
   }
 
@@ -211,9 +204,9 @@ export default class Viewport {
     let pixelUnprojectionMatrix = this.pixelUnprojectionMatrix;
 
     if (modelMatrix) {
-      modelViewProjectionMatrix = mat4.multiply([], this.viewProjectionMatrix, modelMatrix);
-      pixelProjectionMatrix = mat4.multiply([], this.pixelProjectionMatrix, modelMatrix);
-      pixelUnprojectionMatrix = mat4.invert([], pixelProjectionMatrix);
+      modelViewProjectionMatrix = mat4_multiply([], this.viewProjectionMatrix, modelMatrix);
+      pixelProjectionMatrix = mat4_multiply([], this.pixelProjectionMatrix, modelMatrix);
+      pixelUnprojectionMatrix = mat4_invert([], pixelProjectionMatrix);
     }
 
     const matrices = Object.assign({
@@ -247,7 +240,7 @@ export default class Viewport {
   }
 }
 
-// Helper, avoids low-precision 32 bit matrices from gl-matrix mat4.create()
+// Helper, avoids low-precision 32 bit matrices from mat4.create()
 export function createMat4() {
   return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 }

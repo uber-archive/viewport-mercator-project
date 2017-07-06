@@ -1960,9 +1960,25 @@ github-from-package@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/github-from-package/-/github-from-package-0.0.0.tgz#97fb5d96bfde8973313f20e8288ef9a167fa64ce"
 
-gl-matrix@^2.3.1, gl-matrix@^2.3.2:
+gl-mat4@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/gl-mat4/-/gl-mat4-1.1.4.tgz#1e895b55892e56a896867abd837d38f37a178086"
+
+gl-matrix@^2.3.1:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/gl-matrix/-/gl-matrix-2.3.2.tgz#aac808c74af7d5db05fe04cb60ca1a0fcb174d74"
+
+gl-vec2@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/gl-vec2/-/gl-vec2-1.0.0.tgz#77fce6ae9612856d6c8b621cd261cd8281b9c637"
+
+gl-vec3@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/gl-vec3/-/gl-vec3-1.0.3.tgz#110fd897d0729f6398307381567d0944941bf22b"
+
+gl-vec4@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/gl-vec4/-/gl-vec4-1.0.1.tgz#97d96878281b14b532cbce101785dfd1cb340964"
 
 gl@^4.0.3:
   version "4.0.3"

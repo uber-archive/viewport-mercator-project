@@ -3,9 +3,7 @@ import {MapboxTransform} from '../utils/mapbox-transform';
 import {PerspectiveMercatorViewport} from 'viewport-mercator-project';
 import test from 'tape-catch';
 import {toLowPrecision} from '../utils/test-utils';
-import {vec2, vec3} from 'gl-matrix';
-// const glMatrix = require('gl-matrix');
-// glMatrix.EPSILON = 1e-6;
+import equals from '../../src/equals';
 
 const VIEWPORT_PROPS = {
   flat: {
@@ -179,7 +177,6 @@ test('Viewport project/unproject', t => {
   t.end();
 });
 
-
 test('PerspectiveMercatorViewport.project#3D', t => {
   for (const viewportName in VIEWPORT_PROPS) {
     const viewportProps = VIEWPORT_PROPS[viewportName];
@@ -192,17 +189,17 @@ test('PerspectiveMercatorViewport.project#3D', t => {
       const lnglatIn = [mapState.longitude + offset, mapState.latitude + offset];
       const xyz = viewport.project(lnglatIn);
       const lnglat = viewport.unproject(xyz);
-      t.ok(vec2.equals(lnglatIn, lnglat), `Project/unproject ${lnglatIn} to ${lnglat}`);
+      t.ok(equals(lnglatIn, lnglat), `Project/unproject ${lnglatIn} to ${lnglat}`);
 
       const lnglatIn3 = [mapState.longitude + offset, mapState.latitude + offset, 0];
       const xyz3m = transform.mapboxProject(lnglatIn3);
       const lnglat3m = transform.mapboxUnproject(xyz3m);
-      t.ok(vec3.equals(lnglatIn3, lnglat3m),
+      t.ok(equals(lnglatIn3, lnglat3m),
         `Project/unproject ${lnglatIn3}=>${xyz3m}=>${lnglat3m}`);
 
       const xyz3 = viewport.project(lnglatIn3);
       const lnglat3 = viewport.unproject(xyz3);
-      t.ok(vec3.equals(lnglatIn3, lnglat3),
+      t.ok(equals(lnglatIn3, lnglat3),
         `Project/unproject ${lnglatIn3}=>${xyz3}=>${lnglat3}`);
     }
   }

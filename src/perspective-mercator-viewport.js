@@ -1,9 +1,13 @@
-// View and Projection Matrix calculations for mapbox-js style
-// map view properties
+// View and Projection Matrix calculations for mapbox-js style map view properties
 import Viewport, {createMat4} from './viewport';
-import {mat4, vec2} from 'gl-matrix';
 import autobind from './autobind';
 import assert from 'assert';
+
+/* eslint-disable camelcase */
+import mat4 from 'gl-mat4';
+import vec2_distance from 'gl-vec2/distance';
+import vec2_add from 'gl-vec2/add';
+import vec2_negate from 'gl-vec2/negate';
 
 // CONSTANTS
 const PI = Math.PI;
@@ -178,8 +182,8 @@ export default class WebMercatorViewport extends Viewport {
 
     const center = this.projectFlat([this.longitude, this.latitude]);
 
-    const translate = vec2.sub([], toLocation, fromLocation);
-    const newCenter = vec2.add([], center, translate);
+    const translate = vec2_add([], toLocation, vec2_negate([], fromLocation));
+    const newCenter = vec2_add([], center, translate);
     return this.unprojectFlat(newCenter);
   }
 
@@ -326,13 +330,13 @@ function calculateDistanceScales({latitude, longitude, scale}) {
 
   // Calculate number of pixels occupied by one degree longitude
   // around current lat/lon
-  const pixelsPerDegreeX = vec2.distance(
+  const pixelsPerDegreeX = vec2_distance(
     projectFlat([longitude + 0.5, latitude], scale),
     projectFlat([longitude - 0.5, latitude], scale)
   );
   // Calculate number of pixels occupied by one degree latitude
   // around current lat/lon
-  const pixelsPerDegreeY = vec2.distance(
+  const pixelsPerDegreeY = vec2_distance(
     projectFlat([longitude, latitude + 0.5], scale),
     projectFlat([longitude, latitude - 0.5], scale)
   );
