@@ -1,6 +1,6 @@
 import test from 'tape-catch';
-import {vec2, vec3} from 'gl-matrix';
 import {PerspectiveMercatorViewport} from 'viewport-mercator-project';
+import equals from '../../src/equals';
 
 /* eslint-disable */
 const TEST_VIEWPORTS = [
@@ -65,7 +65,7 @@ test('PerspectiveMercatorViewport.projectFlat', t => {
       const xy = viewport.projectFlat(lnglatIn);
       const lnglat = viewport.unprojectFlat(xy);
       t.comment(`Comparing [${lnglatIn}] to [${lnglat}]`);
-      t.ok(vec2.equals(lnglatIn, lnglat));
+      t.ok(equals(lnglatIn, lnglat));
     }
   }
   t.end();
@@ -79,12 +79,12 @@ test('PerspectiveMercatorViewport.project#3D', t => {
       const lnglatIn = [vc.mapState.longitude + offset, vc.mapState.latitude + offset];
       const xyz = viewport.project(lnglatIn);
       const lnglat = viewport.unproject(xyz);
-      t.ok(vec2.equals(lnglatIn, lnglat), `Project/unproject ${lnglatIn} to ${lnglat}`);
+      t.ok(equals(lnglatIn, lnglat), `Project/unproject ${lnglatIn} to ${lnglat}`);
 
       const lnglatIn3 = [vc.mapState.longitude + offset, vc.mapState.latitude + offset, 0];
       const xyz3 = viewport.project(lnglatIn3);
       const lnglat3 = viewport.unproject(xyz3);
-      t.ok(vec3.equals(lnglatIn3, lnglat3),
+      t.ok(equals(lnglatIn3, lnglat3),
         `Project/unproject ${lnglatIn3}=>${xyz3}=>${lnglat3}`);
     }
   }
@@ -101,7 +101,7 @@ test('PerspectiveMercatorViewport.project#2D', t => {
       const xy = viewport.project(lnglatIn);
       const lnglat = viewport.unproject(xy);
       t.comment(`Comparing [${lnglatIn}] to [${lnglat}]`);
-      t.ok(vec2.equals(lnglatIn, lnglat));
+      t.ok(equals(lnglatIn, lnglat));
     }
   }
   t.end();
@@ -128,7 +128,7 @@ test('PerspectiveMercatorViewport.meterDeltas', t => {
       const deltaLngLat = viewport.metersToLngLatDelta(coordinate);
       const deltaMeters = viewport.lngLatDeltaToMeters(deltaLngLat);
       t.comment(`Comparing [${deltaMeters}] to [${coordinate}]`);
-      t.ok(vec2.equals(deltaMeters, coordinate));
+      t.ok(equals(deltaMeters, coordinate));
     }
   }
   t.end();
