@@ -2,6 +2,9 @@
 
 ## 4.0 Minor Releases
 
+### 4.1.1
+- Replace gl-matrix dependency with cherry-pick imports
+
 ### 4.1.0
 - NEW: `PerspectiveMercatorViewport.fitBounds` method
 
