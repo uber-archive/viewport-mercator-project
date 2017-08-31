@@ -1,49 +1,33 @@
 # What's New
 
 
-## v5.0 (In Progress, Release Date TBA)
-- Convert to use math.gl library (smaller dependency than gl-matrix)
+## v4.2 (In Progress, Release Date TBA)
+- Use math.gl library (smaller dependency than gl-matrix + enables some code to be dropped)
 - Documentation website matching other frameworks in the same suite.
-- Includes a set of primitive mercator utilities (classes here and in other repos like deck.gl use these for increased code sharing and smaller exectable )
+- Includes a set of primitive web mercator utilities
+   - (classes here and in other repos like deck.gl use these for increased code sharing and smaller exectables)
 
 
-## v4.1.0
-- NEW: `PerspectiveMercatorViewport.fitBounds` method
+## v4.1
+- **fitBounds** is back: `PerspectiveMercatorViewport.fitBounds` method
 - Replace gl-matrix dependency with cherry-pick imports
 
 
-## v4.0 Official Release
-- Simplificaton
-  - Removes non-essential classes from v3 beta (moved to deck.gl)
-  - Adopt buble compiler for smaller transpiled code
-- FIX getLocationAtPoint
-- add `getLngLatFromPos`
+## v4.0
+
+* **Perspective Support**
+
+Adds a new perspective enabled `PerspectiveMercatorViewport` class
+
+* **New methods**
+- `getLocationAtPoint`
+- `getLngLatFromPos`
 
 
-Perspective Mode support, WebMercator support optional
+## v3 - Beta Releases
 
-Adds a new perspective enabled `WebMercatorViewport` class that inherits from a "basic" 3D `Viewport` class.
+v3 was a series of beta only releases while the new API was hammered out. There is no official v3 release.
 
-This allows 3D applications to work with familiar `view` and `projection` matrices provided by the `Viewport` and optionally use the `WebMercatorViewport` for seamless integration with map components.
-
-This split into two classes makes it easier for applications to reason about perspective mode and map projections.
-
-```
-import WebMercatorViewport from 'viewport-mercator-project/perspective';
-var viewport = new WebMercatorViewport({
-  latitude,
-  longitude,
-  zoom,
-  pitch,
-  bearing,
-  altitude
-});
-
-const pixel = viewport.project(...);
-```
-
-
-## v3 - A series of beta only releases while the new API was hammered out
 
 ## v2 - Property renaming
 

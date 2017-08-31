@@ -1,7 +1,7 @@
 {
   "name": "viewport-mercator-project",
-  "version": "4.1.1",
-  "description": "Convert to and from lat/lng and pixels in web mercator at arbitrary floating point zoom levels.",
+  "version": "4.2.0-alpha.1",
+  "description": "Utilities for perspective-enabled Web Mercator projections",
   "author": "Uber Technologies, Inc.",
   "license": "MIT",
   "repository": {
@@ -27,14 +27,12 @@
     "publish-prod": "npm run build && npm run test && npm publish",
     "publish-beta": "npm run build && npm run test && npm publish --tag beta",
     "test": "npm run lint && npm run build && npm run test-node",
+    "test-fast": "npm run test-node",
     "test-node": "node test/node.js",
     "test-browser": "webpack-dev-server --env.browser --progress --hot --open"
   },
   "dependencies": {
-    "gl-mat4": "^1.1.4",
-    "gl-vec2": "^1.0.0",
-    "gl-vec3": "^1.0.3",
-    "gl-vec4": "^1.0.1"
+    "math.gl": "^1.0.0-alpha.7"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",

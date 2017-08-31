@@ -1,6 +1,8 @@
 import test from 'tape-catch';
 import {PerspectiveMercatorViewport} from 'viewport-mercator-project';
-import equals from '../../src/equals';
+import {equals, config} from 'math.gl';
+
+config.EPSILON = 0.000001;
 
 /* eslint-disable */
 const TEST_VIEWPORTS = [
