@@ -70,10 +70,6 @@ export class MapboxTransform extends Transform {
     if (Number.isFinite(props.altitude)) {
       this.altitude = props.altitude;
     }
-
-//     console.log(`MAPBOX: \
-// ${this._center.lng} ${this._center.lat} ${this.zoom} ${this.height} ${this.width} => \
-// ${this.pitch} ${this.bearing} ${this.x} ${this.y} ${this.altitude}`);
   }
   /* eslint-enable complexity */
 
