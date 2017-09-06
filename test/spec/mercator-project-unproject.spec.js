@@ -20,16 +20,16 @@ const TEST_CASES = [
     expected: [400, 300]
   },
   {
-    title: 'project (corner)',
-    func: 'project',
-    input: [-122.55, 37.83],
-    expected: [-1.329741801625046, 6.796120915775314]
-  },
-  {
     title: 'unproject (center)',
     func: 'unproject',
     input: [400, 300],
     expected: [-122.43, 37.75]
+  },
+  {
+    title: 'project (corner)',
+    func: 'project',
+    input: [-122.55, 37.83],
+    expected: [-1.329741801625046, 6.796120915775314]
   },
   {
     title: 'unproject (corner)',

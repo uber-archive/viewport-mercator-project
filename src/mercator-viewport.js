@@ -1,8 +1,6 @@
 // View and Projection Matrix management
 
 /* eslint-disable camelcase */
-import {createMat4} from './web-mercator-utils';
-
 import {equals} from 'math.gl';
 
 import mat4_scale from 'gl-mat4/scale';
@@ -15,6 +13,10 @@ import vec2_lerp from 'gl-vec2/lerp';
 
 import autobind from './autobind';
 import assert from 'assert';
+
+function createMat4() {
+  return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+}
 
 const IDENTITY = createMat4();
 
