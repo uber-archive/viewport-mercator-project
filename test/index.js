@@ -1,3 +1,5 @@
+// Mercator Utils
+require('./spec/web-mercator-utils.spec');
 // Test vs. mapbox Transform
 require('./spec/versus-mapbox.spec');
 // 2D viewport test cases

@@ -2,6 +2,10 @@
 
 ## 4.0 Minor Releases
 
+### 4.2.0-alpha
+- Introduce math.gl
+- New utility functions
+
 ### 4.1.1
 - Replace gl-matrix dependency with cherry-pick imports
 
