@@ -9,11 +9,9 @@ export function toLowPrecision(input, precision = 11) {
   /* eslint-disable guard-for-in */
   if (typeof input === 'number') {
     input = Number(input.toPrecision(precision));
-  }
-  if (Array.isArray(input)) {
-    input = input.map(item => toLowPrecision(item, precision));
-  }
-  if (typeof input === 'object') {
+  } else if (Array.isArray(input) || ArrayBuffer.isView(input)) {
+    input = new Array(input.length).fill(0).map(item => toLowPrecision(item, precision));
+  } else if (typeof input === 'object') {
     for (const key in input) {
       input[key] = toLowPrecision(input[key], precision);
     }

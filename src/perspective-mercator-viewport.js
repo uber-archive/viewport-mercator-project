@@ -6,9 +6,9 @@ import assert from 'assert';
 import {
   projectFlat,
   unprojectFlat,
-  calculateDistanceScales,
+  getMercatorDistanceScales,
   makeProjectionMatrixFromMercatorParams,
-  makeViewMatrixFromMercatorParams
+  makeViewMatricesFromMercatorParams
 } from './web-mercator-utils';
 
 /* eslint-disable camelcase */
@@ -93,7 +93,7 @@ export default class WebMercatorViewport extends MercatorViewport {
 
     const center = projectFlat([longitude, latitude], scale);
 
-    const distanceScales = calculateDistanceScales({latitude, longitude, scale});
+    const distanceScales = getMercatorDistanceScales({latitude, longitude, scale});
 
     const projectionMatrix = makeProjectionMatrixFromMercatorParams({
       width,
@@ -104,7 +104,7 @@ export default class WebMercatorViewport extends MercatorViewport {
       farZMultiplier
     });
 
-    const viewMatrix = makeViewMatrixFromMercatorParams({
+    const {viewMatrixCentered} = makeViewMatricesFromMercatorParams({
       width,
       height,
       longitude,
@@ -117,7 +117,7 @@ export default class WebMercatorViewport extends MercatorViewport {
       center
     });
 
-    super({width, height, viewMatrix, projectionMatrix});
+    super({width, height, viewMatrix: viewMatrixCentered, projectionMatrix});
 
     // Save parameters
     this.latitude = latitude;
