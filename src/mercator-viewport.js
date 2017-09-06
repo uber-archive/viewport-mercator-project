@@ -1,6 +1,10 @@
 // View and Projection Matrix management
 
 /* eslint-disable camelcase */
+import {createMat4} from './web-mercator-utils';
+
+import {equals} from 'math.gl';
+
 import mat4_scale from 'gl-mat4/scale';
 import mat4_translate from 'gl-mat4/translate';
 import mat4_multiply from 'gl-mat4/multiply';
@@ -8,16 +12,15 @@ import mat4_invert from 'gl-mat4/invert';
 import vec4_multiply from 'gl-vec4/multiply';
 import vec4_transformMat4 from 'gl-vec4/transformMat4';
 import vec2_lerp from 'gl-vec2/lerp';
-import equals from './equals';
 
 import autobind from './autobind';
 import assert from 'assert';
 
 const IDENTITY = createMat4();
 
-const ERR_ARGUMENT = 'Illegal argument to Viewport';
+const ERR_ARGUMENT = 'Illegal argument to MercatorViewport';
 
-export default class Viewport {
+export default class MercatorViewport {
   /**
    * @classdesc
    * Manages coordinate system transformations for deck.gl.
@@ -100,7 +103,7 @@ export default class Viewport {
   // Two viewports are equal if width and height are identical, and if
   // their view and projection matrices are (approximately) equal.
   equals(viewport) {
-    if (!(viewport instanceof Viewport)) {
+    if (!(viewport instanceof MercatorViewport)) {
       return false;
     }
 
@@ -236,9 +239,4 @@ export default class Viewport {
   _getParams() {
     return {};
   }
-}
-
-// Helper, avoids low-precision 32 bit matrices from mat4.create()
-export function createMat4() {
-  return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 }

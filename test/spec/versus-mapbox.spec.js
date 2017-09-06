@@ -3,7 +3,8 @@ import {MapboxTransform} from '../utils/mapbox-transform';
 import {PerspectiveMercatorViewport} from 'viewport-mercator-project';
 import test from 'tape-catch';
 import {toLowPrecision} from '../utils/test-utils';
-import equals from '../../src/equals';
+import {equals, config} from 'math.gl';
+config.EPSILON = 0.000001;
 
 const VIEWPORT_PROPS = {
   flat: {
