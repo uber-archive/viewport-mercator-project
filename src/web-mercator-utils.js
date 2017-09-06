@@ -234,7 +234,8 @@ export function makeViewMatricesFromMercatorParams({
   });
 
   const vm = createMat4();
-  const viewMatrixCentered = mat4_translate(vm, viewMatrixUncentered, new Vector3(center).negate());
+  mat4_scale(vm, viewMatrixUncentered, [1, -1, 1]);
+  const viewMatrixCentered = mat4_translate(vm, vm, new Vector3(center).negate());
 
   return {
     viewMatrixCentered,
