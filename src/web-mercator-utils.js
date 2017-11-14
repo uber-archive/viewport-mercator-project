@@ -214,10 +214,10 @@ export function makeViewMatricesFromMercatorParams({
   pitch,
   bearing,
   altitude,
-  centerLngLat,
+  distanceScales,
   meterOffset = null
 }) {
-  const center = getMercatorWorldPosition({longitude, latitude, zoom, meterOffset});
+  const center = getMercatorWorldPosition({longitude, latitude, zoom, distanceScales, meterOffset});
 
   // VIEW MATRIX: PROJECTS FROM VIRTUAL PIXELS TO CAMERA SPACE
   // Note: As usual, matrix operation orders should be read in reverse
