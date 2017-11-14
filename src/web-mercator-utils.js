@@ -257,7 +257,7 @@ export function makeProjectionMatrixFromMercatorParams({
   const fov = getFov({height, altitude});
 
   const projectionMatrix = mat4_perspective(
-    createMat4(),
+    [],
     fov,              // fov in radians
     width / height,   // aspect ratio
     nearZ,            // near plane
