@@ -181,25 +181,22 @@ export default class MercatorViewport {
   // Used for web meractor projection
 
   /**
-   * Project [lng,lat] on sphere onto [x,y] on 512*512 Mercator Zoom 0 tile.
-   * Performs the nonlinear part of the web mercator projection.
-   * Remaining projection is done with 4x4 matrices which also handles
-   * perspective.
-   * @param {Array} lngLat - [lng, lat] coordinates
-   *   Specifies a point on the sphere to project onto the map.
-   * @return {Array} [x,y] coordinates.
+   * Project map coordinates to world coordinates.
+   * This should be overridden by each viewport that implements a specific
+   * geographic projection.
+   * @param {Array} xyz - map coordinates
+   * @return {Array} [x,y,z] world coordinates.
    */
   projectFlat(xyz, scale = this.scale) {
     return xyz;
   }
 
   /**
-   * Unproject world point [x,y] on map onto {lat, lon} on sphere
-   * @param {object|Vector} xy - object with {x,y} members
-   *  representing point on projected map plane
-   * @return {GeoCoordinates} - object with {lat,lon} of point on sphere.
-   *   Has toArray method if you need a GeoJSON Array.
-   *   Per cartographic tradition, lat and lon are specified as degrees.
+   * Project world coordinates to map coordinates.
+   * This should be overridden by each viewport that implements a specific
+   * geographic projection.
+   * @param {Array} xyz - world coordinates
+   * @return {Array} [x,y,z] map coordinates.
    */
   unprojectFlat(xyz, scale = this.scale) {
     return xyz;
