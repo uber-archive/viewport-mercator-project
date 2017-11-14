@@ -214,10 +214,10 @@ export function makeViewMatricesFromMercatorParams({
   pitch,
   bearing,
   altitude,
-  centerLngLat,
+  distanceScales,
   meterOffset = null
 }) {
-  const center = getMercatorWorldPosition({longitude, latitude, zoom, meterOffset});
+  const center = getMercatorWorldPosition({longitude, latitude, zoom, distanceScales, meterOffset});
 
   // VIEW MATRIX: PROJECTS FROM VIRTUAL PIXELS TO CAMERA SPACE
   // Note: As usual, matrix operation orders should be read in reverse
@@ -257,7 +257,7 @@ export function makeProjectionMatrixFromMercatorParams({
   const fov = getFov({height, altitude});
 
   const projectionMatrix = mat4_perspective(
-    createMat4(),
+    [],
     fov,              // fov in radians
     width / height,   // aspect ratio
     nearZ,            // near plane

@@ -7,15 +7,20 @@ import mat4_scale from 'gl-mat4/scale';
 import mat4_translate from 'gl-mat4/translate';
 import mat4_multiply from 'gl-mat4/multiply';
 import mat4_invert from 'gl-mat4/invert';
-import vec4_multiply from 'gl-vec4/multiply';
+import vec4_scale from 'gl-vec4/scale';
 import vec4_transformMat4 from 'gl-vec4/transformMat4';
 import vec2_lerp from 'gl-vec2/lerp';
 
-import autobind from './autobind';
 import assert from 'assert';
 
 function createMat4() {
   return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+}
+
+function transformVector(matrix, vector) {
+  const result = vec4_transformMat4([], vector, matrix);
+  vec4_scale(result, result, 1 / result[3]);
+  return result;
 }
 
 const IDENTITY = createMat4();
@@ -98,7 +103,12 @@ export default class MercatorViewport {
     this.pixelProjectionMatrix = m;
     this.pixelUnprojectionMatrix = mInverse;
 
-    autobind(this);
+    // Bind methods for easy access
+    this.equals = this.equals.bind(this);
+    this.project = this.project.bind(this);
+    this.unproject = this.unproject.bind(this);
+    this.projectFlat = this.projectFlat.bind(this);
+    this.unprojectFlat = this.unprojectFlat.bind(this);
   }
   /* eslint-enable complexity */
 
@@ -132,7 +142,7 @@ export default class MercatorViewport {
     assert(Number.isFinite(x0) && Number.isFinite(y0) && Number.isFinite(z0), ERR_ARGUMENT);
 
     const [X, Y] = this.projectFlat([x0, y0]);
-    const v = this.transformVector(this.pixelProjectionMatrix, [X, Y, z0, 1]);
+    const v = transformVector(this.pixelProjectionMatrix, [X, Y, z0, 1]);
 
     const [x, y] = v;
     const y2 = topLeft ? this.height - y : y;
@@ -154,8 +164,8 @@ export default class MercatorViewport {
 
     // since we don't know the correct projected z value for the point,
     // unproject two points to get a line and then find the point on that line with z=0
-    const coord0 = this.transformVector(this.pixelUnprojectionMatrix, [x, y2, 0, 1]);
-    const coord1 = this.transformVector(this.pixelUnprojectionMatrix, [x, y2, 1, 1]);
+    const coord0 = transformVector(this.pixelUnprojectionMatrix, [x, y2, 0, 1]);
+    const coord1 = transformVector(this.pixelUnprojectionMatrix, [x, y2, 1, 1]);
 
     const z0 = coord0[2];
     const z1 = coord1[2];
@@ -167,78 +177,29 @@ export default class MercatorViewport {
     return xyz.length === 2 ? vUnprojected : [vUnprojected[0], vUnprojected[1], 0];
   }
 
-  // TODO - replace with math.gl
-  transformVector(matrix, vector) {
-    const result = vec4_transformMat4([0, 0, 0, 0], vector, matrix);
-    const scale = 1 / result[3];
-    vec4_multiply(result, result, [scale, scale, scale, scale]);
-    return result;
-  }
-
   // NON_LINEAR PROJECTION HOOKS
   // Used for web meractor projection
 
   /**
-   * Project [lng,lat] on sphere onto [x,y] on 512*512 Mercator Zoom 0 tile.
-   * Performs the nonlinear part of the web mercator projection.
-   * Remaining projection is done with 4x4 matrices which also handles
-   * perspective.
-   * @param {Array} lngLat - [lng, lat] coordinates
-   *   Specifies a point on the sphere to project onto the map.
-   * @return {Array} [x,y] coordinates.
+   * Project map coordinates to world coordinates.
+   * This should be overridden by each viewport that implements a specific
+   * geographic projection.
+   * @param {Array} xyz - map coordinates
+   * @return {Array} [x,y,z] world coordinates.
    */
-  projectFlat([x, y], scale = this.scale) {
-    return this._projectFlat(...arguments);
+  projectFlat(xyz, scale = this.scale) {
+    return xyz;
   }
 
   /**
-   * Unproject world point [x,y] on map onto {lat, lon} on sphere
-   * @param {object|Vector} xy - object with {x,y} members
-   *  representing point on projected map plane
-   * @return {GeoCoordinates} - object with {lat,lon} of point on sphere.
-   *   Has toArray method if you need a GeoJSON Array.
-   *   Per cartographic tradition, lat and lon are specified as degrees.
+   * Project world coordinates to map coordinates.
+   * This should be overridden by each viewport that implements a specific
+   * geographic projection.
+   * @param {Array} xyz - world coordinates
+   * @return {Array} [x,y,z] map coordinates.
    */
   unprojectFlat(xyz, scale = this.scale) {
-    return this._unprojectFlat(...arguments);
+    return xyz;
   }
 
-  getMatrices({modelMatrix = null} = {}) {
-    let modelViewProjectionMatrix = this.viewProjectionMatrix;
-    let pixelProjectionMatrix = this.pixelProjectionMatrix;
-    let pixelUnprojectionMatrix = this.pixelUnprojectionMatrix;
-
-    if (modelMatrix) {
-      modelViewProjectionMatrix = mat4_multiply([], this.viewProjectionMatrix, modelMatrix);
-      pixelProjectionMatrix = mat4_multiply([], this.pixelProjectionMatrix, modelMatrix);
-      pixelUnprojectionMatrix = mat4_invert([], pixelProjectionMatrix);
-    }
-
-    const matrices = Object.assign({
-      modelViewProjectionMatrix,
-      viewProjectionMatrix: this.viewProjectionMatrix,
-      viewMatrix: this.viewMatrix,
-      projectionMatrix: this.projectionMatrix,
-
-      // project/unproject between pixels and world
-      pixelProjectionMatrix,
-      pixelUnprojectionMatrix,
-
-      width: this.width,
-      height: this.height,
-      scale: this.scale
-
-      // Subclass can add additional params
-      // TODO - Fragile: better to make base Viewport class aware of all params
-    }, this._getParams());
-
-    return matrices;
-  }
-
-  // INTERNAL METHODS
-
-  // Can be subclassed to add additional fields to `getMatrices`
-  _getParams() {
-    return {};
-  }
 }

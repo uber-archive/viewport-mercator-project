@@ -1,6 +1,5 @@
 // View and Projection Matrix calculations for mapbox-js style map view properties
 import MercatorViewport from './mercator-viewport';
-import autobind from './autobind';
 import assert from 'assert';
 
 import {
@@ -132,7 +131,6 @@ export default class WebMercatorViewport extends MercatorViewport {
 
     this._distanceScales = distanceScales;
 
-    autobind(this);
     Object.freeze(this);
   }
   /* eslint-enable complexity */
@@ -147,7 +145,7 @@ export default class WebMercatorViewport extends MercatorViewport {
    *   Specifies a point on the sphere to project onto the map.
    * @return {Array} [x,y] coordinates.
    */
-  _projectFlat(lngLat, scale = this.scale) {
+  projectFlat(lngLat, scale = this.scale) {
     return projectFlat(lngLat, scale);
   }
 
@@ -160,7 +158,7 @@ export default class WebMercatorViewport extends MercatorViewport {
    *   Has toArray method if you need a GeoJSON Array.
    *   Per cartographic tradition, lat and lon are specified as degrees.
    */
-  _unprojectFlat(xy, scale = this.scale) {
+  unprojectFlat(xy, scale = this.scale) {
     return unprojectFlat(xy, scale);
   }
 
@@ -184,16 +182,6 @@ export default class WebMercatorViewport extends MercatorViewport {
     const newCenter = vec2_add([], center, translate);
     return this.unprojectFlat(newCenter);
   }
-
-  /*
-  getLngLatAtViewportPosition(lnglat, xy) {
-    const c = this.locationCoordinate(lnglat);
-    const coordAtPoint = this.pointCoordinate(xy);
-    const coordCenter = this.pointCoordinate(this.centerPoint);
-    const translate = coordAtPoint._sub(c);
-    this.center = this.coordinateLocation(coordCenter._sub(translate));
-  }
-  */
 
   getDistanceScales() {
     return this._distanceScales;
@@ -269,11 +257,6 @@ export default class WebMercatorViewport extends MercatorViewport {
     return new WebMercatorViewport({width, height, longitude, latitude, zoom});
   }
 
-  // INTERNAL METHODS
-
-  _getParams() {
-    return this._distanceScales;
-  }
 }
 
 /**
