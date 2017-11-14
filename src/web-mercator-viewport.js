@@ -25,6 +25,11 @@ const DEFAULT_MAP_STATE = {
 
 const ERR_ARGUMENT = 'Illegal argument to WebMercatorViewport';
 
+// Check if value is supplied, otherwise fall back to default value
+function ensureFinite(value, fallbackValue) {
+  return Number.isFinite(value) ? value : fallbackValue;
+}
+
 export default class WebMercatorViewport extends Viewport {
   /**
    * @classdesc
@@ -72,14 +77,12 @@ export default class WebMercatorViewport extends Viewport {
     farZMultiplier = 10
   } = {}) {
     // Viewport - support undefined arguments
-    width = width !== undefined ? width : DEFAULT_MAP_STATE.width;
-    height = height !== undefined ? height : DEFAULT_MAP_STATE.height;
-    zoom = zoom !== undefined ? zoom : DEFAULT_MAP_STATE.zoom;
-    latitude = latitude !== undefined ? latitude : DEFAULT_MAP_STATE.latitude;
-    longitude = longitude !== undefined ? longitude : DEFAULT_MAP_STATE.longitude;
-    bearing = bearing !== undefined ? bearing : DEFAULT_MAP_STATE.bearing;
-    pitch = pitch !== undefined ? pitch : DEFAULT_MAP_STATE.pitch;
-    altitude = altitude !== undefined ? altitude : DEFAULT_MAP_STATE.altitude;
+    zoom = ensureFinite(zoom, DEFAULT_MAP_STATE.zoom);
+    latitude = ensureFinite(latitude, DEFAULT_MAP_STATE.latitude);
+    longitude = ensureFinite(longitude, DEFAULT_MAP_STATE.longitude);
+    bearing = ensureFinite(bearing, DEFAULT_MAP_STATE.bearing);
+    pitch = ensureFinite(pitch, DEFAULT_MAP_STATE.pitch);
+    altitude = ensureFinite(altitude, DEFAULT_MAP_STATE.altitude);
 
     // Silently allow apps to send in 0,0 to facilitate isomorphic render etc
     width = width || 1;
@@ -112,8 +115,7 @@ export default class WebMercatorViewport extends Viewport {
       pitch,
       bearing,
       altitude,
-      distanceScales,
-      center
+      distanceScales
     });
 
     super({width, height, viewMatrix: viewMatrixCentered, projectionMatrix});

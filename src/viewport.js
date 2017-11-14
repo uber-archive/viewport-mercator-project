@@ -2,26 +2,15 @@
 
 /* eslint-disable camelcase */
 import {equals} from 'math.gl';
+import {createMat4, transformVector} from './math-utils';
 
 import mat4_scale from 'gl-mat4/scale';
 import mat4_translate from 'gl-mat4/translate';
 import mat4_multiply from 'gl-mat4/multiply';
 import mat4_invert from 'gl-mat4/invert';
-import vec4_scale from 'gl-vec4/scale';
-import vec4_transformMat4 from 'gl-vec4/transformMat4';
 import vec2_lerp from 'gl-vec2/lerp';
 
 import assert from 'assert';
-
-function createMat4() {
-  return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-}
-
-function transformVector(matrix, vector) {
-  const result = vec4_transformMat4([], vector, matrix);
-  vec4_scale(result, result, 1 / result[3]);
-  return result;
-}
 
 const IDENTITY = createMat4();
 
