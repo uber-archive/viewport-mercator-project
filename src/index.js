@@ -1,7 +1,8 @@
 // Classic web-mercator-project
-export {default as default} from './flat-mercator-viewport';
-export {default as FlatMercatorViewport} from './flat-mercator-viewport';
-export {default as PerspectiveMercatorViewport} from './perspective-mercator-viewport';
+export {default as default} from './web-mercator-viewport';
+export {default as WebMercatorViewport} from './web-mercator-viewport';
+// Legacy class name
+export {default as PerspectiveMercatorViewport} from './web-mercator-viewport';
 
 export {projectFlat} from './web-mercator-utils';
 export {unprojectFlat} from './web-mercator-utils';

@@ -1,6 +1,6 @@
 import test from 'tape-catch';
-import {fitBounds} from 'viewport-mercator-project/perspective-mercator-viewport';
-import {PerspectiveMercatorViewport} from 'viewport-mercator-project';
+import {fitBounds} from 'viewport-mercator-project/web-mercator-viewport';
+import {WebMercatorViewport} from 'viewport-mercator-project';
 import {toLowPrecision} from '../utils/test-utils';
 
 const FITBOUNDS_TEST_CASES = [
@@ -48,9 +48,9 @@ test('fitBounds', (t) => {
   t.end();
 });
 
-test('PerspectiveMercatorViewport.fitBounds', (t) => {
+test('WebMercatorViewport.fitBounds', (t) => {
   for (const [input, expected] of FITBOUNDS_TEST_CASES) {
-    const viewport = new PerspectiveMercatorViewport({
+    const viewport = new WebMercatorViewport({
       longitude: -122,
       latitude: 37.7,
       width: input.width,
@@ -59,7 +59,7 @@ test('PerspectiveMercatorViewport.fitBounds', (t) => {
     });
     const result = viewport.fitBounds(input.bounds, input);
 
-    t.ok(result instanceof PerspectiveMercatorViewport, 'get viewport');
+    t.ok(result instanceof WebMercatorViewport, 'get viewport');
     t.equals(toLowPrecision(result.longitude), toLowPrecision(expected.longitude),
       'get correct longitude');
     t.equals(toLowPrecision(result.latitude), toLowPrecision(expected.latitude),

@@ -1,6 +1,6 @@
 import {MapboxTransform} from '../utils/mapbox-transform';
 
-import {PerspectiveMercatorViewport} from 'viewport-mercator-project';
+import {WebMercatorViewport} from 'viewport-mercator-project';
 import test from 'tape-catch';
 import {toLowPrecision} from '../utils/test-utils';
 import {equals, config} from 'math.gl';
@@ -70,7 +70,7 @@ test('Mapbox project/unproject', t => {
 test('Viewport constructor', t => {
   for (const viewportName in VIEWPORT_PROPS) {
     const viewportProps = VIEWPORT_PROPS[viewportName];
-    const viewport = new PerspectiveMercatorViewport(viewportProps);
+    const viewport = new WebMercatorViewport(viewportProps);
     t.ok(viewport, 'Viewport construction successful');
 
     const viewportState = {};
@@ -92,7 +92,7 @@ test('Viewport vs. Mapbox unprojectFlat', t => {
   for (const viewportName in VIEWPORT_PROPS) {
     const viewportProps = VIEWPORT_PROPS[viewportName];
 
-    const viewport = new PerspectiveMercatorViewport(viewportProps);
+    const viewport = new WebMercatorViewport(viewportProps);
     const unprojection = viewport.unprojectFlat([587, 107]);
 
     const transform = new MapboxTransform(viewportProps);
@@ -108,7 +108,7 @@ test('Viewport vs Mapbox matrices', t => {
   for (const viewportName in VIEWPORT_PROPS) {
     const viewportProps = VIEWPORT_PROPS[viewportName];
 
-    const viewport = new PerspectiveMercatorViewport(viewportProps);
+    const viewport = new WebMercatorViewport(viewportProps);
     const transform = new MapboxTransform(viewportProps);
 
     const viewportProjMatrix = viewport.viewProjectionMatrix;
@@ -131,7 +131,7 @@ test('Viewport vs Mapbox project', t => {
     const viewportProps = VIEWPORT_PROPS[viewportName];
 
     for (const {title, lngLat} of TEST_CASES) {
-      const viewport = new PerspectiveMercatorViewport(viewportProps);
+      const viewport = new WebMercatorViewport(viewportProps);
       const projection = viewport.project(lngLat, {topLeft: false});
 
       const transform = new MapboxTransform(viewportProps);
@@ -152,7 +152,7 @@ test('Viewport vs Mapbox unproject', t => {
       const transform = new MapboxTransform(viewportProps);
       const mapboxProjection = transform.mapboxProject(lngLat);
 
-      const viewport = new PerspectiveMercatorViewport(viewportProps);
+      const viewport = new WebMercatorViewport(viewportProps);
       const unprojection = viewport.unproject(mapboxProjection, {topLeft: false});
 
       t.deepEquals(toLowPrecision(unprojection), toLowPrecision(lngLat),
@@ -165,7 +165,7 @@ test('Viewport vs Mapbox unproject', t => {
 test('Viewport project/unproject', t => {
   for (const viewportName in VIEWPORT_PROPS) {
     const viewportProps = VIEWPORT_PROPS[viewportName];
-    const viewport = new PerspectiveMercatorViewport(viewportProps);
+    const viewport = new WebMercatorViewport(viewportProps);
 
     for (const {title, lngLat} of TEST_CASES) {
       const projection = viewport.project(lngLat);
@@ -178,10 +178,10 @@ test('Viewport project/unproject', t => {
   t.end();
 });
 
-test('PerspectiveMercatorViewport.project#3D', t => {
+test('WebMercatorViewport.project#3D', t => {
   for (const viewportName in VIEWPORT_PROPS) {
     const viewportProps = VIEWPORT_PROPS[viewportName];
-    const viewport = new PerspectiveMercatorViewport(viewportProps);
+    const viewport = new WebMercatorViewport(viewportProps);
 
     const transform = new MapboxTransform(viewportProps);
 
@@ -211,7 +211,7 @@ test('Viewport/Mapbox getLocationAtPoint', t => {
   for (const viewportName in VIEWPORT_PROPS) {
     const viewportProps = VIEWPORT_PROPS[viewportName];
     for (const {title, lngLat} of TEST_CASES) {
-      const viewport = new PerspectiveMercatorViewport(viewportProps);
+      const viewport = new WebMercatorViewport(viewportProps);
       const llp = viewport.getLocationAtPoint({lngLat, pos: [100, 100]});
 
       const transform = new MapboxTransform(viewportProps);

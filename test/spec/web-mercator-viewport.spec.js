@@ -1,5 +1,5 @@
 import test from 'tape-catch';
-import {PerspectiveMercatorViewport} from 'viewport-mercator-project';
+import {WebMercatorViewport} from 'viewport-mercator-project';
 import {equals, config} from 'math.gl';
 
 config.EPSILON = 0.000001;
@@ -37,30 +37,30 @@ const TEST_VIEWPORTS = [
   }
 ];
 
-test('PerspectiveMercatorViewport#imports', t => {
-  t.ok(PerspectiveMercatorViewport, 'PerspectiveMercatorViewport import ok');
+test('WebMercatorViewport#imports', t => {
+  t.ok(WebMercatorViewport, 'WebMercatorViewport import ok');
   t.end();
 });
 
-test('PerspectiveMercatorViewport#constructor', t => {
-  t.ok(new PerspectiveMercatorViewport() instanceof PerspectiveMercatorViewport,
-    'Created new PerspectiveMercatorViewport with default args');
+test('WebMercatorViewport#constructor', t => {
+  t.ok(new WebMercatorViewport() instanceof WebMercatorViewport,
+    'Created new WebMercatorViewport with default args');
   t.end();
 });
 
-test('PerspectiveMercatorViewport#constructor - 0 width/height', t => {
-  const viewport = new PerspectiveMercatorViewport(Object.assign(TEST_VIEWPORTS[0].mapState, {
+test('WebMercatorViewport#constructor - 0 width/height', t => {
+  const viewport = new WebMercatorViewport(Object.assign(TEST_VIEWPORTS[0].mapState, {
     width: 0,
     height: 0
   }));
-  t.ok(viewport instanceof PerspectiveMercatorViewport,
-    'PerspectiveMercatorViewport constructed successfully with 0 width and height');
+  t.ok(viewport instanceof WebMercatorViewport,
+    'WebMercatorViewport constructed successfully with 0 width and height');
   t.end();
 });
 
-test('PerspectiveMercatorViewport.projectFlat', t => {
+test('WebMercatorViewport.projectFlat', t => {
   for (const vc of TEST_VIEWPORTS) {
-    const viewport = new PerspectiveMercatorViewport(vc.mapState);
+    const viewport = new WebMercatorViewport(vc.mapState);
     for (const tc of TEST_VIEWPORTS) {
       const {mapState} = tc;
       const lnglatIn = [tc.mapState.longitude, tc.mapState.latitude];
@@ -73,9 +73,9 @@ test('PerspectiveMercatorViewport.projectFlat', t => {
   t.end();
 });
 
-test('PerspectiveMercatorViewport.project#3D', t => {
+test('WebMercatorViewport.project#3D', t => {
   for (const vc of TEST_VIEWPORTS) {
-    const viewport = new PerspectiveMercatorViewport(vc.mapState);
+    const viewport = new WebMercatorViewport(vc.mapState);
     for (const offset of [0, 0.5, 1.0, 5.0]) {
       const {mapState} = vc;
       const lnglatIn = [vc.mapState.longitude + offset, vc.mapState.latitude + offset];
@@ -93,10 +93,10 @@ test('PerspectiveMercatorViewport.project#3D', t => {
   t.end();
 });
 
-test('PerspectiveMercatorViewport.project#2D', t => {
+test('WebMercatorViewport.project#2D', t => {
   // Cross check positions
   for (const vc of TEST_VIEWPORTS) {
-    const viewport = new PerspectiveMercatorViewport(vc.mapState);
+    const viewport = new WebMercatorViewport(vc.mapState);
     for (const tc of TEST_VIEWPORTS) {
       const {mapState} = tc;
       const lnglatIn = [tc.mapState.longitude, tc.mapState.latitude];
@@ -109,9 +109,9 @@ test('PerspectiveMercatorViewport.project#2D', t => {
   t.end();
 });
 
-test('PerspectiveMercatorViewport.getScales', t => {
+test('WebMercatorViewport.getScales', t => {
   for (const vc of TEST_VIEWPORTS) {
-    const viewport = new PerspectiveMercatorViewport(vc.mapState);
+    const viewport = new WebMercatorViewport(vc.mapState);
     const distanceScales = viewport.getDistanceScales();
     t.ok(Array.isArray(distanceScales.metersPerPixel), 'metersPerPixel defined');
     t.ok(Array.isArray(distanceScales.pixelsPerMeter), 'pixelsPerMeter defined');
@@ -121,9 +121,9 @@ test('PerspectiveMercatorViewport.getScales', t => {
   t.end();
 });
 
-test('PerspectiveMercatorViewport.meterDeltas', t => {
+test('WebMercatorViewport.meterDeltas', t => {
   for (const vc of TEST_VIEWPORTS) {
-    const viewport = new PerspectiveMercatorViewport(vc.mapState);
+    const viewport = new WebMercatorViewport(vc.mapState);
     for (const tc of TEST_VIEWPORTS) {
       const {mapState} = tc;
       const coordinate = [tc.mapState.longitude, tc.mapState.latitude, 0];

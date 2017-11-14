@@ -1,5 +1,5 @@
 // View and Projection Matrix calculations for mapbox-js style map view properties
-import MercatorViewport from './mercator-viewport';
+import Viewport from './viewport';
 import assert from 'assert';
 
 import {
@@ -25,7 +25,7 @@ const DEFAULT_MAP_STATE = {
 
 const ERR_ARGUMENT = 'Illegal argument to WebMercatorViewport';
 
-export default class WebMercatorViewport extends MercatorViewport {
+export default class WebMercatorViewport extends Viewport {
   /**
    * @classdesc
    * Creates view/projection matrices from mercator params
