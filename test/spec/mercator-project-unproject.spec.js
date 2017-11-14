@@ -1,4 +1,4 @@
-import {PerspectiveMercatorViewport} from 'viewport-mercator-project';
+import {WebMercatorViewport} from 'viewport-mercator-project';
 import test from 'tape-catch';
 import {toLowPrecision} from '../utils/test-utils';
 
@@ -40,7 +40,7 @@ const TEST_CASES = [
 ];
 
 test('Viewport constructor', t => {
-  const viewport = new PerspectiveMercatorViewport(viewportProps);
+  const viewport = new WebMercatorViewport(viewportProps);
 
   t.ok(viewport, 'Viewport construction successful');
 
@@ -54,7 +54,7 @@ test('Viewport constructor', t => {
 });
 
 test('Viewport projection', t => {
-  const viewport = new PerspectiveMercatorViewport(viewportProps);
+  const viewport = new WebMercatorViewport(viewportProps);
   TEST_CASES.forEach(({title, func, input, expected}) => {
     const output = viewport[func](input);
     t.deepEquals(

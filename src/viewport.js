@@ -25,9 +25,9 @@ function transformVector(matrix, vector) {
 
 const IDENTITY = createMat4();
 
-const ERR_ARGUMENT = 'Illegal argument to MercatorViewport';
+const ERR_ARGUMENT = 'Illegal argument to Viewport';
 
-export default class MercatorViewport {
+export default class Viewport {
   /**
    * @classdesc
    * Manages coordinate system transformations for deck.gl.
@@ -115,7 +115,7 @@ export default class MercatorViewport {
   // Two viewports are equal if width and height are identical, and if
   // their view and projection matrices are (approximately) equal.
   equals(viewport) {
-    if (!(viewport instanceof MercatorViewport)) {
+    if (!(viewport instanceof Viewport)) {
       return false;
     }
 
