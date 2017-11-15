@@ -18,12 +18,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+/** These tests only run in the browser */
 // NOTE: Transform is not a public API so we should be careful to always lock
 // down mapbox-gl to a specific major, minor, and patch version.
-import Transform from 'mapbox-gl/js/geo/transform';
-import {LngLat, Point} from 'mapbox-gl';
+import {Map, LngLat, Point} from 'mapbox-gl/dist/mapbox-gl.js';
 
-export {LngLat, Point, Transform} from 'mapbox-gl';
+/* global document */
+const Transform = new Map({
+  container: document.createElement('div')
+}).transform.constructor;
+
+export {LngLat, Point, Transform};
 
 export function mod(value, divisor) {
   const modulus = value % divisor;
