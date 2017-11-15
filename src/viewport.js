@@ -45,8 +45,8 @@ export default class Viewport {
   /* eslint-disable complexity */
   constructor({
     // Window width/height in pixels (for pixel projection)
-    width = 1,
-    height = 1,
+    width,
+    height,
     // Desc
     viewMatrix = IDENTITY,
     projectionMatrix = IDENTITY

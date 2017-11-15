@@ -14,21 +14,7 @@ import {
 import vec2_add from 'gl-vec2/add';
 import vec2_negate from 'gl-vec2/negate';
 
-const DEFAULT_MAP_STATE = {
-  latitude: 37,
-  longitude: -122,
-  zoom: 11,
-  pitch: 0,
-  bearing: 0,
-  altitude: 1.5
-};
-
 const ERR_ARGUMENT = 'Illegal argument to WebMercatorViewport';
-
-// Check if value is supplied, otherwise fall back to default value
-function ensureFinite(value, fallbackValue) {
-  return Number.isFinite(value) ? value : fallbackValue;
-}
 
 export default class WebMercatorViewport extends Viewport {
   /**
@@ -68,22 +54,14 @@ export default class WebMercatorViewport extends Viewport {
     // Map state
     width,
     height,
-    latitude,
-    longitude,
-    zoom,
-    pitch,
-    bearing,
-    altitude,
+    latitude = 0,
+    longitude = 0,
+    zoom = 0,
+    pitch = 0,
+    bearing = 0,
+    altitude = 1.5,
     farZMultiplier = 10
   } = {}) {
-    // Viewport - support undefined arguments
-    zoom = ensureFinite(zoom, DEFAULT_MAP_STATE.zoom);
-    latitude = ensureFinite(latitude, DEFAULT_MAP_STATE.latitude);
-    longitude = ensureFinite(longitude, DEFAULT_MAP_STATE.longitude);
-    bearing = ensureFinite(bearing, DEFAULT_MAP_STATE.bearing);
-    pitch = ensureFinite(pitch, DEFAULT_MAP_STATE.pitch);
-    altitude = ensureFinite(altitude, DEFAULT_MAP_STATE.altitude);
-
     // Silently allow apps to send in 0,0 to facilitate isomorphic render etc
     width = width || 1;
     height = height || 1;
