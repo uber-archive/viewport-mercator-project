@@ -18,15 +18,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-/** These tests only run in the browser */
 // NOTE: Transform is not a public API so we should be careful to always lock
 // down mapbox-gl to a specific major, minor, and patch version.
-import {Map, LngLat, Point} from 'mapbox-gl/dist/mapbox-gl.js';
+import {Map, LngLat, Point} from './mapbox';
 
-/* global document */
-const Transform = new Map({
-  container: document.createElement('div')
-}).transform.constructor;
+let Transform;
+/* eslint-disable */
+// Hack: mapbox-gl does not expose Transform class
+try {
+  Map.prototype = Object.assign({}, Map.prototype, {
+    _setupContainer: function() {
+      Transform = this.transform.constructor;
+    }
+  });
+  new Map();
+
+} catch (err) {
+  // Ignore
+}
+/* eslint-enable */
 
 export {LngLat, Point, Transform};
 
