@@ -4,40 +4,10 @@ import {WebMercatorViewport} from 'viewport-mercator-project';
 import test from 'tape-catch';
 import {toLowPrecision} from '../utils/test-utils';
 import {equals, config} from 'math.gl';
-config.EPSILON = 0.000001;
 
-const VIEWPORT_PROPS = {
-  flat: {
-    latitude: 37.75,
-    longitude: -122.43,
-    zoom: 11.5,
-    bearing: 0,
-    width: 800,
-    height: 600,
-    farZMultiplier: 1
-  },
-  pitched: {
-    latitude: 37.75,
-    longitude: -122.43,
-    zoom: 11.5,
-    pitch: 30,
-    bearing: 0,
-    width: 800,
-    height: 600,
-    farZMultiplier: 1
-  },
-  rotated: {
-    latitude: 37.7749,
-    longitude: -122.4194,
-    zoom: 11,
-    altitude: 1.5,
-    bearing: 180,
-    pitch: 60,
-    width: 1267,
-    height: 400,
-    farZMultiplier: 1
-  }
-};
+import VIEWPORT_PROPS from '../utils/sample-viewports';
+
+config.EPSILON = 1e-6;
 
 const TEST_CASES = [
   {

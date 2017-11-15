@@ -1,5 +1,5 @@
 import test from 'tape-catch';
-import {fitBounds} from 'viewport-mercator-project/web-mercator-viewport';
+import {fitBounds} from 'viewport-mercator-project';
 import {WebMercatorViewport} from 'viewport-mercator-project';
 import {toLowPrecision} from '../utils/test-utils';
 

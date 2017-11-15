@@ -1,6 +1,8 @@
 // TODO - THE UTILITIES IN THIS FILE SHOULD BE IMPORTED FROM WEB-MERCATOR-VIEWPORT MODULE
 
 import {Vector3} from 'math.gl';
+import {createMat4} from './math-utils';
+
 import mat4_perspective from 'gl-mat4/perspective';
 import mat4_scale from 'gl-mat4/scale';
 import mat4_translate from 'gl-mat4/translate';
@@ -16,13 +18,8 @@ const DEGREES_TO_RADIANS = PI / 180;
 const RADIANS_TO_DEGREES = 180 / PI;
 const TILE_SIZE = 512;
 const WORLD_SCALE = TILE_SIZE;
-
+const EARTH_CIRCUMFERENCE = 40.075e6;
 // const METERS_PER_DEGREE_AT_EQUATOR = 111000; // Approximately 111km per degree at equator
-
-// Helper, avoids low-precision 32 bit matrices from gl-matrix mat4.create()
-function createMat4() {
-  return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-}
 
 /**
  * Project [lng,lat] on sphere onto [x,y] on 512*512 Mercator Zoom 0 tile.
@@ -63,7 +60,6 @@ export function unprojectFlat([x, y], scale) {
 // S=C*cos(y)/2^(z+8)
 export function getMercatorMeterZoom({latitude}) {
   assert(latitude);
-  const EARTH_CIRCUMFERENCE = 40.075e6;
   const radians = degrees => degrees / 180 * Math.PI;
   return Math.log2(EARTH_CIRCUMFERENCE * Math.cos(radians(latitude))) - 8;
 }

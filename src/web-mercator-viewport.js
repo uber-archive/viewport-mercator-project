@@ -14,15 +14,6 @@ import {
 import vec2_add from 'gl-vec2/add';
 import vec2_negate from 'gl-vec2/negate';
 
-const DEFAULT_MAP_STATE = {
-  latitude: 37,
-  longitude: -122,
-  zoom: 11,
-  pitch: 0,
-  bearing: 0,
-  altitude: 1.5
-};
-
 const ERR_ARGUMENT = 'Illegal argument to WebMercatorViewport';
 
 export default class WebMercatorViewport extends Viewport {
@@ -63,24 +54,14 @@ export default class WebMercatorViewport extends Viewport {
     // Map state
     width,
     height,
-    latitude,
-    longitude,
-    zoom,
-    pitch,
-    bearing,
-    altitude,
+    latitude = 0,
+    longitude = 0,
+    zoom = 0,
+    pitch = 0,
+    bearing = 0,
+    altitude = 1.5,
     farZMultiplier = 10
   } = {}) {
-    // Viewport - support undefined arguments
-    width = width !== undefined ? width : DEFAULT_MAP_STATE.width;
-    height = height !== undefined ? height : DEFAULT_MAP_STATE.height;
-    zoom = zoom !== undefined ? zoom : DEFAULT_MAP_STATE.zoom;
-    latitude = latitude !== undefined ? latitude : DEFAULT_MAP_STATE.latitude;
-    longitude = longitude !== undefined ? longitude : DEFAULT_MAP_STATE.longitude;
-    bearing = bearing !== undefined ? bearing : DEFAULT_MAP_STATE.bearing;
-    pitch = pitch !== undefined ? pitch : DEFAULT_MAP_STATE.pitch;
-    altitude = altitude !== undefined ? altitude : DEFAULT_MAP_STATE.altitude;
-
     // Silently allow apps to send in 0,0 to facilitate isomorphic render etc
     width = width || 1;
     height = height || 1;
@@ -112,8 +93,7 @@ export default class WebMercatorViewport extends Viewport {
       pitch,
       bearing,
       altitude,
-      distanceScales,
-      center
+      distanceScales
     });
 
     super({width, height, viewMatrix: viewMatrixCentered, projectionMatrix});
