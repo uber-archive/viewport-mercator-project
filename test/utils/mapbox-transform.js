@@ -20,10 +20,25 @@
 
 // NOTE: Transform is not a public API so we should be careful to always lock
 // down mapbox-gl to a specific major, minor, and patch version.
-import Transform from 'mapbox-gl/js/geo/transform';
-import {LngLat, Point} from 'mapbox-gl';
+import {Map, LngLat, Point} from './mapbox';
 
-export {LngLat, Point, Transform} from 'mapbox-gl';
+let Transform;
+/* eslint-disable */
+// Hack: mapbox-gl does not expose Transform class
+try {
+  Map.prototype = Object.assign({}, Map.prototype, {
+    _setupContainer: function() {
+      Transform = this.transform.constructor;
+    }
+  });
+  new Map();
+
+} catch (err) {
+  // Ignore
+}
+/* eslint-enable */
+
+export {LngLat, Point, Transform};
 
 export function mod(value, divisor) {
   const modulus = value % divisor;
