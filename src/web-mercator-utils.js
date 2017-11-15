@@ -211,7 +211,8 @@ export function makeViewMatricesFromMercatorParams({
   bearing,
   altitude,
   distanceScales,
-  meterOffset = null
+  meterOffset = null,
+  flipY = true
 }) {
   const center = getMercatorWorldPosition({longitude, latitude, zoom, distanceScales, meterOffset});
 
@@ -230,7 +231,11 @@ export function makeViewMatricesFromMercatorParams({
   });
 
   const vm = createMat4();
-  mat4_scale(vm, viewMatrixUncentered, [1, -1, 1]);
+
+  if (flipY) {
+    mat4_scale(vm, viewMatrixUncentered, [1, -1, 1]);
+  }
+
   const viewMatrixCentered = mat4_translate(vm, vm, new Vector3(center).negate());
 
   return {
