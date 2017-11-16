@@ -124,9 +124,9 @@ export default class Viewport {
    * @param {Array} lngLatZ - [lng, lat] or [lng, lat, Z]
    * @param {Object} opts - options
    * @param {Object} opts.topLeft=true - Whether projected coords are top left
-   * @return {Array} - [x, y] or [x, y, z] in top left coords
+   * @return {Array} - screen coordinates [x, y] or [x, y, z], z as pixel depth
    */
-  project(xyz, {topLeft = false} = {}) {
+  project(xyz, {topLeft = true} = {}) {
     const [x0, y0, z0 = 0] = xyz;
     assert(Number.isFinite(x0) && Number.isFinite(y0) && Number.isFinite(z0), ERR_ARGUMENT);
 
@@ -134,8 +134,8 @@ export default class Viewport {
     const v = transformVector(this.pixelProjectionMatrix, [X, Y, z0, 1]);
 
     const [x, y] = v;
-    const y2 = topLeft ? this.height - y : y;
-    return xyz.length === 2 ? [x, y2] : [x, y2, 0];
+    const y2 = topLeft ? y : this.height - y;
+    return xyz.length === 2 ? [x, y2] : [x, y2, v[2]];
   }
 
   /**
@@ -143,13 +143,25 @@ export default class Viewport {
    * (possibly [lon, lat]) on map.
    * - [x, y] => [lng, lat]
    * - [x, y, z] => [lng, lat, Z]
-   * @param {Array} xyz -
+   * @param {Array} xyz - screen coordinates, z as pixel depth
+   * @param {Object} opts - options
+   * @param {Object} opts.topLeft=true - Whether projected coords are top left
+   * @param {Object} opts.targetZ=0 - If pixel depth is unknown, targetZ is used as
+   *   the elevation plane to unproject onto
    * @return {Array} - [lng, lat, Z] or [X, Y, Z]
    */
-  unproject(xyz, {topLeft = false} = {}) {
-    const [x, y, targetZ = 0] = xyz;
+  unproject(xyz, {topLeft = true, targetZ} = {}) {
+    const [x, y, z] = xyz;
 
-    const y2 = topLeft ? this.height - y : y;
+    const y2 = topLeft ? y : this.height - y;
+
+    if (Number.isFinite(z)) {
+      // Has depth component
+      const coord = transformVector(this.pixelUnprojectionMatrix, [x, y2, z, 1]);
+      const Z = coord[2];
+      const vUnprojected = this.unprojectFlat(coord);
+      return [vUnprojected[0], vUnprojected[1], Z];
+    }
 
     // since we don't know the correct projected z value for the point,
     // unproject two points to get a line and then find the point on that line with z=0
@@ -159,11 +171,11 @@ export default class Viewport {
     const z0 = coord0[2];
     const z1 = coord1[2];
 
-    const t = z0 === z1 ? 0 : (targetZ - z0) / (z1 - z0);
+    const t = z0 === z1 ? 0 : ((targetZ || 0) - z0) / (z1 - z0);
     const v = vec2_lerp([], coord0, coord1, t);
 
     const vUnprojected = this.unprojectFlat(v);
-    return xyz.length === 2 ? vUnprojected : [vUnprojected[0], vUnprojected[1], 0];
+    return Number.isFinite(targetZ) ? [vUnprojected[0], vUnprojected[1], targetZ] : vUnprojected;
   }
 
   // NON_LINEAR PROJECTION HOOKS

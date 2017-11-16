@@ -50,9 +50,9 @@ using viewport projection parameters
 | `opts.topLeft` | `Boolean` | `true`   | If true projected coords are top left |
 
 Returns: `[x, y]` or `[x, y, z]` - (depending on length of input array)
-  in the requested coordinate system (top left or bottom left)
+  in the requested coordinate system (top left or bottom left).
 - `[longitude, latitude]` to `[x, y]`
-- `[longitude, latitude, Z]` => `[x, y, z]`
+- `[longitude, latitude, Z]` => `[x, y, z]`. `z` is pixel depth.
 
 Remarks:
 * By default, returns top-left coordinates suitable for canvas/SVG type
@@ -66,9 +66,12 @@ Unproject pixel coordinates on screen onto [lon, lat] on map.
 | Parameter      | Type      | Default  | Description                     |
 | -------------- | --------- | -------- | ------------------------------- |
 | `xyz`          | `Array`   | required | pixel coordinates in viewport   |
+| `opts`         | `Object`  | `{}`     | named options                   |
+| `opts.topLeft` | `Boolean` | `true`   | If true projected coords are top left |
+| `opts.targetZ` | `Number`  | `0`      | If pixel depth is missing, use as the desired elevation |
 
 Returns: Unprojected coordinates in array from, depending on input:
-- `[x, y]` => `[lng, lat]`
+- `[x, y]` => `[lng, lat, (targetZ)]`
 - `[x, y, z]` => `[lng, lat, Z]`
 
 
