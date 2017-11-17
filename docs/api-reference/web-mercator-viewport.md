@@ -13,23 +13,17 @@ minimal non-linear piece followed by a standard projection chain.
 
 | Parameter     |  Type    | Default | Description                                                |
 | ------------- | -------- | ------- | ---------------------------------------------------------- |
-| `latitude`    | `Number` | 37      | Center of viewport on map (alternative to center)          |
-| `longitude`   | `Number` | -122    | Center of viewport on map (alternative to center)          |
-| `zoom`        | `Number` | 11      | Scale = Math.pow(2,zoom) on map (alternative to opt.scale) |
-| `width`       | `Number` | 1       | Width of "viewport" or window                              |
-| `height`      | `Number` | 1       | Height of "viewport" or window                             |
-| `center`      | `Array`  | [0, 0]  | Center of viewport [longitude, latitude] or [x, y]         |
-| `scale`       | `Number` | 1       | Either use scale or zoom                                   |
-| `pitch`       | `Number` | 0       | Camera angle in degrees (0 is straight down)               |
-| `bearing`     | `Number` | 0       | Map rotation in degrees (0 means north is up)              |
-| `altitude`    | `Number` | 1.5     | Altitude of camera in screen units                         |
+| `width`       | `Number` | `1`       | Width of "viewport" or window                              |
+| `height`      | `Number` | `1`       | Height of "viewport" or window                             |
+| `latitude`    | `Number` | `37`      | Center of viewport on map (alternative to center)          |
+| `longitude`   | `Number` | `-122`    | Center of viewport on map (alternative to center)          |
+| `zoom`        | `Number` | `11`      | Scale = Math.pow(2,zoom) on map (alternative to opt.scale) |
+| `pitch`       | `Number` | `0`       | Camera angle in degrees (0 is straight down)               |
+| `bearing`     | `Number` | `0`       | Map rotation in degrees (0 means north is up)              |
+| `altitude`    | `Number` | `1.5`     | Altitude of camera in screen units                         |
 
 
 Remarks:
- - Only one of center or [latitude, longitude] can be specified
- - [latitude, longitude] can only be specified when "mercator" is true
- - Only one of `center` or `[latitude, longitude]` can be specified.
- - `[latitude, longitude]` can only be specified when `mercator` is true
  - Altitude has a default value that matches assumptions in mapbox-gl
  - `width` and `height` are forced to 1 if supplied as 0, to avoid
    division by zero. This is intended to reduce the burden of apps to
@@ -38,75 +32,66 @@ Remarks:
    latitudes are specified as degrees.
 
 
-### `PerspectiveMercatorViewport.project`
+### `project(lngLatZ, opts)`
 
-Projects latitude and longitude to pixel coordinates in window
-using viewport projection parameters
+Projects latitude and longitude to pixel coordinates on screen.
 
 | Parameter      | Type      | Default  | Description                     |
 | -------------- | --------- | -------- | ------------------------------- |
-| `lnglatz`      | `Array`   | required | `[lng, lat]` or `[lng, lat, Z]` |
+| `lngLatZ`      | `Array`   | (required) | map coordinates, `[lng, lat]` or `[lng, lat, Z]` where `Z` is elevation in meters |
 | `opts`         | `Object`  | `{}`     | named options                   |
-| `opts.topLeft` | `Boolean` | `true`   | If true projected coords are top left |
+| `opts.topLeft` | `Boolean` | `true`   | If `true` projected coords are top left, otherwise bottom left |
 
-Returns: `[x, y]` or `[x, y, z]` - (depending on length of input array)
-  in the requested coordinate system (top left or bottom left).
-- `[longitude, latitude]` to `[x, y]`
-- `[longitude, latitude, Z]` => `[x, y, z]`. `z` is pixel depth.
+Returns: `[x, y]` or `[x, y, z]` in pixels coordinates. `z` is pixel depth.
+- If input is `[lng, lat]`: returns `[x, y]`.
+- If input is `[lng, lat, Z]`: returns `[x, y, z]`.
 
 Remarks:
 * By default, returns top-left coordinates suitable for canvas/SVG type
   rendering.
 
 
-### `PerspectiveMercatorViewport.unproject`
+### `unproject(xyz, opts)`
 
-Unproject pixel coordinates on screen onto [lon, lat] on map.
+Unproject pixel coordinates on screen to longitude and latitude on map.
 
 | Parameter      | Type      | Default  | Description                     |
 | -------------- | --------- | -------- | ------------------------------- |
-| `xyz`          | `Array`   | required | pixel coordinates in viewport   |
+| `xyz`          | `Array`   | (required) | pixel coordinates, `[x, y]` or `[x, y, z]` where `z` is pixel depth   |
 | `opts`         | `Object`  | `{}`     | named options                   |
-| `opts.topLeft` | `Boolean` | `true`   | If true projected coords are top left |
-| `opts.targetZ` | `Number`  | `0`      | If pixel depth is missing, use as the desired elevation |
+| `opts.topLeft` | `Boolean` | `true`   | If `true` projected coords are top left, otherwise bottom left |
+| `opts.targetZ` | `Number`  | `0`      | If pixel depth `z` is not specified in `xyz`, use `opts.targetZ` as the desired elevation |
 
-Returns: Unprojected coordinates in array from, depending on input:
-- `[x, y]` => `[lng, lat, (targetZ)]`
-- `[x, y, z]` => `[lng, lat, Z]`
+Returns: `[lng, lat]` or `[longitude, lat, Z]` in map coordinates. `Z` is elevation in meters.
+- If input is `[x, y]` without specifying `opts.targetZ`: returns `[lng, lat]`.
+- If input is `[x, y]` with `opts.targetZ`: returns `[lng, lat, targetZ]`.
+- If input is `[x, y, z]`: returns `[lng, lat, Z]`.
 
 
-#### `PerspectiveMercatorViewport.projectFlat([lng, lat], scale = this.scale)`
+#### `projectFlat(lngLat, scale)`
 
-Project `[lng, lat]` on sphere onto "screen pixel" coordinates `[x, y]` without
-considering any perspective (effectively ignoring pitch, bearing and altitude).
+Project longitude and latitude onto Web Mercator coordinates.
 
-Parameters:
-
- - `coordinates` {Array} - `[lng, lat]` or `[xmap, ymap]` coordinates.
+| Parameter      | Type      | Default  | Description                     |
+| -------------- | --------- | -------- | ------------------------------- |
+| `lngLat`          | `Array`   | (required) | map coordinates, `[lng, lat]`   |
+| `scale`         | `Number`  | `this.scale`     | Web Mercator scale  |
 
 Returns:
 
- - `[x, y]`, representing map or world coordinates.
+ - `[x, y]`, representing Web Mercator coordinates.
 
-#### `PerspectiveMercatorViewport.unprojectFlat`
+#### `unprojectFlat(xy, scale)`
 
-Unprojects a screen point `[x, y]` on the map or world `[lng, lat]` on sphere.
-* `lnglat` - Array `[lng, lat]` or `[xmap, ymap]` coordinates
-  Specifies a point on the map (or world) to project onto the screen.
-* `returns` - [x,y] - An Array of Numbers representing map or world coordinates.
+Unprojects a Web Mercator coordinate to longitude and latitude.
+| Parameter      | Type      | Default  | Description                     |
+| -------------- | --------- | -------- | ------------------------------- |
+| `xy`          | `Array`   | (required) | Web Mercator coordinates, `[x, y]`   |
+| `scale`         | `Number`  | `this.scale`     | Web Mercator scale  |
 
-Parameters:
- - `pixels` {Array} - `[x, y]`
-
-
-#### `PerspectiveMercatorViewport.unprojectFlat([x, y], scale = this.scale)`
-
-
-Parameters:
- - `[lng, lat]` array xy - object with {x,y} members representing a "point on projected map
-plane
 Returns:
-* [lat, lon] or [x, y] of point on sphere.
+
+ - `[longitude, latitude]`
 
 
 #### `getDistanceScales()`

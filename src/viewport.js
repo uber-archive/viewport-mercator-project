@@ -131,11 +131,11 @@ export default class Viewport {
     assert(Number.isFinite(x0) && Number.isFinite(y0) && Number.isFinite(z0), ERR_ARGUMENT);
 
     const [X, Y] = this.projectFlat([x0, y0]);
-    const v = transformVector(this.pixelProjectionMatrix, [X, Y, z0, 1]);
+    const coord = transformVector(this.pixelProjectionMatrix, [X, Y, z0, 1]);
 
-    const [x, y] = v;
+    const [x, y] = coord;
     const y2 = topLeft ? y : this.height - y;
-    return xyz.length === 2 ? [x, y2] : [x, y2, v[2]];
+    return xyz.length === 2 ? [x, y2] : [x, y2, coord[2]];
   }
 
   /**
