@@ -1,4 +1,4 @@
-# PerspectiveMercatorViewport
+# WebMercatorViewport
 
 The main purpose of the `PerspectiveMercatorViewport` is to enable 3D rendering to
 seamlessly overlay on top of map components that take web mercator style
