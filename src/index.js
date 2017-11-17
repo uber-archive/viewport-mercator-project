@@ -14,7 +14,5 @@ export {
   getWorldPosition,
   getViewMatrix,
   getUncenteredViewMatrix,
-  getProjectionMatrix,
-  getFov,
-  getClippingPlanes
+  getProjectionMatrix
 } from './web-mercator-utils';
