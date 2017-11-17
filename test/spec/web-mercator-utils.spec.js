@@ -6,14 +6,12 @@ import {toLowPrecision} from '../utils/test-utils';
 import {
   projectFlat,
   unprojectFlat,
-  getMercatorMeterZoom,
-  getMercatorDistanceScales,
-  getMercatorWorldPosition,
-  makeUncenteredViewMatrixFromMercatorParams,
-  makeViewMatricesFromMercatorParams,
-  makeProjectionMatrixFromMercatorParams,
-  getFov,
-  getClippingPlanes
+  getMeterZoom,
+  getDistanceScales,
+  getWorldPosition,
+  getUncenteredViewMatrix,
+  getViewMatrix,
+  getProjectionMatrix
 } from 'viewport-mercator-project';
 
 import VIEWPORT_PROPS from '../utils/sample-viewports';
@@ -23,24 +21,22 @@ const DISTANCE_TOLERANCE = 0.001;
 test('Viewport#imports', t => {
   t.ok(projectFlat, 'projectFlat imports OK');
   t.ok(unprojectFlat, 'unprojectFlat imports OK');
-  t.ok(getMercatorMeterZoom, 'getMercatorMeterZoom imports OK');
-  t.ok(getMercatorWorldPosition, 'getMercatorWorldPosition imports OK');
-  t.ok(makeViewMatricesFromMercatorParams, 'makeViewMatricesFromMercatorParams imports OK');
-  t.ok(makeUncenteredViewMatrixFromMercatorParams,
-    'makeUncenteredViewMatrixFromMercatorParams imports OK');
-  t.ok(makeProjectionMatrixFromMercatorParams, 'makeProjectionMatrixFromMercatorParams imports OK');
-  t.ok(getFov, 'getFov imports OK');
-  t.ok(getClippingPlanes, 'getClippingPlanes imports OK');
+  t.ok(getMeterZoom, 'getMeterZoom imports OK');
+  t.ok(getWorldPosition, 'getWorldPosition imports OK');
+  t.ok(getViewMatrix, 'getViewMatrix imports OK');
+  t.ok(getUncenteredViewMatrix,
+    'getUncenteredViewMatrix imports OK');
+  t.ok(getProjectionMatrix, 'getProjectionMatrix imports OK');
   t.end();
 });
 
-test('getMercatorDistanceScales', t => {
+test('getDistanceScales', t => {
   for (const vc in VIEWPORT_PROPS) {
     const props = VIEWPORT_PROPS[vc];
     const {longitude, latitude} = props;
     const {
       metersPerPixel, pixelsPerMeter, degreesPerPixel, pixelsPerDegree
-    } = getMercatorDistanceScales(props);
+    } = getDistanceScales(props);
 
     t.deepEqual([
       toLowPrecision(metersPerPixel[0] * pixelsPerMeter[0]),

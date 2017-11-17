@@ -58,7 +58,7 @@ export function unprojectFlat([x, y], scale) {
 
 // Returns the zoom level that gives a 1 meter pixel at a certain latitude
 // S=C*cos(y)/2^(z+8)
-export function getMercatorMeterZoom({latitude}) {
+export function getMeterZoom({latitude}) {
   assert(latitude);
   const radians = degrees => degrees / 180 * Math.PI;
   return Math.log2(EARTH_CIRCUMFERENCE * Math.cos(radians(latitude))) - 8;
@@ -70,7 +70,7 @@ export function getMercatorMeterZoom({latitude}) {
  * In mercator projection mode, the distance scales vary significantly
  * with latitude.
  */
-export function getMercatorDistanceScales({latitude, longitude, zoom, scale}) {
+export function getDistanceScales({latitude, longitude, zoom, scale}) {
   // Calculate scale from zoom if not provided
   scale = scale !== undefined ? scale : Math.pow(2, zoom);
 
@@ -115,7 +115,7 @@ export function getMercatorDistanceScales({latitude, longitude, zoom, scale}) {
  * Calculates a mercator world position ("pixels" in given zoom level)
  * from a lng/lat and meterOffset
  */
-export function getMercatorWorldPosition({
+export function getWorldPosition({
   longitude,
   latitude,
   zoom,
@@ -124,14 +124,14 @@ export function getMercatorWorldPosition({
 }) {
   const scale = Math.pow(2, zoom);
 
-  // Calculate distance scales if lng/lat/zoom are provided
-  distanceScales = distanceScales || getMercatorDistanceScales({latitude, longitude, scale});
-
   // Make a centered version of the matrix for projection modes without an offset
   const center2d = projectFlat([longitude, latitude], scale);
   const center = new Vector3(center2d[0], center2d[1], 0);
 
   if (meterOffset) {
+    // Calculate distance scales if lng/lat/zoom are provided
+    distanceScales = distanceScales || getDistanceScales({latitude, longitude, scale});
+
     const pixelPosition = new Vector3(meterOffset)
       // Convert to pixels in current zoom
       .scale(distanceScales.pixelsPerMeter)
@@ -150,11 +150,11 @@ export function getMercatorWorldPosition({
 // with mapbox and react-map-gl. See: https://github.com/mapbox/mapbox-gl-js
 
 // Variable fov (in radians)
-export function getFov({height, altitude}) {
+function getFov({height, altitude}) {
   return 2 * Math.atan((height / 2) / altitude);
 }
 
-export function getClippingPlanes({altitude, pitch}) {
+function getClippingPlanes({altitude, pitch}) {
   // Find the distance from the center point to the center top
   // in altitude units using law of sines.
   const pitchRadians = pitch * DEGREES_TO_RADIANS;
@@ -169,16 +169,11 @@ export function getClippingPlanes({altitude, pitch}) {
 }
 
 // TODO - rename this matrix
-export function makeUncenteredViewMatrixFromMercatorParams({
-  width,
+export function getUncenteredViewMatrix({
   height,
-  longitude,
-  latitude,
-  zoom,
   pitch,
   bearing,
-  altitude,
-  center
+  altitude
 }) {
   // VIEW MATRIX: PROJECTS MERCATOR WORLD COORDINATES
   // Note that mercator world coordinates typically need to be flipped
@@ -201,7 +196,8 @@ export function makeUncenteredViewMatrixFromMercatorParams({
   return vm;
 }
 
-export function makeViewMatricesFromMercatorParams({
+export function getViewMatrix({
+  // Viewport props
   width,
   height,
   longitude,
@@ -210,25 +206,24 @@ export function makeViewMatricesFromMercatorParams({
   pitch,
   bearing,
   altitude,
-  distanceScales,
+  // Pre-calculated parameters
+  distanceScales = null,
+  center = null,
+  viewMatrixUncentered = null,
+  // Options
   meterOffset = null,
   flipY = true
 }) {
-  const center = getMercatorWorldPosition({longitude, latitude, zoom, distanceScales, meterOffset});
+  if (!center) {
+    center = getWorldPosition({longitude, latitude, zoom, distanceScales, meterOffset});
+  }
 
   // VIEW MATRIX: PROJECTS FROM VIRTUAL PIXELS TO CAMERA SPACE
   // Note: As usual, matrix operation orders should be read in reverse
   // since vectors will be multiplied from the right during transformation
-  const viewMatrixUncentered = makeUncenteredViewMatrixFromMercatorParams({
-    width,
-    height,
-    longitude,
-    latitude,
-    zoom,
-    pitch,
-    bearing,
-    altitude
-  });
+  if (!viewMatrixUncentered) {
+    viewMatrixUncentered = getUncenteredViewMatrix({height, pitch, bearing, altitude});
+  }
 
   const vm = createMat4();
 
@@ -238,16 +233,12 @@ export function makeViewMatricesFromMercatorParams({
 
   const viewMatrixCentered = mat4_translate(vm, vm, new Vector3(center).negate());
 
-  return {
-    viewMatrixCentered,
-    viewMatrixUncentered,
-    center
-  };
+  return viewMatrixCentered;
 }
 
 // PROJECTION MATRIX: PROJECTS FROM CAMERA (VIEW) SPACE TO CLIPSPACE
 // This is a "Mapbox" projection matrix - matches mapbox exactly if farZMultiplier === 1
-export function makeProjectionMatrixFromMercatorParams({
+export function getProjectionMatrix({
   width,
   height,
   pitch,

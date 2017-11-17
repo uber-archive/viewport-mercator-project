@@ -1,20 +1,16 @@
 // View and Projection Matrix calculations for mapbox-js style map view properties
 import Viewport from './viewport';
-import assert from 'assert';
 
 import {
   projectFlat,
   unprojectFlat,
-  getMercatorDistanceScales,
-  makeProjectionMatrixFromMercatorParams,
-  makeViewMatricesFromMercatorParams
+  getProjectionMatrix,
+  getViewMatrix
 } from './web-mercator-utils';
 
 /* eslint-disable camelcase */
 import vec2_add from 'gl-vec2/add';
 import vec2_negate from 'gl-vec2/negate';
-
-const ERR_ARGUMENT = 'Illegal argument to WebMercatorViewport';
 
 export default class WebMercatorViewport extends Viewport {
   /**
@@ -70,9 +66,7 @@ export default class WebMercatorViewport extends Viewport {
 
     const center = projectFlat([longitude, latitude], scale);
 
-    const distanceScales = getMercatorDistanceScales({latitude, longitude, scale});
-
-    const projectionMatrix = makeProjectionMatrixFromMercatorParams({
+    const projectionMatrix = getProjectionMatrix({
       width,
       height,
       pitch,
@@ -81,7 +75,7 @@ export default class WebMercatorViewport extends Viewport {
       farZMultiplier
     });
 
-    const {viewMatrixCentered} = makeViewMatricesFromMercatorParams({
+    const viewMatrix = getViewMatrix({
       width,
       height,
       longitude,
@@ -89,11 +83,10 @@ export default class WebMercatorViewport extends Viewport {
       zoom,
       pitch,
       bearing,
-      altitude,
-      distanceScales
+      altitude
     });
 
-    super({width, height, viewMatrix: viewMatrixCentered, projectionMatrix});
+    super({width, height, viewMatrix, projectionMatrix});
 
     // Save parameters
     this.latitude = latitude;
@@ -105,8 +98,6 @@ export default class WebMercatorViewport extends Viewport {
 
     this.scale = scale;
     this.center = center;
-
-    this._distanceScales = distanceScales;
 
     Object.freeze(this);
   }
@@ -158,65 +149,6 @@ export default class WebMercatorViewport extends Viewport {
     const translate = vec2_add([], toLocation, vec2_negate([], fromLocation));
     const newCenter = vec2_add([], center, translate);
     return this.unprojectFlat(newCenter);
-  }
-
-  getDistanceScales() {
-    return this._distanceScales;
-  }
-
-  /**
-   * Converts a meter offset to a lnglat offset
-   *
-   * Note: Uses simple linear approximation around the viewport center
-   * Error increases with size of offset (roughly 1% per 100km)
-   *
-   * @param {[Number,Number]|[Number,Number,Number]) xyz - array of meter deltas
-   * @return {[Number,Number]|[Number,Number,Number]) - array of [lng,lat,z] deltas
-   */
-  metersToLngLatDelta(xyz) {
-    const [x, y, z = 0] = xyz;
-    assert(Number.isFinite(x) && Number.isFinite(y) && Number.isFinite(z), ERR_ARGUMENT);
-    const {pixelsPerMeter, degreesPerPixel} = this._distanceScales;
-    const deltaLng = x * pixelsPerMeter[0] * degreesPerPixel[0];
-    const deltaLat = y * pixelsPerMeter[1] * degreesPerPixel[1];
-    return xyz.length === 2 ? [deltaLng, deltaLat] : [deltaLng, deltaLat, z];
-  }
-
-  /**
-   * Converts a lnglat offset to a meter offset
-   *
-   * Note: Uses simple linear approximation around the viewport center
-   * Error increases with size of offset (roughly 1% per 100km)
-   *
-   * @param {[Number,Number]|[Number,Number,Number]) deltaLngLatZ - array of [lng,lat,z] deltas
-   * @return {[Number,Number]|[Number,Number,Number]) - array of meter deltas
-   */
-  lngLatDeltaToMeters(deltaLngLatZ) {
-    const [deltaLng, deltaLat, deltaZ = 0] = deltaLngLatZ;
-    assert(Number.isFinite(deltaLng) && Number.isFinite(deltaLat) && Number.isFinite(deltaZ),
-      ERR_ARGUMENT);
-    const {pixelsPerDegree, metersPerPixel} = this._distanceScales;
-    const deltaX = deltaLng * pixelsPerDegree[0] * metersPerPixel[0];
-    const deltaY = deltaLat * pixelsPerDegree[1] * metersPerPixel[1];
-    return deltaLngLatZ.length === 2 ? [deltaX, deltaY] : [deltaX, deltaY, deltaZ];
-  }
-
-  /**
-   * Add a meter delta to a base lnglat coordinate, returning a new lnglat array
-   *
-   * Note: Uses simple linear approximation around the viewport center
-   * Error increases with size of offset (roughly 1% per 100km)
-   *
-   * @param {[Number,Number]|[Number,Number,Number]) lngLatZ - base coordinate
-   * @param {[Number,Number]|[Number,Number,Number]) xyz - array of meter deltas
-   * @return {[Number,Number]|[Number,Number,Number]) array of [lng,lat,z] deltas
-   */
-  addMetersToLngLat(lngLatZ, xyz) {
-    const [lng, lat, Z = 0] = lngLatZ;
-    const [deltaLng, deltaLat, deltaZ = 0] = this.metersToLngLatDelta(xyz);
-    return lngLatZ.length === 2 ?
-      [lng + deltaLng, lat + deltaLat] :
-      [lng + deltaLng, lat + deltaLat, Z + deltaZ];
   }
 
   /**

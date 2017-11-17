@@ -9,12 +9,12 @@ export {fitBounds} from './web-mercator-viewport';
 export {
   projectFlat,
   unprojectFlat,
-  getMercatorMeterZoom,
-  getMercatorDistanceScales,
-  getMercatorWorldPosition,
-  makeViewMatricesFromMercatorParams,
-  makeUncenteredViewMatrixFromMercatorParams,
-  makeProjectionMatrixFromMercatorParams,
+  getMeterZoom,
+  getDistanceScales,
+  getWorldPosition,
+  getViewMatrix,
+  getUncenteredViewMatrix,
+  getProjectionMatrix,
   getFov,
   getClippingPlanes
 } from './web-mercator-utils';
