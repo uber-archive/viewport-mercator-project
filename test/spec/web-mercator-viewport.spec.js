@@ -44,19 +44,16 @@ test('WebMercatorViewport.projectFlat', t => {
 
 test('WebMercatorViewport.project#3D', t => {
   for (const vc in VIEWPORT_PROPS) {
-    const props = VIEWPORT_PROPS[vc];
-    const viewport = new WebMercatorViewport(props);
-    for (const offset of [0, 0.5, 1.0, 5.0]) {
-      const lnglatIn = [props.longitude + offset, props.latitude + offset];
-      const xyz = viewport.project(lnglatIn);
-      const lnglat = viewport.unproject(xyz);
-      t.ok(equals(lnglatIn, lnglat), `Project/unproject ${lnglatIn} to ${lnglat}`);
-
-      const lnglatIn3 = [props.longitude + offset, props.latitude + offset, 0];
-      const xyz3 = viewport.project(lnglatIn3);
-      const lnglat3 = viewport.unproject(xyz3);
-      t.ok(equals(lnglatIn3, lnglat3),
-        `Project/unproject ${lnglatIn3}=>${xyz3}=>${lnglat3}`);
+    const viewport = new WebMercatorViewport(VIEWPORT_PROPS[vc]);
+    for (const tc in VIEWPORT_PROPS) {
+      const {longitude, latitude} = VIEWPORT_PROPS[tc];
+      const lnglatZIn = [longitude, latitude, 100];
+      const [x, y, z] = viewport.project(lnglatZIn);
+      const lnglatZ1 = viewport.unproject([x, y, z]);
+      const lnglatZ2 = viewport.unproject([x, y], {targetZ: 100});
+      t.comment(`Comparing [${lnglatZIn}] to [${lnglatZ1}] & [${lnglatZ2}]`);
+      t.ok(equals(lnglatZIn, lnglatZ1), 'unproject with pixel depth');
+      t.ok(equals(lnglatZIn, lnglatZ2), 'unproject with target Z');
     }
   }
   t.end();

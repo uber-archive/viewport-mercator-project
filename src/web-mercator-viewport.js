@@ -25,12 +25,9 @@ export default class WebMercatorViewport extends Viewport {
    *
    * @class
    * @param {Object} opt - options
-   * @param {Boolean} mercator=true - Whether to use mercator projection
    *
    * @param {Number} opt.width=1 - Width of "viewport" or window
    * @param {Number} opt.height=1 - Height of "viewport" or window
-   * @param {Array} opt.center=[0, 0] - Center of viewport
-   *   [longitude, latitude] or [x, y]
    * @param {Number} opt.scale=1 - Either use scale or zoom
    * @param {Number} opt.pitch=0 - Camera angle in degrees (0 is straight down)
    * @param {Number} opt.bearing=0 - Map rotation in degrees (0 means north is up)
