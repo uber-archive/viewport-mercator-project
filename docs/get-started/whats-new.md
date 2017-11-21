@@ -1,11 +1,11 @@
 # What's New
 
-
-## v4.2 (In Progress, Release Date TBA)
+## v5.0 (In Progress, Release Date TBA)
 - Use math.gl library (smaller dependency than gl-matrix + enables some code to be dropped)
 - Documentation website matching other frameworks in the same suite.
 - Includes a set of primitive web mercator utilities
    - (classes here and in other repos like deck.gl use these for increased code sharing and smaller exectables)
+- `project` and `unproject` methods deal with 3d pixel coordinates (depth).
 
 
 ## v4.1
