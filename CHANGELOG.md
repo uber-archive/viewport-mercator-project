@@ -1,10 +1,15 @@
 # Change Log
 
-## 4.0 Minor Releases
+## 5.0 (Under Development)
 
-### 4.2.0-alpha
+### 5.0-alpha.1
 - Introduce math.gl
 - New utility functions
+- Removed `FlatMercatorViewport`
+- `PerspectiveMercatorViewport` renamed to `WebMercatorViewport`
+- `WebMercatorViewport.project` and `WebMercatorViewport.unproject` handle pixel depth
+
+## 4.0 Minor Releases
 
 ### 4.1.1
 - Replace gl-matrix dependency with cherry-pick imports
