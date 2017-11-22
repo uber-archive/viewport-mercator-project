@@ -74,3 +74,30 @@ test('WebMercatorViewport.project#2D', t => {
   }
   t.end();
 });
+
+test('WebMercatorViewport.getLocationAtPoint', t => {
+  const TEST_POS = [200, 200];
+
+  for (const vc in VIEWPORT_PROPS) {
+    const viewport = new WebMercatorViewport(VIEWPORT_PROPS[vc]);
+    for (const tc in VIEWPORT_PROPS) {
+      const lngLat = [
+        VIEWPORT_PROPS[tc].longitude,
+        VIEWPORT_PROPS[tc].latitude
+      ];
+
+      const [newLng, newLat] = viewport.getLocationAtPoint({lngLat, pos: TEST_POS});
+
+      const newViewport = new WebMercatorViewport(Object.assign({}, VIEWPORT_PROPS[vc], {
+        longitude: newLng,
+        latitude: newLat
+      }));
+
+      const xy = newViewport.project(lngLat);
+
+      t.comment(`Comparing [${TEST_POS}] to [${xy}]`);
+      t.ok(equals(TEST_POS, xy));
+    }
+  }
+  t.end();
+});
