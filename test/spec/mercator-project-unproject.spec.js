@@ -65,3 +65,20 @@ test('Viewport projection', t => {
   });
   t.end();
 });
+
+test('Viewport projection#topLeft', t => {
+  const viewport = new WebMercatorViewport(viewportProps);
+
+  const topLeft = viewport.unproject([0, 0], {topLeft: true});
+  const bottomLeft = viewport.unproject([0, viewport.height], {topLeft: true});
+
+  t.ok(topLeft[1] > bottomLeft[1], 'topLeft latitude is north of bottomLeft latitude');
+
+  const topLeft2 = viewport.unproject([0, viewport.height], {topLeft: false});
+  const bottomLeft2 = viewport.unproject([0, 0], {topLeft: false});
+
+  t.deepEquals(topLeft, topLeft2, 'topLeft true/false match');
+  t.deepEquals(bottomLeft, bottomLeft2, 'bottomLeft true/false match');
+
+  t.end();
+});
