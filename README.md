@@ -49,4 +49,4 @@ viewport.unproject([400, 300]);
 
 ## Who is this for?
 
-Specifically built for use with [deck.gl](https://github.com/uber/deck-gl) and [react-map-gl](https://github.com/uber/react-map-gl), but could be useful for any web mapping application that wants to support perspective enabled Web Mercator Projections with floating point zoom levels.
+Specifically built for use with [deck.gl](https://github.com/uber/deck.gl) and [react-map-gl](https://github.com/uber/react-map-gl), but could be useful for any web mapping application that wants to support perspective enabled Web Mercator Projections with floating point zoom levels.
