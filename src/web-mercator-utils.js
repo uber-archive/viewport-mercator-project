@@ -8,7 +8,6 @@ import mat4_scale from 'gl-mat4/scale';
 import mat4_translate from 'gl-mat4/translate';
 import mat4_rotateX from 'gl-mat4/rotateX';
 import mat4_rotateZ from 'gl-mat4/rotateZ';
-import vec2_distance from 'gl-vec2/distance';
 import assert from 'assert';
 
 // CONSTANTS
@@ -18,8 +17,8 @@ const DEGREES_TO_RADIANS = PI / 180;
 const RADIANS_TO_DEGREES = 180 / PI;
 const TILE_SIZE = 512;
 const WORLD_SCALE = TILE_SIZE;
-const EARTH_CIRCUMFERENCE = 40.075e6;
-// const METERS_PER_DEGREE_AT_EQUATOR = 111000; // Approximately 111km per degree at equator
+const EARTH_CIRCUMFERENCE = 40.03e6;
+const METERS_PER_DEGREE = EARTH_CIRCUMFERENCE / 360;
 
 /**
  * Project [lng,lat] on sphere onto [x,y] on 512*512 Mercator Zoom 0 tile.
@@ -64,6 +63,12 @@ export function getMeterZoom({latitude}) {
   return Math.log2(EARTH_CIRCUMFERENCE * Math.cos(radians(latitude))) - 8;
 }
 
+function getPixelsPerMeter({latitude, scale}) {
+  const worldSize = TILE_SIZE * scale;
+  const latCosine = Math.cos(latitude * Math.PI / 180);
+  return worldSize / (EARTH_CIRCUMFERENCE * latCosine);
+}
+
 /**
  * Calculate distance scales in meters around current lat/lon, both for
  * degrees and pixels.
@@ -76,31 +81,35 @@ export function getDistanceScales({latitude, longitude, zoom, scale}) {
 
   assert(!isNaN(latitude) && !isNaN(longitude) && !isNaN(scale));
 
-  const latCosine = Math.cos(latitude * Math.PI / 180);
-
-  // const metersPerDegreeX = METERS_PER_DEGREE_AT_EQUATOR * latCosine;
-  // const metersPerDegreeY = METERS_PER_DEGREE_AT_EQUATOR;
+  const center = projectFlat([longitude, latitude], scale);
 
   // Calculate number of pixels occupied by one degree longitude
   // around current lat/lon
-  const pixelsPerDegreeX = vec2_distance(
-    projectFlat([longitude + 0.5, latitude], scale),
-    projectFlat([longitude - 0.5, latitude], scale)
-  );
+  const pixelsPerDegreeX = (
+    projectFlat([longitude + 1e-4, latitude], scale)[0] - center[0]
+  ) / 1e-4;
   // Calculate number of pixels occupied by one degree latitude
   // around current lat/lon
-  const pixelsPerDegreeY = vec2_distance(
-    projectFlat([longitude, latitude + 0.5], scale),
-    projectFlat([longitude, latitude - 0.5], scale)
-  );
+  const pixelsPerDegreeY = (
+    projectFlat([longitude, latitude - 1e-4], scale)[1] - center[1]
+  ) / 1e-4;
 
-  const worldSize = TILE_SIZE * scale;
-  const altPixelsPerMeter = worldSize / (4e7 * latCosine);
+  const altPixelsPerMeter = getPixelsPerMeter({latitude, scale});
   const pixelsPerMeter = [altPixelsPerMeter, altPixelsPerMeter, altPixelsPerMeter];
   const metersPerPixel = [1 / altPixelsPerMeter, 1 / altPixelsPerMeter, 1 / altPixelsPerMeter];
 
   const pixelsPerDegree = [pixelsPerDegreeX, pixelsPerDegreeY, altPixelsPerMeter];
   const degreesPerPixel = [1 / pixelsPerDegreeX, 1 / pixelsPerDegreeY, 1 / altPixelsPerMeter];
+
+  const pixelsPerDegreeY2 = (
+    projectFlat([longitude, latitude - 0.1], scale)[1] - center[1]
+  ) / 0.1;
+
+  const altPixelsPerMeter2 = getPixelsPerMeter({latitude: latitude - 0.1, scale});
+
+  pixelsPerDegree[3] = (pixelsPerDegreeY2 - pixelsPerDegreeY) / 0.1;
+  pixelsPerMeter[3] = (altPixelsPerMeter2 - altPixelsPerMeter) / altPixelsPerMeter /
+    (0.1 * METERS_PER_DEGREE);
 
   // Main results, used for converting meters to latlng deltas and scaling offsets
   return {
