@@ -2,6 +2,10 @@
 
 ## 5.0 (Under Development)
 
+### 5.0-alpha.2
+- Improve perf of `getDistanceScales`
+- Add paramter `highPrecision` to `getDistanceScales` to return extra precision multipliers for `pixelsPerDegree` and `pixelsPerMeter`
+
 ### 5.0-alpha.1
 - Introduce math.gl
 - New utility functions
