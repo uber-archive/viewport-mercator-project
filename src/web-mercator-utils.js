@@ -68,12 +68,13 @@ export function getMeterZoom({latitude}) {
  * In mercator projection mode, the distance scales vary significantly
  * with latitude.
  */
-export function getDistanceScales({latitude, longitude, zoom, scale}) {
+export function getDistanceScales({latitude, longitude, zoom, scale, highPrecision = false}) {
   // Calculate scale from zoom if not provided
   scale = scale !== undefined ? scale : Math.pow(2, zoom);
 
   assert(isFinite(latitude) && isFinite(longitude) && isFinite(scale));
 
+  const result = {};
   const worldSize = TILE_SIZE * scale;
   const latCosine = Math.cos(latitude * DEGREES_TO_RADIANS);
 
@@ -92,11 +93,11 @@ export function getDistanceScales({latitude, longitude, zoom, scale}) {
    */
   const altPixelsPerMeter = worldSize / EARTH_CIRCUMFERENCE / latCosine;
 
-  const pixelsPerMeter = [altPixelsPerMeter, altPixelsPerMeter, altPixelsPerMeter];
-  const metersPerPixel = [1 / altPixelsPerMeter, 1 / altPixelsPerMeter, 1 / altPixelsPerMeter];
+  result.pixelsPerMeter = [altPixelsPerMeter, altPixelsPerMeter, altPixelsPerMeter];
+  result.metersPerPixel = [1 / altPixelsPerMeter, 1 / altPixelsPerMeter, 1 / altPixelsPerMeter];
 
-  const pixelsPerDegree = [pixelsPerDegreeX, pixelsPerDegreeY, altPixelsPerMeter];
-  const degreesPerPixel = [1 / pixelsPerDegreeX, 1 / pixelsPerDegreeY, 1 / altPixelsPerMeter];
+  result.pixelsPerDegree = [pixelsPerDegreeX, pixelsPerDegreeY, altPixelsPerMeter];
+  result.degreesPerPixel = [1 / pixelsPerDegreeX, 1 / pixelsPerDegreeY, 1 / altPixelsPerMeter];
 
   /**
    * Taylor series 2nd order for 1/latCosine
@@ -104,21 +105,18 @@ export function getDistanceScales({latitude, longitude, zoom, scale}) {
        = d(1/cos(lat * DEGREES_TO_RADIANS))/d(lat) * dLat
        = DEGREES_TO_RADIANS * tan(lat * DEGREES_TO_RADIANS) / cos(lat * DEGREES_TO_RADIANS) * dLat
    */
-  const latCosine2 = DEGREES_TO_RADIANS * Math.tan(latitude * DEGREES_TO_RADIANS) / latCosine;
-  const pixelsPerDegreeY2 = pixelsPerDegreeX * latCosine2 / 2;
-  const altPixelsPerMeter2 = worldSize / EARTH_CIRCUMFERENCE * latCosine2 /
-    pixelsPerDegreeY * altPixelsPerMeter;
+  if (highPrecision) {
+    const latCosine2 = DEGREES_TO_RADIANS * Math.tan(latitude * DEGREES_TO_RADIANS) / latCosine;
+    const pixelsPerDegreeY2 = pixelsPerDegreeX * latCosine2 / 2;
+    const altPixelsPerDegree2 = worldSize / EARTH_CIRCUMFERENCE * latCosine2;
+    const altPixelsPerMeter2 = altPixelsPerDegree2 / pixelsPerDegreeY * altPixelsPerMeter;
 
-  pixelsPerDegree[3] = pixelsPerDegreeY2;
-  pixelsPerMeter[3] = altPixelsPerMeter2;
+    result.pixelsPerDegree2 = [0, pixelsPerDegreeY2, altPixelsPerDegree2];
+    result.pixelsPerMeter2 = [altPixelsPerMeter2, 0, altPixelsPerMeter2];
+  }
 
   // Main results, used for converting meters to latlng deltas and scaling offsets
-  return {
-    pixelsPerMeter,
-    metersPerPixel,
-    pixelsPerDegree,
-    degreesPerPixel
-  };
+  return result;
 }
 
 /**

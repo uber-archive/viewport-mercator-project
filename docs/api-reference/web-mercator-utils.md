@@ -45,15 +45,16 @@ Parameters:
 - `viewport.latitude` (Number, required)
 - `viewport.zoom` (Number, optional)
 - `viewport.scale` (Number, optional) - must supply if zoom is not specified
+- `viewport.highPrecision` (bool, optional) - default `false`
 
 Returns:
 - `distanceScales` (Object)
-- `distanceScales.pixelsPerMeter` (Array) - pixels per meter in `[x, y, z, x2]`
-    + `x2` adjusts `x` by y offset (in meters): `xAdjusted = x + x2 * dy)`. It offers a cheap way to compensate for the `x` changes with latitude.
+- `distanceScales.pixelsPerMeter` (Array) - pixels per meter in `[x, y, z]`.
 - `distanceScales.metersPerPixel` (Array) - meters per pixel in `[x, y, z]`
 - `distanceScales.pixelsPerDegree` (Array) - pixels per degree in `[x, y, z, y2]`
-    + `y2` adjusts `y` by y offset (in degrees): `yAdjusted = y + y2 * dy)`. It offers a cheap way to compensate for the `y` changes with latitude.
 - `distanceScales.degreesPerPixel` (Array) - degree per pixel in `[x, y, z]`
+- `distanceScales.pixelsPerMeter2` (Array) - if `highPrecision` is `true`, returns pixels per meter adjustment in `[x2, y2, z2]`. It offers a cheap way to compensate for the precision loss with latitude. Amends `pixelsPerMeter` by y offset (in meters): `[x + x2 * dy, y + y2 * dy, z + z2 * dy]`.
+- `distanceScales.pixelsPerDegree2` (Array) - if `highPrecision` is `true`, returns pixels per degree adjustment in `[x2, y2, z2]`. It offers a cheap way to compensate for the precision loss with latitude. Amends `pixelsPerDegree` by y offset (in degrees): `[x + x2 * dy, y + y2 * dy, z + z2 * dy]`.
 
 
 ### `getWorldPosition(point)`

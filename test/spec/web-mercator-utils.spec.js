@@ -56,43 +56,49 @@ test('getDistanceScales', t => {
 
 test('getDistanceScales#pixelsPerDegree', t => {
   const scale = Math.pow(2, DISTANCE_SCALE_TEST_ZOOM);
+  const z = 1000;
 
   for (const vc in VIEWPORT_PROPS) {
     t.comment(vc);
     const props = VIEWPORT_PROPS[vc];
     const {longitude, latitude} = props;
-    const {pixelsPerDegree} = getDistanceScales({longitude, latitude, scale});
+    const {pixelsPerDegree, pixelsPerDegree2} =
+      getDistanceScales({longitude, latitude, scale, highPrecision: true});
 
     // Test degree offsets
     for (const delta of [0.001, 0.01, 0.05, 0.1, 0.3]) {
       t.comment(`R = ${delta} degrees`);
 
       // To pixels
-      const deltaX = delta * pixelsPerDegree[0];
-      const deltaY = delta * pixelsPerDegree[1];
-      const deltaYAdjusted = delta * (pixelsPerDegree[1] + pixelsPerDegree[3] * delta);
+      const coords = [
+        delta * pixelsPerDegree[0],
+        delta * pixelsPerDegree[1],
+        z * pixelsPerDegree[2]
+      ];
+      const coordsAdjusted = [
+        delta * (pixelsPerDegree[0] + pixelsPerDegree2[0] * delta),
+        delta * (pixelsPerDegree[1] + pixelsPerDegree2[1] * delta),
+        z * (pixelsPerDegree[2] + pixelsPerDegree2[2] * delta)
+      ];
 
-      const realDeltaX = projectFlat([longitude + delta, latitude + delta], scale)[0] -
-        projectFlat([longitude, latitude], scale)[0];
-      // distance([longitude, latitude], [longitude + delta, latitude]) * 1000;
-      const realDeltaY = -projectFlat([longitude + delta, latitude + delta], scale)[1] +
-        projectFlat([longitude, latitude], scale)[1];
-      // distance([longitude, latitude], [longitude, latitude + delta]) * 1000;
+      const pt = [longitude + delta, latitude + delta];
 
-      const diffX = getDiff(deltaX, realDeltaX);
-      const diffY = getDiff(deltaY, realDeltaY);
-      const diffYAdjusted = getDiff(deltaYAdjusted, realDeltaY);
+      const realCoords = [
+        projectFlat(pt, scale)[0] - projectFlat([longitude, latitude], scale)[0],
+        -(projectFlat(pt, scale)[1] - projectFlat([longitude, latitude], scale)[1]),
+        z * getDistanceScales({longitude: pt[0], latitude: pt[1], scale}).pixelsPerMeter[2]
+      ];
 
-      t.comment(`delta X unadjusted: ${diffX.message}`);
-      t.ok(diffX.error < DISTANCE_TOLERANCE &&
-        diffX.errorPixels < DISTANCE_TOLERANCE_PIXELS,
-        'delta X error within tolerance');
+      const diff = getDiff(coords, realCoords);
+      const diffAdjusted = getDiff(coordsAdjusted, realCoords);
 
-      t.comment(`delta Y unadjusted: ${diffY.message}`);
-      t.comment(`delta Y adjusted: ${diffYAdjusted.message}`);
-      t.ok(diffYAdjusted.error < DISTANCE_TOLERANCE &&
-        diffYAdjusted.errorPixels < DISTANCE_TOLERANCE_PIXELS,
-        'delta Y error within tolerance');
+      t.comment(`unadjusted: ${diff.message}`);
+      t.comment(`adjusted: ${diffAdjusted.message}`);
+
+      t.ok(diffAdjusted.error.every(e => e < DISTANCE_TOLERANCE),
+        'Error within ratio tolerance');
+      t.ok(diffAdjusted.errorPixels.every(p => p < DISTANCE_TOLERANCE_PIXELS),
+        'Error within pixel tolerance');
     }
   }
   t.end();
@@ -100,60 +106,67 @@ test('getDistanceScales#pixelsPerDegree', t => {
 
 test('getDistanceScales#pixelsPerMeter', t => {
   const scale = Math.pow(2, DISTANCE_SCALE_TEST_ZOOM);
+  const z = 1000;
 
   for (const vc in VIEWPORT_PROPS) {
     t.comment(vc);
     const props = VIEWPORT_PROPS[vc];
     const {longitude, latitude} = props;
-    const {pixelsPerMeter} = getDistanceScales({latitude, longitude, scale});
+    const {pixelsPerMeter, pixelsPerMeter2} =
+      getDistanceScales({latitude, longitude, scale, highPrecision: true});
 
     // Test degree offsets
     for (const delta of [10, 100, 1000, 5000, 10000, 30000]) {
       t.comment(`R = ${delta} meters`);
 
       // To pixels
-      const deltaX = delta * pixelsPerMeter[0];
-      const deltaY = delta * pixelsPerMeter[1];
-      const deltaXAdjusted = delta * (pixelsPerMeter[0] + pixelsPerMeter[3] * delta);
+      const coords = [
+        delta * pixelsPerMeter[0],
+        delta * pixelsPerMeter[1],
+        z * pixelsPerMeter[2]
+      ];
+      const coordsAdjusted = [
+        delta * (pixelsPerMeter[0] + pixelsPerMeter2[0] * delta),
+        delta * (pixelsPerMeter[1] + pixelsPerMeter2[1] * delta),
+        z * (pixelsPerMeter[2] + pixelsPerMeter2[2] * delta)
+      ];
 
       let pt = [longitude, latitude];
       // turf unit is kilometers
       pt = destination(pt, delta / 1000 * Math.sqrt(2), 45);
       pt = pt.geometry.coordinates;
 
-      const realDeltaX = projectFlat(pt, scale)[0] -
-        projectFlat([longitude, latitude], scale)[0];
-      // distance([longitude, latitude], [longitude + delta, latitude]) * 1000;
-      const realDeltaY = -projectFlat(pt, scale)[1] +
-        projectFlat([longitude, latitude], scale)[1];
-      // distance([longitude, latitude], [longitude, latitude + delta]) * 1000;
+      const realCoords = [
+        projectFlat(pt, scale)[0] - projectFlat([longitude, latitude], scale)[0],
+        -(projectFlat(pt, scale)[1] - projectFlat([longitude, latitude], scale)[1]),
+        z * getDistanceScales({longitude: pt[0], latitude: pt[1], scale}).pixelsPerMeter[2]
+      ];
 
-      const diffX = getDiff(deltaX, realDeltaX);
-      const diffY = getDiff(deltaY, realDeltaY);
-      const diffXAdjusted = getDiff(deltaXAdjusted, realDeltaX);
+      const diff = getDiff(coords, realCoords);
+      const diffAdjusted = getDiff(coordsAdjusted, realCoords);
 
-      t.comment(`delta X unadjusted: ${diffX.message}`);
-      t.comment(`delta X adjusted: ${diffXAdjusted.message}`);
-      t.ok(diffXAdjusted.error < DISTANCE_TOLERANCE &&
-        diffXAdjusted.errorPixels < DISTANCE_TOLERANCE_PIXELS,
-        'delta X error within tolerance');
+      t.comment(`unadjusted: ${diff.message}`);
+      t.comment(`adjusted: ${diffAdjusted.message}`);
 
-      t.comment(`delta Y unadjusted: ${diffY.message}`);
-      t.ok(diffY.error < DISTANCE_TOLERANCE &&
-        diffY.errorPixels < DISTANCE_TOLERANCE_PIXELS,
-        'delta Y error within tolerance');
+      t.ok(diffAdjusted.error.every(e => e < DISTANCE_TOLERANCE),
+        'Error within ratio tolerance');
+      t.ok(diffAdjusted.errorPixels.every(p => p < DISTANCE_TOLERANCE_PIXELS),
+        'Error within pixel tolerance');
     }
   }
   t.end();
 });
 
 function getDiff(value, baseValue) {
-  const errorPixels = Math.abs(value - baseValue);
-  const error = errorPixels / Math.min(Math.abs(value), Math.abs(baseValue));
+  const errorPixels = value.map((v, i) => Math.abs(v - baseValue[i]));
+  const error = value.map((v, i) =>
+    Math.abs(v - baseValue[i]) / Math.min(Math.abs(v), Math.abs(baseValue[i])));
 
   return {
     errorPixels,
     error,
-    message: `off by ${(value - baseValue).toFixed(3)} pixels, ${(error * 100).toFixed(3)}%`
+    message: `off by \
+      (${errorPixels.map(d => d.toFixed(3)).join(', ')}) pixels, \
+      (${error.map(d => `${(d * 100).toFixed(3)}%`).join(', ')})`
   };
 }
