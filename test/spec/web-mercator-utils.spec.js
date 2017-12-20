@@ -16,8 +16,9 @@ import {
 
 import VIEWPORT_PROPS from '../utils/sample-viewports';
 
-const DISTANCE_TOLERANCE = 0.001;
-const DISTANCE_TOLERANCE_PIXELS = 20;
+const DISTANCE_TOLERANCE = 0.0005;
+const DISTANCE_TOLERANCE_PIXELS = 2;
+const DISTANCE_SCALE_TEST_ZOOM = 12;
 
 test('Viewport#imports', t => {
   t.ok(projectFlat, 'projectFlat imports OK');
@@ -54,12 +55,13 @@ test('getDistanceScales', t => {
 });
 
 test('getDistanceScales#pixelsPerDegree', t => {
+  const scale = Math.pow(2, DISTANCE_SCALE_TEST_ZOOM);
+
   for (const vc in VIEWPORT_PROPS) {
     t.comment(vc);
     const props = VIEWPORT_PROPS[vc];
     const {longitude, latitude} = props;
-    const scale = Math.pow(2, props.zoom);
-    const {pixelsPerDegree} = getDistanceScales(props);
+    const {pixelsPerDegree} = getDistanceScales({longitude, latitude, scale});
 
     // Test degree offsets
     for (const delta of [0.001, 0.01, 0.05, 0.1, 0.3]) {
@@ -70,10 +72,10 @@ test('getDistanceScales#pixelsPerDegree', t => {
       const deltaY = delta * pixelsPerDegree[1];
       const deltaYAdjusted = delta * (pixelsPerDegree[1] + pixelsPerDegree[3] * delta);
 
-      const realDeltaX = projectFlat([longitude + delta, latitude - delta], scale)[0] -
+      const realDeltaX = projectFlat([longitude + delta, latitude + delta], scale)[0] -
         projectFlat([longitude, latitude], scale)[0];
       // distance([longitude, latitude], [longitude + delta, latitude]) * 1000;
-      const realDeltaY = projectFlat([longitude + delta, latitude - delta], scale)[1] -
+      const realDeltaY = -projectFlat([longitude + delta, latitude + delta], scale)[1] +
         projectFlat([longitude, latitude], scale)[1];
       // distance([longitude, latitude], [longitude, latitude + delta]) * 1000;
 
@@ -97,12 +99,13 @@ test('getDistanceScales#pixelsPerDegree', t => {
 });
 
 test('getDistanceScales#pixelsPerMeter', t => {
+  const scale = Math.pow(2, DISTANCE_SCALE_TEST_ZOOM);
+
   for (const vc in VIEWPORT_PROPS) {
     t.comment(vc);
     const props = VIEWPORT_PROPS[vc];
     const {longitude, latitude} = props;
-    const scale = Math.pow(2, props.zoom);
-    const {pixelsPerMeter} = getDistanceScales(props);
+    const {pixelsPerMeter} = getDistanceScales({latitude, longitude, scale});
 
     // Test degree offsets
     for (const delta of [10, 100, 1000, 5000, 10000, 30000]) {
@@ -111,18 +114,17 @@ test('getDistanceScales#pixelsPerMeter', t => {
       // To pixels
       const deltaX = delta * pixelsPerMeter[0];
       const deltaY = delta * pixelsPerMeter[1];
-      const deltaXAdjusted = delta * pixelsPerMeter[0] * (1 + delta * pixelsPerMeter[3]);
+      const deltaXAdjusted = delta * (pixelsPerMeter[0] + pixelsPerMeter[3] * delta);
 
       let pt = [longitude, latitude];
       // turf unit is kilometers
-      pt = destination(pt, delta / 1000, 180);
-      pt = destination(pt, delta / 1000, 90);
+      pt = destination(pt, delta / 1000 * Math.sqrt(2), 45);
       pt = pt.geometry.coordinates;
 
       const realDeltaX = projectFlat(pt, scale)[0] -
         projectFlat([longitude, latitude], scale)[0];
       // distance([longitude, latitude], [longitude + delta, latitude]) * 1000;
-      const realDeltaY = projectFlat(pt, scale)[1] -
+      const realDeltaY = -projectFlat(pt, scale)[1] +
         projectFlat([longitude, latitude], scale)[1];
       // distance([longitude, latitude], [longitude, latitude + delta]) * 1000;
 
