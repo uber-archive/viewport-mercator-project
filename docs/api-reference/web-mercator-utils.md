@@ -48,11 +48,11 @@ Parameters:
 
 Returns:
 - `distanceScales` (Object)
-- `distanceScales.pixelsPerMeter` (Array) - pixels per meter in `[x, y, z, dx]`
-    + `dx` adjusts `x` by y offset (in meters): `xAdjusted = x * (1 + dx * yOffsetMeters)`. It offers a cheap way to compensate for the `x` changes with latitude. 
+- `distanceScales.pixelsPerMeter` (Array) - pixels per meter in `[x, y, z, x2]`
+    + `x2` adjusts `x` by y offset (in meters): `xAdjusted = x + x2 * dy)`. It offers a cheap way to compensate for the `x` changes with latitude.
 - `distanceScales.metersPerPixel` (Array) - meters per pixel in `[x, y, z]`
-- `distanceScales.pixelsPerDegree` (Array) - pixels per degree in `[x, y, z, dy]`
-    + `dy` adjusts `y` by y offset (in degrees): `yAdjusted = y + dy * yOffsetDegrees)`. It offers a cheap way to compensate for the `y` changes with latitude. 
+- `distanceScales.pixelsPerDegree` (Array) - pixels per degree in `[x, y, z, y2]`
+    + `y2` adjusts `y` by y offset (in degrees): `yAdjusted = y + y2 * dy)`. It offers a cheap way to compensate for the `y` changes with latitude.
 - `distanceScales.degreesPerPixel` (Array) - degree per pixel in `[x, y, z]`
 
 
