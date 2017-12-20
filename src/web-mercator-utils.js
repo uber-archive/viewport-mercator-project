@@ -79,9 +79,9 @@ export function getDistanceScales({latitude, longitude, zoom, scale}) {
 
   /**
    * Number of pixels occupied by one degree longitude around current lat/lon:
-     pixelsPerDegreeX = d(projectFlat([lng, lat])/d(lng)
+     pixelsPerDegreeX = d(projectFlat([lng, lat])[0])/d(lng)
        = scale * TILE_SIZE * DEGREES_TO_RADIANS / (2 * PI)
-     pixelsPerDegreeY = d(projectFlat([lng, lat])/d(lat)
+     pixelsPerDegreeY = d(projectFlat([lng, lat])[1])/d(lat)
        = -scale * TILE_SIZE * DEGREES_TO_RADIANS / cos(lat * DEGREES_TO_RADIANS)  / (2 * PI)
    */
   const pixelsPerDegreeX = worldSize / 360;
@@ -100,7 +100,7 @@ export function getDistanceScales({latitude, longitude, zoom, scale}) {
 
   /**
    * Taylor series 2nd order for 1/latCosine
-     f'(a) / (x - a)
+     f'(a) * (x - a)
        = d(1/cos(lat * DEGREES_TO_RADIANS))/d(lat) * dLat
        = DEGREES_TO_RADIANS * tan(lat * DEGREES_TO_RADIANS) / cos(lat * DEGREES_TO_RADIANS) * dLat
    */
