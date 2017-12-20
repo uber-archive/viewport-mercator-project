@@ -8,7 +8,6 @@ import mat4_scale from 'gl-mat4/scale';
 import mat4_translate from 'gl-mat4/translate';
 import mat4_rotateX from 'gl-mat4/rotateX';
 import mat4_rotateZ from 'gl-mat4/rotateZ';
-import vec2_distance from 'gl-vec2/distance';
 import assert from 'assert';
 
 // CONSTANTS
@@ -17,9 +16,8 @@ const PI_4 = PI / 4;
 const DEGREES_TO_RADIANS = PI / 180;
 const RADIANS_TO_DEGREES = 180 / PI;
 const TILE_SIZE = 512;
-const WORLD_SCALE = TILE_SIZE;
-const EARTH_CIRCUMFERENCE = 40.075e6;
-// const METERS_PER_DEGREE_AT_EQUATOR = 111000; // Approximately 111km per degree at equator
+// Average circumference (40075 km equatorial, 40007 km meridional)
+const EARTH_CIRCUMFERENCE = 40.03e6;
 
 /**
  * Project [lng,lat] on sphere onto [x,y] on 512*512 Mercator Zoom 0 tile.
@@ -32,7 +30,7 @@ const EARTH_CIRCUMFERENCE = 40.075e6;
  * @return {Array} [x,y] coordinates.
  */
 export function projectFlat([lng, lat], scale) {
-  scale = scale * WORLD_SCALE;
+  scale *= TILE_SIZE;
   const lambda2 = lng * DEGREES_TO_RADIANS;
   const phi2 = lat * DEGREES_TO_RADIANS;
   const x = scale * (lambda2 + PI) / (2 * PI);
@@ -50,7 +48,7 @@ export function projectFlat([lng, lat], scale) {
  *   Per cartographic tradition, lat and lon are specified as degrees.
  */
 export function unprojectFlat([x, y], scale) {
-  scale = scale * WORLD_SCALE;
+  scale *= TILE_SIZE;
   const lambda2 = (x / scale) * (2 * PI) - PI;
   const phi2 = 2 * (Math.atan(Math.exp(PI - (y / scale) * (2 * PI))) - PI_4);
   return [lambda2 * RADIANS_TO_DEGREES, phi2 * RADIANS_TO_DEGREES];
@@ -60,8 +58,8 @@ export function unprojectFlat([x, y], scale) {
 // S=C*cos(y)/2^(z+8)
 export function getMeterZoom({latitude}) {
   assert(latitude);
-  const radians = degrees => degrees / 180 * Math.PI;
-  return Math.log2(EARTH_CIRCUMFERENCE * Math.cos(radians(latitude))) - 8;
+  const latCosine = Math.cos(latitude * DEGREES_TO_RADIANS);
+  return Math.log2(EARTH_CIRCUMFERENCE * latCosine) - 8;
 }
 
 /**
@@ -70,45 +68,55 @@ export function getMeterZoom({latitude}) {
  * In mercator projection mode, the distance scales vary significantly
  * with latitude.
  */
-export function getDistanceScales({latitude, longitude, zoom, scale}) {
+export function getDistanceScales({latitude, longitude, zoom, scale, highPrecision = false}) {
   // Calculate scale from zoom if not provided
   scale = scale !== undefined ? scale : Math.pow(2, zoom);
 
-  assert(!isNaN(latitude) && !isNaN(longitude) && !isNaN(scale));
+  assert(isFinite(latitude) && isFinite(longitude) && isFinite(scale));
 
-  const latCosine = Math.cos(latitude * Math.PI / 180);
-
-  // const metersPerDegreeX = METERS_PER_DEGREE_AT_EQUATOR * latCosine;
-  // const metersPerDegreeY = METERS_PER_DEGREE_AT_EQUATOR;
-
-  // Calculate number of pixels occupied by one degree longitude
-  // around current lat/lon
-  const pixelsPerDegreeX = vec2_distance(
-    projectFlat([longitude + 0.5, latitude], scale),
-    projectFlat([longitude - 0.5, latitude], scale)
-  );
-  // Calculate number of pixels occupied by one degree latitude
-  // around current lat/lon
-  const pixelsPerDegreeY = vec2_distance(
-    projectFlat([longitude, latitude + 0.5], scale),
-    projectFlat([longitude, latitude - 0.5], scale)
-  );
-
+  const result = {};
   const worldSize = TILE_SIZE * scale;
-  const altPixelsPerMeter = worldSize / (4e7 * latCosine);
-  const pixelsPerMeter = [altPixelsPerMeter, altPixelsPerMeter, altPixelsPerMeter];
-  const metersPerPixel = [1 / altPixelsPerMeter, 1 / altPixelsPerMeter, 1 / altPixelsPerMeter];
+  const latCosine = Math.cos(latitude * DEGREES_TO_RADIANS);
 
-  const pixelsPerDegree = [pixelsPerDegreeX, pixelsPerDegreeY, altPixelsPerMeter];
-  const degreesPerPixel = [1 / pixelsPerDegreeX, 1 / pixelsPerDegreeY, 1 / altPixelsPerMeter];
+  /**
+   * Number of pixels occupied by one degree longitude around current lat/lon:
+     pixelsPerDegreeX = d(projectFlat([lng, lat])[0])/d(lng)
+       = scale * TILE_SIZE * DEGREES_TO_RADIANS / (2 * PI)
+     pixelsPerDegreeY = d(projectFlat([lng, lat])[1])/d(lat)
+       = -scale * TILE_SIZE * DEGREES_TO_RADIANS / cos(lat * DEGREES_TO_RADIANS)  / (2 * PI)
+   */
+  const pixelsPerDegreeX = worldSize / 360;
+  const pixelsPerDegreeY = pixelsPerDegreeX / latCosine;
+
+  /**
+   * Number of pixels occupied by one meter around current lat/lon:
+   */
+  const altPixelsPerMeter = worldSize / EARTH_CIRCUMFERENCE / latCosine;
+
+  result.pixelsPerMeter = [altPixelsPerMeter, altPixelsPerMeter, altPixelsPerMeter];
+  result.metersPerPixel = [1 / altPixelsPerMeter, 1 / altPixelsPerMeter, 1 / altPixelsPerMeter];
+
+  result.pixelsPerDegree = [pixelsPerDegreeX, pixelsPerDegreeY, altPixelsPerMeter];
+  result.degreesPerPixel = [1 / pixelsPerDegreeX, 1 / pixelsPerDegreeY, 1 / altPixelsPerMeter];
+
+  /**
+   * Taylor series 2nd order for 1/latCosine
+     f'(a) * (x - a)
+       = d(1/cos(lat * DEGREES_TO_RADIANS))/d(lat) * dLat
+       = DEGREES_TO_RADIANS * tan(lat * DEGREES_TO_RADIANS) / cos(lat * DEGREES_TO_RADIANS) * dLat
+   */
+  if (highPrecision) {
+    const latCosine2 = DEGREES_TO_RADIANS * Math.tan(latitude * DEGREES_TO_RADIANS) / latCosine;
+    const pixelsPerDegreeY2 = pixelsPerDegreeX * latCosine2 / 2;
+    const altPixelsPerDegree2 = worldSize / EARTH_CIRCUMFERENCE * latCosine2;
+    const altPixelsPerMeter2 = altPixelsPerDegree2 / pixelsPerDegreeY * altPixelsPerMeter;
+
+    result.pixelsPerDegree2 = [0, pixelsPerDegreeY2, altPixelsPerDegree2];
+    result.pixelsPerMeter2 = [altPixelsPerMeter2, 0, altPixelsPerMeter2];
+  }
 
   // Main results, used for converting meters to latlng deltas and scaling offsets
-  return {
-    pixelsPerMeter,
-    metersPerPixel,
-    pixelsPerDegree,
-    degreesPerPixel
-  };
+  return result;
 }
 
 /**
