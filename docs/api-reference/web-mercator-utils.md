@@ -51,7 +51,7 @@ Returns:
 - `distanceScales` (Object)
 - `distanceScales.pixelsPerMeter` (Array) - pixels per meter in `[x, y, z]`.
 - `distanceScales.metersPerPixel` (Array) - meters per pixel in `[x, y, z]`
-- `distanceScales.pixelsPerDegree` (Array) - pixels per degree in `[x, y, z, y2]`
+- `distanceScales.pixelsPerDegree` (Array) - pixels per degree in `[x, y, z]`
 - `distanceScales.degreesPerPixel` (Array) - degree per pixel in `[x, y, z]`
 - `distanceScales.pixelsPerMeter2` (Array) - if `highPrecision` is `true`, returns pixels per meter adjustment in `[x2, y2, z2]`. It offers a cheap way to compensate for the precision loss with latitude. Amends `pixelsPerMeter` by y offset (in meters): `[x + x2 * dy, y + y2 * dy, z + z2 * dy]`.
 - `distanceScales.pixelsPerDegree2` (Array) - if `highPrecision` is `true`, returns pixels per degree adjustment in `[x2, y2, z2]`. It offers a cheap way to compensate for the precision loss with latitude. Amends `pixelsPerDegree` by y offset (in degrees): `[x + x2 * dy, y + y2 * dy, z + z2 * dy]`.
