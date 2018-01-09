@@ -1,6 +1,13 @@
 # Change Log
 
-## 5.0 (Under Development)
+## 5.0 Release
+
+### 5.0.0
+- New util `flyToViewport`
+- New util `normalizeViewportProps`
+- Removed `getUncenteredViewMatrix`
+- Renamed `WebMercatorViewport.getLocationAtPoint` to `getMapCenterByLngLatPosition`
+- Renamed projection functions: `lngLatToWorld`, `worldToLngLat`, `worldToPixels`, `pixlesToWorld`
 
 ### 5.0-alpha.2
 - Improve perf of `getDistanceScales`
