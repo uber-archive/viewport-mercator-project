@@ -79,12 +79,12 @@ export default class WebMercatorViewport extends Viewport {
     });
 
     const viewMatrix = getViewMatrix({
-      width,
       height,
       center,
       pitch,
       bearing,
-      altitude
+      altitude,
+      flipY: true
     });
 
     super({width, height, viewMatrix, projectionMatrix});
