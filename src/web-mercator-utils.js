@@ -139,12 +139,10 @@ export function getWorldPosition({
   longitude,
   latitude,
   zoom,
-  scale,
   meterOffset,
   distanceScales = null
 }) {
-  // Calculate scale from zoom if not provided
-  scale = scale !== undefined ? scale : zoomToScale(zoom);
+  const scale = zoomToScale(zoom);
 
   // Make a centered version of the matrix for projection modes without an offset
   const center2d = projectFlat([longitude, latitude], scale);
