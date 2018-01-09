@@ -1,5 +1,11 @@
 # Coordinates
 
+| Coordinates | Description |
+|---------|-------------|
+| LngLat | `[lng, lat, alt]` on earth |
+| World | `[x, y, z]` on the Web Mercator plane |
+| Pixels | `[x, y, depth]` on screen |
+
 ### LngLat Coordinates
 
 LngLat coordinates are specified in
