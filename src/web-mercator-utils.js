@@ -9,8 +9,6 @@ import mat4_translate from 'gl-mat4/translate';
 import mat4_rotateX from 'gl-mat4/rotateX';
 import mat4_rotateZ from 'gl-mat4/rotateZ';
 import vec2_lerp from 'gl-vec2/lerp';
-import vec2_add from 'gl-vec2/add';
-import vec2_negate from 'gl-vec2/negate';
 import assert from 'assert';
 
 // CONSTANTS
@@ -295,30 +293,4 @@ export function pixelsToFlatCoordinates(xyz, unprojectionMatrix, targetZ = 0) {
 
   const t = z0 === z1 ? 0 : ((targetZ || 0) - z0) / (z1 - z0);
   return vec2_lerp([], coord0, coord1, t);
-}
-
-/**
- * Get the map center that place a given [lng, lat] coordinate at screen point [x, y].
- *
- * @param {Array} lngLat - [lng,lat] coordinates of a location on the sphere.
- * @param {Array} pos - [x,y] coordinates of a point on the screen.
- * @param {Matrix4} unprojectionMatrix - unprojection matrix
- * @param {Number} scale - Mercator scale
- * @param {Array} center - Mercator coordinates of the current map center
- * @return {Array} [lng,lat] new map center.
- */
-export function getMapCenterByLngLatPosition({
-  lngLat,
-  pos,
-  unprojectionMatrix,
-  scale,
-  center
-}) {
-  const fromLocation = pixelsToFlatCoordinates(pos, unprojectionMatrix);
-  const toLocation = projectFlat(lngLat, scale);
-
-  const translate = vec2_add([], toLocation, vec2_negate([], fromLocation));
-  const newCenter = vec2_add([], center, translate);
-
-  return unprojectFlat(newCenter, scale);
 }

@@ -4,13 +4,16 @@ import Viewport from './viewport';
 import {
   zoomToScale,
   getWorldPosition,
+  pixelsToFlatCoordinates,
   projectFlat,
   unprojectFlat,
   getProjectionMatrix,
-  getViewMatrix,
-  getMapCenterByLngLatPosition
+  getViewMatrix
 } from './web-mercator-utils';
 import fitBounds from './fit-bounds';
+
+import vec2_add from 'gl-vec2/add';
+import vec2_negate from 'gl-vec2/negate';
 
 export default class WebMercatorViewport extends Viewport {
   /**
@@ -139,13 +142,13 @@ export default class WebMercatorViewport extends Viewport {
    * @return {Array} [lng,lat] new map center.
    */
   getMapCenterByLngLatPosition({lngLat, pos}) {
-    return getMapCenterByLngLatPosition({
-      lngLat,
-      pos,
-      scale: this.scale,
-      center: this.center,
-      unprojectionMatrix: this.pixelUnprojectionMatrix
-    });
+    const fromLocation = pixelsToFlatCoordinates(pos, this.pixelUnprojectionMatrix);
+    const toLocation = projectFlat(lngLat, this.scale);
+
+    const translate = vec2_add([], toLocation, vec2_negate([], fromLocation));
+    const newCenter = vec2_add([], this.center, translate);
+
+    return unprojectFlat(newCenter, this.scale);
   }
 
   // Legacy method name

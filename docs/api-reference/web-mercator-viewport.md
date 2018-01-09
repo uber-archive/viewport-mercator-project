@@ -107,7 +107,7 @@ the bounding box. Each corner is specified in `[lon, lat]`.
 
 #### `getMapCenterByLngLatPosition(opts)`
 
-Returns the map center that place a given [lng, lat] coordinate at screen point [x, y].Returns the map center that place a given [lng, lat] coordinate at screen point [x, y].
+Returns the map center that place a given [lng, lat] coordinate at screen point [x, y].
 
 Parameters:
 - `opts` (Object) - options

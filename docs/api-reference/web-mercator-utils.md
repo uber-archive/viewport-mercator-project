@@ -178,19 +178,3 @@ Parameters:
 Returns:
 - `{longitude, latitude, zoom}`
 
-
-### `getMapCenterByLngLatPosition(opts)`
-
-Returns the map center that place a given [lng, lat] coordinate at screen point [x, y].Returns the map center that place a given [lng, lat] coordinate at screen point [x, y].
-
-Parameters:
-- `opts` (Object) - options
-- `opts.lngLat` (Array, required) - [lng,lat] coordinates of a location on the sphere.
-- `opts.pos` (Array, required) - [x,y] coordinates of a pixel on screen.
-- `opts.unprojectionMatrix` (Matrix4, required) - unprojection matrix
-- `opts.scale` (Number, required) - Mercator scale
-- `opts.center` (Array, required) - flat coordinates of the map center in the Web Mercator system
-
-Returns:
-- `[longitude, latitude]` new map center
-
