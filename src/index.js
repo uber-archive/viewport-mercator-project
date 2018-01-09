@@ -14,6 +14,9 @@ export {
   getWorldPosition,
   getViewMatrix,
   getProjectionMatrix
+  flatCoordinatesToPixels,
+  pixelsToFlatCoordinates,
+  getMapCenterByLngLatPosition
 } from './web-mercator-utils';
 
 // Deprecated

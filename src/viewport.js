@@ -2,19 +2,15 @@
 
 /* eslint-disable camelcase */
 import {equals} from 'math.gl';
-import {createMat4, transformVector} from './math-utils';
+import {createMat4} from './math-utils';
+import {flatCoordinatesToPixels, pixelsToFlatCoordinates} from './web-mercator-utils';
 
 import mat4_scale from 'gl-mat4/scale';
 import mat4_translate from 'gl-mat4/translate';
 import mat4_multiply from 'gl-mat4/multiply';
 import mat4_invert from 'gl-mat4/invert';
-import vec2_lerp from 'gl-vec2/lerp';
-
-import assert from 'assert';
 
 const IDENTITY = createMat4();
-
-const ERR_ARGUMENT = 'Illegal argument to Viewport';
 
 export default class Viewport {
   /**
@@ -127,11 +123,10 @@ export default class Viewport {
    * @return {Array} - screen coordinates [x, y] or [x, y, z], z as pixel depth
    */
   project(xyz, {topLeft = true} = {}) {
-    const [x0, y0, z0 = 0] = xyz;
-    assert(Number.isFinite(x0) && Number.isFinite(y0) && Number.isFinite(z0), ERR_ARGUMENT);
+    const [x0, y0, z0] = xyz;
 
     const [X, Y] = this.projectFlat([x0, y0]);
-    const coord = transformVector(this.pixelProjectionMatrix, [X, Y, z0, 1]);
+    const coord = flatCoordinatesToPixels([X, Y, z0], this.pixelProjectionMatrix);
 
     const [x, y] = coord;
     const y2 = topLeft ? y : this.height - y;
@@ -154,28 +149,15 @@ export default class Viewport {
     const [x, y, z] = xyz;
 
     const y2 = topLeft ? y : this.height - y;
+    const coord = pixelsToFlatCoordinates([x, y2, z], this.pixelUnprojectionMatrix, targetZ);
+    const [X, Y] = this.unprojectFlat(coord);
 
     if (Number.isFinite(z)) {
       // Has depth component
-      const coord = transformVector(this.pixelUnprojectionMatrix, [x, y2, z, 1]);
-      const Z = coord[2];
-      const vUnprojected = this.unprojectFlat(coord);
-      return [vUnprojected[0], vUnprojected[1], Z];
+      return [X, Y, coord[2]];
     }
 
-    // since we don't know the correct projected z value for the point,
-    // unproject two points to get a line and then find the point on that line with z=0
-    const coord0 = transformVector(this.pixelUnprojectionMatrix, [x, y2, 0, 1]);
-    const coord1 = transformVector(this.pixelUnprojectionMatrix, [x, y2, 1, 1]);
-
-    const z0 = coord0[2];
-    const z1 = coord1[2];
-
-    const t = z0 === z1 ? 0 : ((targetZ || 0) - z0) / (z1 - z0);
-    const v = vec2_lerp([], coord0, coord1, t);
-
-    const vUnprojected = this.unprojectFlat(v);
-    return Number.isFinite(targetZ) ? [vUnprojected[0], vUnprojected[1], targetZ] : vUnprojected;
+    return Number.isFinite(targetZ) ? [X, Y, targetZ] : [X, Y];
   }
 
   // NON_LINEAR PROJECTION HOOKS

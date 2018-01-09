@@ -7,13 +7,10 @@ import {
   projectFlat,
   unprojectFlat,
   getProjectionMatrix,
-  getViewMatrix
+  getViewMatrix,
+  getMapCenterByLngLatPosition
 } from './web-mercator-utils';
 import fitBounds from './fit-bounds';
-
-/* eslint-disable camelcase */
-import vec2_add from 'gl-vec2/add';
-import vec2_negate from 'gl-vec2/negate';
 
 export default class WebMercatorViewport extends Viewport {
   /**
@@ -141,15 +138,19 @@ export default class WebMercatorViewport extends Viewport {
    *   Specifies a point on the screen.
    * @return {Array} [lng,lat] new map center.
    */
+  getMapCenterByLngLatPosition({lngLat, pos}) {
+    return getMapCenterByLngLatPosition({
+      lngLat,
+      pos,
+      scale: this.scale,
+      center: this.center,
+      unprojectionMatrix: this.pixelUnprojectionMatrix
+    });
+  }
+
+  // Legacy method name
   getLocationAtPoint({lngLat, pos}) {
-    const fromLocation = this.projectFlat(this.unproject(pos));
-    const toLocation = this.projectFlat(lngLat);
-
-    const center = this.projectFlat([this.longitude, this.latitude]);
-
-    const translate = vec2_add([], toLocation, vec2_negate([], fromLocation));
-    const newCenter = vec2_add([], center, translate);
-    return this.unprojectFlat(newCenter);
+    return this.getMapCenterByLngLatPosition({lngLat, pos});
   }
 
   /**

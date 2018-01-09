@@ -11,7 +11,10 @@ import {
   getWorldPosition,
   getUncenteredViewMatrix,
   getViewMatrix,
-  getProjectionMatrix
+  getProjectionMatrix,
+  flatCoordinatesToPixels,
+  pixelsToFlatCoordinates,
+  getMapCenterByLngLatPosition
 } from 'viewport-mercator-project';
 
 import VIEWPORT_PROPS from '../utils/sample-viewports';
@@ -29,6 +32,9 @@ test('Viewport#imports', t => {
   t.ok(getUncenteredViewMatrix,
     'getUncenteredViewMatrix imports OK');
   t.ok(getProjectionMatrix, 'getProjectionMatrix imports OK');
+  t.ok(flatCoordinatesToPixels, 'flatCoordinatesToPixels imports OK');
+  t.ok(pixelsToFlatCoordinates, 'pixelsToFlatCoordinates imports OK');
+  t.ok(getMapCenterByLngLatPosition, 'getMapCenterByLngLatPosition imports OK');
   t.end();
 });
 

@@ -24,6 +24,31 @@ Returns:
 - `[lng, lat]`
 
 
+### `flatCoordinatesToPixels(xyz, projectionMatrix)`
+
+Project a coordinate from the Web Mercator coordinate system to screen.
+
+Parameters:
+- `xyz` (Array, required) - Specifies a point in the Web Mercator tile. `z` is the elevation and optional.
+- `projectionMatrix` (Matrix4, required) - The projection matrix.
+
+Returns:
+- `[x, y, z]` - coordinates on screen, `z` is the pixel depth.
+
+
+### `pixelsToFlatCoordinates(xyz, unprojectionMatrix, targetZ)`
+
+Project a coordinate from screen to the Web Mercator coordinate system.
+
+Parameters:
+- `xyz` (Array, required) - Specifies a point on screen. `z` is the pixel depth and optional.
+- `unprojectionMatrix` (Matrix4, required) - The unprojection matrix.
+- `targetZ` (Number, optional) - If pixel depth is not specified, `targetZ` is used as the elevation plane to unproject onto. Default `0`.
+
+Returns:
+- `[x, y, z]` - coordinates on the Web Mercator tile, `z` is the elevation.
+
+
 ### `getMeterZoom(viewport)`
 
 Returns the zoom level that gives a 1 meter pixel at a certain latitude.
@@ -153,3 +178,20 @@ Parameters:
 
 Returns:
 - `{longitude, latitude, zoom}`
+
+
+### `getMapCenterByLngLatPosition(opts)`
+
+Returns the map center that place a given [lng, lat] coordinate at screen point [x, y].Returns the map center that place a given [lng, lat] coordinate at screen point [x, y].
+
+Parameters:
+- `opts` (Object) - options
+- `opts.lngLat` (Array, required) - [lng,lat] coordinates of a location on the sphere.
+- `opts.pos` (Array, required) - [x,y] coordinates of a pixel on screen.
+- `opts.unprojectionMatrix` (Matrix4, required) - unprojection matrix
+- `opts.scale` (Number, required) - Mercator scale
+- `opts.center` (Array, required) - flat coordinates of the map center in the Web Mercator system
+
+Returns:
+- `[longitude, latitude]` new map center
+

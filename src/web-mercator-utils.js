@@ -1,13 +1,16 @@
 // TODO - THE UTILITIES IN THIS FILE SHOULD BE IMPORTED FROM WEB-MERCATOR-VIEWPORT MODULE
 
 import {Vector3} from 'math.gl';
-import {createMat4} from './math-utils';
+import {createMat4, transformVector} from './math-utils';
 
 import mat4_perspective from 'gl-mat4/perspective';
 import mat4_scale from 'gl-mat4/scale';
 import mat4_translate from 'gl-mat4/translate';
 import mat4_rotateX from 'gl-mat4/rotateX';
 import mat4_rotateZ from 'gl-mat4/rotateZ';
+import vec2_lerp from 'gl-vec2/lerp';
+import vec2_add from 'gl-vec2/add';
+import vec2_negate from 'gl-vec2/negate';
 import assert from 'assert';
 
 // CONSTANTS
@@ -249,4 +252,75 @@ export function getProjectionMatrix({
   );
 
   return projectionMatrix;
+}
+
+/**
+ * Project flat coordinates to pixels on screen.
+ *
+ * @param {Array} xyz - flat coordinate on 512*512 Mercator Zoom 0 tile
+ * @param {Matrix4} projectionMatrix - projection matrix
+ * @return {Array} [x, y, depth] pixel coordinate on screen.
+ */
+export function flatCoordinatesToPixels(xyz, projectionMatrix) {
+  const [x, y, z = 0] = xyz;
+  assert(isFinite(x) && isFinite(y) && isFinite(z));
+
+  return transformVector(projectionMatrix, [x, y, z, 1]);
+}
+
+/**
+ * Unproject pixels on screen to flat coordinates.
+ *
+ * @param {Array} xyz - pixel coordinate on screen.
+ * @param {Matrix4} projectionMatrix - unprojection matrix
+ * @param {Number} targetZ - if pixel coordinate does not have a 3rd component (depth),
+ *    targetZ is used as the elevation plane to unproject onto
+ * @return {Array} [x, y, Z] flat coordinates on 512*512 Mercator Zoom 0 tile.
+ */
+export function pixelsToFlatCoordinates(xyz, unprojectionMatrix, targetZ = 0) {
+  const [x, y, z] = xyz;
+  assert(isFinite(x) && isFinite(y));
+
+  if (Number.isFinite(z)) {
+    // Has depth component
+    const coord = transformVector(unprojectionMatrix, [x, y, z, 1]);
+    return coord;
+  }
+
+  // since we don't know the correct projected z value for the point,
+  // unproject two points to get a line and then find the point on that line with z=0
+  const coord0 = transformVector(unprojectionMatrix, [x, y, 0, 1]);
+  const coord1 = transformVector(unprojectionMatrix, [x, y, 1, 1]);
+
+  const z0 = coord0[2];
+  const z1 = coord1[2];
+
+  const t = z0 === z1 ? 0 : ((targetZ || 0) - z0) / (z1 - z0);
+  return vec2_lerp([], coord0, coord1, t);
+}
+
+/**
+ * Get the map center that place a given [lng, lat] coordinate at screen point [x, y].
+ *
+ * @param {Array} lngLat - [lng,lat] coordinates of a location on the sphere.
+ * @param {Array} pos - [x,y] coordinates of a point on the screen.
+ * @param {Matrix4} unprojectionMatrix - unprojection matrix
+ * @param {Number} scale - Mercator scale
+ * @param {Array} center - Mercator coordinates of the current map center
+ * @return {Array} [lng,lat] new map center.
+ */
+export function getMapCenterByLngLatPosition({
+  lngLat,
+  pos,
+  unprojectionMatrix,
+  scale,
+  center
+}) {
+  const fromLocation = pixelsToFlatCoordinates(pos, unprojectionMatrix);
+  const toLocation = projectFlat(lngLat, scale);
+
+  const translate = vec2_add([], toLocation, vec2_negate([], fromLocation));
+  const newCenter = vec2_add([], center, translate);
+
+  return unprojectFlat(newCenter, scale);
 }
