@@ -3,7 +3,7 @@
 /* eslint-disable camelcase */
 import {equals} from 'math.gl';
 import {createMat4} from './math-utils';
-import {flatCoordinatesToPixels, pixelsToFlatCoordinates} from './web-mercator-utils';
+import {worldToPixels, pixelsToWorld} from './web-mercator-utils';
 
 import mat4_scale from 'gl-mat4/scale';
 import mat4_translate from 'gl-mat4/translate';
@@ -126,7 +126,7 @@ export default class Viewport {
     const [x0, y0, z0] = xyz;
 
     const [X, Y] = this.projectFlat([x0, y0]);
-    const coord = flatCoordinatesToPixels([X, Y, z0], this.pixelProjectionMatrix);
+    const coord = worldToPixels([X, Y, z0], this.pixelProjectionMatrix);
 
     const [x, y] = coord;
     const y2 = topLeft ? y : this.height - y;
@@ -149,7 +149,7 @@ export default class Viewport {
     const [x, y, z] = xyz;
 
     const y2 = topLeft ? y : this.height - y;
-    const coord = pixelsToFlatCoordinates([x, y2, z], this.pixelUnprojectionMatrix, targetZ);
+    const coord = pixelsToWorld([x, y2, z], this.pixelUnprojectionMatrix, targetZ);
     const [X, Y] = this.unprojectFlat(coord);
 
     if (Number.isFinite(z)) {

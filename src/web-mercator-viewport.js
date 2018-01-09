@@ -4,9 +4,9 @@ import Viewport from './viewport';
 import {
   zoomToScale,
   getWorldPosition,
-  pixelsToFlatCoordinates,
-  projectFlat,
-  unprojectFlat,
+  pixelsToWorld,
+  lngLatToWorld,
+  worldToLngLat,
   getProjectionMatrix,
   getViewMatrix
 } from './web-mercator-utils';
@@ -115,7 +115,7 @@ export default class WebMercatorViewport extends Viewport {
    * @return {Array} [x,y] coordinates.
    */
   projectFlat(lngLat, scale = this.scale) {
-    return projectFlat(lngLat, scale);
+    return lngLatToWorld(lngLat, scale);
   }
 
   /**
@@ -128,7 +128,7 @@ export default class WebMercatorViewport extends Viewport {
    *   Per cartographic tradition, lat and lon are specified as degrees.
    */
   unprojectFlat(xy, scale = this.scale) {
-    return unprojectFlat(xy, scale);
+    return worldToLngLat(xy, scale);
   }
 
   /**
@@ -142,13 +142,13 @@ export default class WebMercatorViewport extends Viewport {
    * @return {Array} [lng,lat] new map center.
    */
   getMapCenterByLngLatPosition({lngLat, pos}) {
-    const fromLocation = pixelsToFlatCoordinates(pos, this.pixelUnprojectionMatrix);
-    const toLocation = projectFlat(lngLat, this.scale);
+    const fromLocation = pixelsToWorld(pos, this.pixelUnprojectionMatrix);
+    const toLocation = lngLatToWorld(lngLat, this.scale);
 
     const translate = vec2_add([], toLocation, vec2_negate([], fromLocation));
     const newCenter = vec2_add([], this.center, translate);
 
-    return unprojectFlat(newCenter, this.scale);
+    return worldToLngLat(newCenter, this.scale);
   }
 
   // Legacy method name

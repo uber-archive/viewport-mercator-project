@@ -3,8 +3,8 @@ import {lerp} from './math-utils';
 import {
   scaleToZoom,
   zoomToScale,
-  projectFlat,
-  unprojectFlat
+  lngLatToWorld,
+  worldToLngLat
 } from './web-mercator-utils';
 
 const EPSILON = 0.01;
@@ -31,8 +31,8 @@ export default function flyToViewport(startProps, endProps, t) {
   const endCenter = [endProps.longitude, endProps.latitude];
   const scale = zoomToScale(endZoom - startZoom);
 
-  const startCenterXY = new Vector2(projectFlat(startCenter, startScale));
-  const endCenterXY = new Vector2(projectFlat(endCenter, startScale));
+  const startCenterXY = new Vector2(lngLatToWorld(startCenter, startScale));
+  const endCenterXY = new Vector2(lngLatToWorld(endCenter, startScale));
   const uDelta = endCenterXY.subtract(startCenterXY);
 
   const w0 = Math.max(startProps.width, startProps.height);
@@ -65,7 +65,7 @@ export default function flyToViewport(startProps, endProps, t) {
   const scaleIncrement = 1 / w; // Using w method for scaling.
   const newZoom = startZoom + scaleToZoom(scaleIncrement);
 
-  const newCenter = unprojectFlat(
+  const newCenter = worldToLngLat(
     (startCenterXY.add(uDelta.scale(u))).scale(scaleIncrement),
     zoomToScale(newZoom));
   viewport.longitude = newCenter[0];
