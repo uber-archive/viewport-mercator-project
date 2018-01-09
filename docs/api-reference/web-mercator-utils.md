@@ -66,6 +66,7 @@ Parameters:
 - `point.longitude` (Number, required)
 - `point.latitude` (Number, required)
 - `point.zoom` (Number, optional)
+- `point.scale` (Number, optional) - must supply if zoom is not specified
 - `point.meterOffset` (Array, optional) - offset from the lat/lon coordinates `[x, y, z]` in meters.
 - `point.distanceScales` (Object, optional) - pre-calculated distance scales using `getDistanceScales`. Supply this parameter to avoid duplicate calculation.
 
