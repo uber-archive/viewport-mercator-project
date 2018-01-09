@@ -104,3 +104,16 @@ the bounding box. Each corner is specified in `[lon, lat]`.
   + `options.padding` (Number, optional) - The amount of padding in pixels to add to the given bounds from the edge of the viewport.
   + `options.offset` ([Number,Number], optional) - The center of the given bounds relative to the viewport's center, `[x, y]` measured in pixels.
 
+
+#### `getMapCenterByLngLatPosition(opts)`
+
+Returns the map center that place a given [lng, lat] coordinate at screen point [x, y].
+
+Parameters:
+- `opts` (Object) - options
+- `opts.lngLat` (Array, required) - [lng,lat] coordinates of a location on the sphere.
+- `opts.pos` (Array, required) - [x,y] coordinates of a pixel on screen.
+
+Returns:
+- `[longitude, latitude]` new map center
+

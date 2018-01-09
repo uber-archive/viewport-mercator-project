@@ -1,6 +1,6 @@
 # Web Mercator Utility Functions
 
-### `projectFlat(lngLat, scale)`
+### `lngLatToWorld(lngLat, scale)`
 
 Project a coordinate on sphere onto the Web Mercator coordinate system at a given zoom level.
 
@@ -12,7 +12,7 @@ Returns:
 - `[x, y]`
 
 
-### `unprojectFlat(xy, scale)`
+### `worldToLngLat(xy, scale)`
 
 Unproject a coordinate from the Web Mercator coordinate system back to the sphere at a given zoom level.
 
@@ -22,6 +22,31 @@ Parameters:
 
 Returns:
 - `[lng, lat]`
+
+
+### `worldToPixels(xyz, projectionMatrix)`
+
+Project a coordinate from the Web Mercator coordinate system to screen.
+
+Parameters:
+- `xyz` (Array, required) - Specifies a point in the Web Mercator tile. `z` is the elevation and optional.
+- `projectionMatrix` (Matrix4, required) - The projection matrix.
+
+Returns:
+- `[x, y, z]` - coordinates on screen, `z` is the pixel depth.
+
+
+### `pixelsToWorld(xyz, unprojectionMatrix, targetZ)`
+
+Project a coordinate from screen to the Web Mercator coordinate system.
+
+Parameters:
+- `xyz` (Array, required) - Specifies a point on screen. `z` is the pixel depth and optional.
+- `unprojectionMatrix` (Matrix4, required) - The unprojection matrix.
+- `targetZ` (Number, optional) - If pixel depth is not specified, `targetZ` is used as the elevation plane to unproject onto. Default `0`.
+
+Returns:
+- `[x, y, z]` - coordinates on the Web Mercator tile, `z` is the elevation.
 
 
 ### `getMeterZoom(viewport)`
@@ -153,3 +178,4 @@ Parameters:
 
 Returns:
 - `{longitude, latitude, zoom}`
+

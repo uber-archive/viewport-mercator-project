@@ -4,14 +4,16 @@ import destination from '@turf/destination';
 import {toLowPrecision} from '../utils/test-utils';
 
 import {
-  projectFlat,
-  unprojectFlat,
+  lngLatToWorld,
+  worldToLngLat,
   getMeterZoom,
   getDistanceScales,
   getWorldPosition,
   getUncenteredViewMatrix,
   getViewMatrix,
-  getProjectionMatrix
+  getProjectionMatrix,
+  worldToPixels,
+  pixelsToWorld
 } from 'viewport-mercator-project';
 
 import VIEWPORT_PROPS from '../utils/sample-viewports';
@@ -21,14 +23,16 @@ const DISTANCE_TOLERANCE_PIXELS = 2;
 const DISTANCE_SCALE_TEST_ZOOM = 12;
 
 test('Viewport#imports', t => {
-  t.ok(projectFlat, 'projectFlat imports OK');
-  t.ok(unprojectFlat, 'unprojectFlat imports OK');
+  t.ok(lngLatToWorld, 'lngLatToWorld imports OK');
+  t.ok(worldToLngLat, 'worldToLngLat imports OK');
   t.ok(getMeterZoom, 'getMeterZoom imports OK');
   t.ok(getWorldPosition, 'getWorldPosition imports OK');
   t.ok(getViewMatrix, 'getViewMatrix imports OK');
   t.ok(getUncenteredViewMatrix,
     'getUncenteredViewMatrix imports OK');
   t.ok(getProjectionMatrix, 'getProjectionMatrix imports OK');
+  t.ok(worldToPixels, 'worldToPixels imports OK');
+  t.ok(pixelsToWorld, 'pixelsToWorld imports OK');
   t.end();
 });
 
@@ -84,8 +88,8 @@ test('getDistanceScales#pixelsPerDegree', t => {
       const pt = [longitude + delta, latitude + delta];
 
       const realCoords = [
-        projectFlat(pt, scale)[0] - projectFlat([longitude, latitude], scale)[0],
-        -(projectFlat(pt, scale)[1] - projectFlat([longitude, latitude], scale)[1]),
+        lngLatToWorld(pt, scale)[0] - lngLatToWorld([longitude, latitude], scale)[0],
+        -(lngLatToWorld(pt, scale)[1] - lngLatToWorld([longitude, latitude], scale)[1]),
         z * getDistanceScales({longitude: pt[0], latitude: pt[1], scale}).pixelsPerMeter[2]
       ];
 
@@ -137,8 +141,8 @@ test('getDistanceScales#pixelsPerMeter', t => {
       pt = pt.geometry.coordinates;
 
       const realCoords = [
-        projectFlat(pt, scale)[0] - projectFlat([longitude, latitude], scale)[0],
-        -(projectFlat(pt, scale)[1] - projectFlat([longitude, latitude], scale)[1]),
+        lngLatToWorld(pt, scale)[0] - lngLatToWorld([longitude, latitude], scale)[0],
+        -(lngLatToWorld(pt, scale)[1] - lngLatToWorld([longitude, latitude], scale)[1]),
         z * getDistanceScales({longitude: pt[0], latitude: pt[1], scale}).pixelsPerMeter[2]
       ];
 

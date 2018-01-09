@@ -7,8 +7,10 @@ export {default as normalizeViewportProps} from './normalize-viewport-props';
 export {default as flyToViewport} from './fly-to-viewport';
 
 export {
-  projectFlat,
-  unprojectFlat,
+  lngLatToWorld,
+  worldToLngLat,
+  worldToPixels,
+  pixelsToWorld,
   getMeterZoom,
   getDistanceScales,
   getWorldPosition,
@@ -19,5 +21,7 @@ export {
 // Deprecated
 export {default as PerspectiveMercatorViewport} from './web-mercator-viewport';
 export {
-  getViewMatrix as getUncenteredViewMatrix
+  getViewMatrix as getUncenteredViewMatrix,
+  lngLatToWorld as projectFlat,
+  worldToLngLat as unprojectFlat
 } from './web-mercator-utils';

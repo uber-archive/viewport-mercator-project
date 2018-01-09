@@ -1,13 +1,14 @@
 // TODO - THE UTILITIES IN THIS FILE SHOULD BE IMPORTED FROM WEB-MERCATOR-VIEWPORT MODULE
 
 import {Vector3} from 'math.gl';
-import {createMat4} from './math-utils';
+import {createMat4, transformVector} from './math-utils';
 
 import mat4_perspective from 'gl-mat4/perspective';
 import mat4_scale from 'gl-mat4/scale';
 import mat4_translate from 'gl-mat4/translate';
 import mat4_rotateX from 'gl-mat4/rotateX';
 import mat4_rotateZ from 'gl-mat4/rotateZ';
+import vec2_lerp from 'gl-vec2/lerp';
 import assert from 'assert';
 
 // CONSTANTS
@@ -38,7 +39,7 @@ export function scaleToZoom(scale) {
  *   Specifies a point on the sphere to project onto the map.
  * @return {Array} [x,y] coordinates.
  */
-export function projectFlat([lng, lat], scale) {
+export function lngLatToWorld([lng, lat], scale) {
   scale *= TILE_SIZE;
   const lambda2 = lng * DEGREES_TO_RADIANS;
   const phi2 = lat * DEGREES_TO_RADIANS;
@@ -56,7 +57,7 @@ export function projectFlat([lng, lat], scale) {
  *   Has toArray method if you need a GeoJSON Array.
  *   Per cartographic tradition, lat and lon are specified as degrees.
  */
-export function unprojectFlat([x, y], scale) {
+export function worldToLngLat([x, y], scale) {
   scale *= TILE_SIZE;
   const lambda2 = (x / scale) * (2 * PI) - PI;
   const phi2 = 2 * (Math.atan(Math.exp(PI - (y / scale) * (2 * PI))) - PI_4);
@@ -89,9 +90,9 @@ export function getDistanceScales({latitude, longitude, zoom, scale, highPrecisi
 
   /**
    * Number of pixels occupied by one degree longitude around current lat/lon:
-     pixelsPerDegreeX = d(projectFlat([lng, lat])[0])/d(lng)
+     pixelsPerDegreeX = d(lngLatToWorld([lng, lat])[0])/d(lng)
        = scale * TILE_SIZE * DEGREES_TO_RADIANS / (2 * PI)
-     pixelsPerDegreeY = d(projectFlat([lng, lat])[1])/d(lat)
+     pixelsPerDegreeY = d(lngLatToWorld([lng, lat])[1])/d(lat)
        = -scale * TILE_SIZE * DEGREES_TO_RADIANS / cos(lat * DEGREES_TO_RADIANS)  / (2 * PI)
    */
   const pixelsPerDegreeX = worldSize / 360;
@@ -144,7 +145,7 @@ export function getWorldPosition({
   scale = scale !== undefined ? scale : zoomToScale(zoom);
 
   // Make a centered version of the matrix for projection modes without an offset
-  const center2d = projectFlat([longitude, latitude], scale);
+  const center2d = lngLatToWorld([longitude, latitude], scale);
   const center = new Vector3(center2d[0], center2d[1], 0);
 
   if (meterOffset) {
@@ -249,4 +250,49 @@ export function getProjectionMatrix({
   );
 
   return projectionMatrix;
+}
+
+/**
+ * Project flat coordinates to pixels on screen.
+ *
+ * @param {Array} xyz - flat coordinate on 512*512 Mercator Zoom 0 tile
+ * @param {Matrix4} pixelProjectionMatrix - projection matrix
+ * @return {Array} [x, y, depth] pixel coordinate on screen.
+ */
+export function worldToPixels(xyz, pixelProjectionMatrix) {
+  const [x, y, z = 0] = xyz;
+  assert(isFinite(x) && isFinite(y) && isFinite(z));
+
+  return transformVector(pixelProjectionMatrix, [x, y, z, 1]);
+}
+
+/**
+ * Unproject pixels on screen to flat coordinates.
+ *
+ * @param {Array} xyz - pixel coordinate on screen.
+ * @param {Matrix4} pixelUnprojectionMatrix - unprojection matrix
+ * @param {Number} targetZ - if pixel coordinate does not have a 3rd component (depth),
+ *    targetZ is used as the elevation plane to unproject onto
+ * @return {Array} [x, y, Z] flat coordinates on 512*512 Mercator Zoom 0 tile.
+ */
+export function pixelsToWorld(xyz, pixelUnprojectionMatrix, targetZ = 0) {
+  const [x, y, z] = xyz;
+  assert(isFinite(x) && isFinite(y));
+
+  if (Number.isFinite(z)) {
+    // Has depth component
+    const coord = transformVector(pixelUnprojectionMatrix, [x, y, z, 1]);
+    return coord;
+  }
+
+  // since we don't know the correct projected z value for the point,
+  // unproject two points to get a line and then find the point on that line with z=0
+  const coord0 = transformVector(pixelUnprojectionMatrix, [x, y, 0, 1]);
+  const coord1 = transformVector(pixelUnprojectionMatrix, [x, y, 1, 1]);
+
+  const z0 = coord0[2];
+  const z1 = coord1[2];
+
+  const t = z0 === z1 ? 0 : ((targetZ || 0) - z0) / (z1 - z0);
+  return vec2_lerp([], coord0, coord1, t);
 }
