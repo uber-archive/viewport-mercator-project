@@ -12,3 +12,5 @@ require('./spec/mercator-project-unproject.spec');
 require('./spec/fit-bounds.spec');
 // Normalization
 require('./spec/normalize-viewport-props.spec');
+// Fly to
+require('./spec/fly-to-viewport.spec');

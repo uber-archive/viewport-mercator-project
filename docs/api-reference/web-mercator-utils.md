@@ -155,3 +155,23 @@ Parameters:
 
 Returns:
 - `viewport` - normalized `{width, height, longitude, latitude, zoom, pitch, bearing}`
+
+### `flyToViewport(startProps, endProps, t)`
+
+While flying from one viewport to another, returns in-transition viewport props at a given time. This util function implements the algorithm described in “Smooth and efficient zooming and panning.” by Jarke J. van Wijk and Wim A.A. Nuij.
+
+Parameters:
+- `startProps` (Object) - viewport to fly from
+- `startProps.width` (Number, required)
+- `startProps.height` (Number, required)
+- `startProps.longitude` (Number, required)
+- `startProps.latitude` (Number, required)
+- `startProps.zoom` (Number, required)
+- `endProps` (Object) - viewport to fly from
+- `endProps.longitude` (Number, required)
+- `endProps.latitude` (Number, required)
+- `endProps.zoom` (Number, required)
+- `t` (Number) - a time factor between 0 and 1. `0` indicates the start of the transition, `1` indicates the end of the transition.
+
+Returns:
+- `{longitude, latitude, zoom}`

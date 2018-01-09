@@ -6,6 +6,7 @@ export {default as PerspectiveMercatorViewport} from './web-mercator-viewport';
 
 export {fitBounds} from './web-mercator-viewport';
 export {default as normalizeViewportProps} from './normalize-viewport-props';
+export {default as flyToViewport} from './fly-to-viewport';
 
 export {
   projectFlat,

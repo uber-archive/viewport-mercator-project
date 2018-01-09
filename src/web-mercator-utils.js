@@ -19,6 +19,15 @@ const TILE_SIZE = 512;
 // Average circumference (40075 km equatorial, 40007 km meridional)
 const EARTH_CIRCUMFERENCE = 40.03e6;
 
+/** Util functions **/
+export function zoomToScale(zoom) {
+  return Math.pow(2, zoom);
+}
+
+export function scaleToZoom(scale) {
+  return Math.log2(scale);
+}
+
 /**
  * Project [lng,lat] on sphere onto [x,y] on 512*512 Mercator Zoom 0 tile.
  * Performs the nonlinear part of the web mercator projection.
@@ -59,7 +68,7 @@ export function unprojectFlat([x, y], scale) {
 export function getMeterZoom({latitude}) {
   assert(latitude);
   const latCosine = Math.cos(latitude * DEGREES_TO_RADIANS);
-  return Math.log2(EARTH_CIRCUMFERENCE * latCosine) - 8;
+  return scaleToZoom(EARTH_CIRCUMFERENCE * latCosine) - 8;
 }
 
 /**
@@ -70,7 +79,7 @@ export function getMeterZoom({latitude}) {
  */
 export function getDistanceScales({latitude, longitude, zoom, scale, highPrecision = false}) {
   // Calculate scale from zoom if not provided
-  scale = scale !== undefined ? scale : Math.pow(2, zoom);
+  scale = scale !== undefined ? scale : zoomToScale(zoom);
 
   assert(isFinite(latitude) && isFinite(longitude) && isFinite(scale));
 
@@ -130,7 +139,7 @@ export function getWorldPosition({
   meterOffset,
   distanceScales = null
 }) {
-  const scale = Math.pow(2, zoom);
+  const scale = zoomToScale(zoom);
 
   // Make a centered version of the matrix for projection modes without an offset
   const center2d = projectFlat([longitude, latitude], scale);
