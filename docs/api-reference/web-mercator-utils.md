@@ -142,7 +142,7 @@ Returns:
 
 ### `normalizeViewportProps(viewport)`
 
-Apply mathematical constraints to viewport props. This will adjust the map center and zoom so that the projected map fits into the target viewport size without white gaps.
+This will adjust the map center and zoom so that the projected map fits into the target viewport size without white gaps.
 
 Parameters:
 - `viewport` (Object)
