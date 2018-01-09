@@ -66,27 +66,12 @@ Parameters:
 - `point.longitude` (Number, required)
 - `point.latitude` (Number, required)
 - `point.zoom` (Number, optional)
+- `point.scale` (Number, optional) - must supply if zoom is not specified
 - `point.meterOffset` (Array, optional) - offset from the lat/lon coordinates `[x, y, z]` in meters.
 - `point.distanceScales` (Object, optional) - pre-calculated distance scales using `getDistanceScales`. Supply this parameter to avoid duplicate calculation.
 
 Returns:
 - `[x, y, z]` - pixel coordinates.
-
-
-### `getUncenteredViewMatrix(viewport)`
-
-Get a transform matrix that projects from the mercator (pixel) space into the camera (view) space. Centers the map at `[0, 0]`.
-
-Parameters:
-- `viewport` (Object) - viewport props
-- `viewport.height` (Number, required)
-- `viewport.pitch` (Number, required)
-- `viewport.bearing` (Number, required)
-- `viewport.altitude` (Number, required)
-
-Returns:
-- `viewMatrix` (Array) 4x4 matrix.
-
 
 ### `getViewMatrix(viewport)`
 
@@ -94,19 +79,12 @@ Get a transform matrix that projects from the mercator (pixel) space into the ca
 
 Parameters:
 - `viewport` (Object) - viewport props
-- `viewport.width` (Number, required)
 - `viewport.height` (Number, required)
-- `viewport.longitude` (Number, required)
-- `viewport.latitude` (Number, required)
-- `viewport.zoom` (Number, required)
 - `viewport.pitch` (Number, required)
 - `viewport.bearing` (Number, required)
 - `viewport.altitude` (Number, required)
-- `viewport.meterOffset` (Array, optional) - offset from the lat/lon coordinates `[x, y, z]` in meters.
 - `viewport.flipY` (Boolean, optional) - Whether the returned matrix should flip y. Default `true` (latitude and screen y increase in opposite directions).
-- `viewport.distanceScales` (Object, optional) - pre-calculated distance scales using `getDistanceScales`. Supply this parameter to avoid duplicate calculation.
-- `viewport.center` (Array, optional) - pre-calculated world position of map center using `getWorldPosition`. Supply this parameter to avoid duplicate calculation.
-- `viewport.viewMatrixUncentered` (Array, optional) - pre-calculated uncentered view matrix using `getUncenteredViewMatrix`. Supply this parameter to avoid duplicate calculation.
+- `viewport.center` (Array, optional) - pre-calculated world position of map center using `getWorldPosition`. Default `[0, 0]`.
 
 Returns:
 - `viewMatrix` (Array) 4x4 matrix.

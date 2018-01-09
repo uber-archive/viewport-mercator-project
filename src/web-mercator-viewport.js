@@ -2,6 +2,8 @@
 import Viewport from './viewport';
 
 import {
+  zoomToScale,
+  getWorldPosition,
   projectFlat,
   unprojectFlat,
   getProjectionMatrix,
@@ -60,12 +62,12 @@ export default class WebMercatorViewport extends Viewport {
     width = width || 1;
     height = height || 1;
 
-    const scale = Math.pow(2, zoom);
+    const scale = zoomToScale(zoom);
     // Altitude - prevent division by 0
     // TODO - just throw an Error instead?
     altitude = Math.max(0.75, altitude);
 
-    const center = projectFlat([longitude, latitude], scale);
+    const center = getWorldPosition({longitude, latitude, scale});
 
     const projectionMatrix = getProjectionMatrix({
       width,
@@ -77,14 +79,12 @@ export default class WebMercatorViewport extends Viewport {
     });
 
     const viewMatrix = getViewMatrix({
-      width,
       height,
-      longitude,
-      latitude,
-      zoom,
+      center,
       pitch,
       bearing,
-      altitude
+      altitude,
+      flipY: true
     });
 
     super({width, height, viewMatrix, projectionMatrix});

@@ -136,10 +136,12 @@ export function getWorldPosition({
   longitude,
   latitude,
   zoom,
+  scale,
   meterOffset,
   distanceScales = null
 }) {
-  const scale = zoomToScale(zoom);
+  // Calculate scale from zoom if not provided
+  scale = scale !== undefined ? scale : zoomToScale(zoom);
 
   // Make a centered version of the matrix for projection modes without an offset
   const center2d = projectFlat([longitude, latitude], scale);
@@ -185,13 +187,18 @@ function getClippingPlanes({altitude, pitch}) {
   return {farZ, nearZ: 0.1};
 }
 
-// TODO - rename this matrix
-export function getUncenteredViewMatrix({
+export function getViewMatrix({
+  // Viewport props
   height,
   pitch,
   bearing,
-  altitude
+  altitude,
+  // Pre-calculated parameters
+  center = null,
+  // Options
+  flipY = false
 }) {
+
   // VIEW MATRIX: PROJECTS MERCATOR WORLD COORDINATES
   // Note that mercator world coordinates typically need to be flipped
   //
@@ -210,47 +217,15 @@ export function getUncenteredViewMatrix({
   mat4_rotateX(vm, vm, -pitch * DEGREES_TO_RADIANS);
   mat4_rotateZ(vm, vm, bearing * DEGREES_TO_RADIANS);
 
-  return vm;
-}
-
-export function getViewMatrix({
-  // Viewport props
-  width,
-  height,
-  longitude,
-  latitude,
-  zoom,
-  pitch,
-  bearing,
-  altitude,
-  // Pre-calculated parameters
-  distanceScales = null,
-  center = null,
-  viewMatrixUncentered = null,
-  // Options
-  meterOffset = null,
-  flipY = true
-}) {
-  if (!center) {
-    center = getWorldPosition({longitude, latitude, zoom, distanceScales, meterOffset});
-  }
-
-  // VIEW MATRIX: PROJECTS FROM VIRTUAL PIXELS TO CAMERA SPACE
-  // Note: As usual, matrix operation orders should be read in reverse
-  // since vectors will be multiplied from the right during transformation
-  if (!viewMatrixUncentered) {
-    viewMatrixUncentered = getUncenteredViewMatrix({height, pitch, bearing, altitude});
-  }
-
-  const vm = createMat4();
-
   if (flipY) {
-    mat4_scale(vm, viewMatrixUncentered, [1, -1, 1]);
+    mat4_scale(vm, vm, [1, -1, 1]);
   }
 
-  const viewMatrixCentered = mat4_translate(vm, vm, new Vector3(center).negate());
+  if (center) {
+    mat4_translate(vm, vm, new Vector3(center).negate());
+  }
 
-  return viewMatrixCentered;
+  return vm;
 }
 
 // PROJECTION MATRIX: PROJECTS FROM CAMERA (VIEW) SPACE TO CLIPSPACE
