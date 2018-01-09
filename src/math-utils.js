@@ -12,3 +12,8 @@ export function transformVector(matrix, vector) {
   vec4_scale(result, result, 1 / result[3]);
   return result;
 }
+
+export function mod(value, divisor) {
+  const modulus = value % divisor;
+  return modulus < 0 ? divisor + modulus : modulus;
+}

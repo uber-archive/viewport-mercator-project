@@ -10,3 +10,5 @@ require('./spec/web-mercator-viewport.spec');
 require('./spec/mercator-project-unproject.spec');
 // Fit bounds
 require('./spec/fit-bounds.spec');
+// Normalization
+require('./spec/normalize-viewport-props.spec');

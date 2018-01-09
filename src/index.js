@@ -4,7 +4,7 @@ export {default as WebMercatorViewport} from './web-mercator-viewport';
 // Legacy class name
 export {default as PerspectiveMercatorViewport} from './web-mercator-viewport';
 
-export {fitBounds} from './web-mercator-viewport';
+export {fitBounds, normalizeViewportProps} from './web-mercator-viewport';
 
 export {
   projectFlat,

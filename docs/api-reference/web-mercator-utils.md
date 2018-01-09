@@ -140,3 +140,18 @@ Parameters:
 Returns:
 - `{longitude, latitude, zoom}`
 
+### `normalizeViewportProps(viewport)`
+
+Apply mathematical constraints to viewport props. This will adjust the map center and zoom so that the projected map fits into the target viewport size without white gaps.
+
+Parameters:
+- `viewport` (Object)
+- `viewport.width` (Number, required)
+- `viewport.height` (Number, required)
+- `viewport.longitude` (Number, required)
+- `viewport.latitude` (Number, required)
+- `viewport.zoom` (Number, required)
+- `viewport.pitch` (Number, optional)
+
+Returns:
+- `viewport` - normalized `{width, height, longitude, latitude, zoom, pitch, bearing}`
