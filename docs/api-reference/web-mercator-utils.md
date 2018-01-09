@@ -1,6 +1,6 @@
 # Web Mercator Utility Functions
 
-### `projectFlat(lngLat, scale)`
+### `lngLatToWorld(lngLat, scale)`
 
 Project a coordinate on sphere onto the Web Mercator coordinate system at a given zoom level.
 
@@ -12,7 +12,7 @@ Returns:
 - `[x, y]`
 
 
-### `unprojectFlat(xy, scale)`
+### `worldToLngLat(xy, scale)`
 
 Unproject a coordinate from the Web Mercator coordinate system back to the sphere at a given zoom level.
 
@@ -24,7 +24,7 @@ Returns:
 - `[lng, lat]`
 
 
-### `flatCoordinatesToPixels(xyz, projectionMatrix)`
+### `worldToPixels(xyz, projectionMatrix)`
 
 Project a coordinate from the Web Mercator coordinate system to screen.
 
@@ -36,7 +36,7 @@ Returns:
 - `[x, y, z]` - coordinates on screen, `z` is the pixel depth.
 
 
-### `pixelsToFlatCoordinates(xyz, unprojectionMatrix, targetZ)`
+### `pixelsToWorld(xyz, unprojectionMatrix, targetZ)`
 
 Project a coordinate from screen to the Web Mercator coordinate system.
 
@@ -91,6 +91,7 @@ Parameters:
 - `point.longitude` (Number, required)
 - `point.latitude` (Number, required)
 - `point.zoom` (Number, optional)
+- `point.scale` (Number, optional) - must supply if zoom is not specified
 - `point.meterOffset` (Array, optional) - offset from the lat/lon coordinates `[x, y, z]` in meters.
 - `point.distanceScales` (Object, optional) - pre-calculated distance scales using `getDistanceScales`. Supply this parameter to avoid duplicate calculation.
 
