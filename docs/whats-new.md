@@ -1,17 +1,17 @@
 # What's New
 
-## v5.0 (In Progress, Release Date TBA)
-- Use math.gl library (smaller dependency than gl-matrix + enables some code to be dropped)
-- Documentation website matching other frameworks in the same suite.
-- Includes a set of primitive web mercator utilities
-   - (classes here and in other repos like deck.gl use these for increased code sharing and smaller exectables)
-- `project` and `unproject` methods deal with 3d pixel coordinates (depth).
+## v5.0
+
+- **Improved distance scales** - Second order polynomial approximations are now available.
+- **3D Projection** - `project` and `unproject` methods deal with 3d pixel coordinates (depth).
+- **Improved documentation** - This website now matches other frameworks in the vis.gl framework suite.
+- **Use math.gl library** - Smaller dependency than `gl-matrix`.
+- **primitive web mercator utilities** - A more primitive set of utility functions is now available. Classes here and in other repos like deck.gl use these for increased code sharing and smaller exectables.
 
 
 ## v4.1
 - **fitBounds** is back: `PerspectiveMercatorViewport.fitBounds` method
 - Replace gl-matrix dependency with cherry-pick imports
-
 
 ## v4.0
 
@@ -54,6 +54,4 @@ var viewport = ViewportMercator({
 });
 ```
 
-The change was made to support the typical `viewport` object from the new
-[react-map-gl](github.com/uber/react-map-gl)
-[API changes](https://gist.github.com/vicapow/00017553e92f613d5361).
+The change was made to support the typical `viewport` object from the new [react-map-gl](github.com/uber/react-map-gl) [API changes](https://gist.github.com/vicapow/00017553e92f613d5361).
