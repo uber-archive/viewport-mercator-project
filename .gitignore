@@ -1,5 +1,5 @@
 dist/*
-dist-es6/
+dist-es6/*
 
 npm-debug.log
 node_modules
