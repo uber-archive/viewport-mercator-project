@@ -2,9 +2,9 @@ export default [{
   name: 'Documentation',
   path: '/documentation',
   data: [{
-    name: 'Overview',
-    markdown: require('../../docs/README.md')
-  }, {
+  //   name: 'Overview',
+  //   markdown: require('../../docs/README.md')
+  // }, {
     name: 'What\'s New',
     markdown: require('../../docs/whats-new.md')
   }, {
@@ -12,18 +12,24 @@ export default [{
     children: [{
       name: 'Installation',
       markdown: require('../../docs/get-started/README.md')
-    }, {
+    }]
+  }, {
+    name: 'Articles',
+    children: [{
       name: 'About Coordinates',
-      markdown: require('../../docs/get-started/coordinates.md')
+      markdown: require('../../docs/articles/coordinates.md')
+    }, {
+      name: 'Offset Accuracy',
+      markdown: require('../../docs/articles/offset-accuracy.md')
     }]
   }, {
     name: 'API Reference',
     children: [{
-      name: 'PerspectiveMercatorViewport',
-      markdown: require('../../docs/api-reference/perspective-mercator-viewport.md')
+      name: 'WebMercatorViewport',
+      markdown: require('../../docs/api-reference/web-mercator-viewport.md')
     }, {
-      name: 'FlatMercatorViewport',
-      markdown: require('../../docs/api-reference/flat-mercator-viewport.md')
+      name: 'Web Mercator Utils',
+      markdown: require('../../docs/api-reference/web-mercator-utils.md')
     }]
   }]
 }];

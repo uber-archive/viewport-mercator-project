@@ -1,21 +1,20 @@
 # What's New
 
 ## v5.1
-- Size Reduction: Adds more compact, untranspiled distribution for apps that only need to run on modern browsers. To reduce your final bundle size, add the `esnext` tag to the front of webpack's `resolve.mainField` array and it will pick up the untranspiled distribution.
-- No longer imports the "built-in" `assert` module (which added size and caused issues in react-native).
+- **Size Reduction**: Adds a more compact, minimally transpiled distribution for apps that only need to run on modern browsers. To reduce your final bundle size, add the `esnext` tag to the front of webpack's `resolve.mainField` array and it will pick up the untranspiled distribution.
+- **assert removed** - No longer imports the "built-in" `assert` module (this can reduce bundle size and avoids issues in react-native).
 
 
-## v5.0 (In Progress, Release Date TBA)
-- Use math.gl library (smaller dependency than gl-matrix + enables some code to be dropped)
-- Documentation website matching other frameworks in the same suite.
-- Includes a set of primitive web mercator utilities
-   - (classes here and in other repos like deck.gl use these for increased code sharing and smaller exectables)
-- `project` and `unproject` methods deal with 3d pixel coordinates (depth).
+## v5.0
+- **Documentation Refresh** - This website now matches other frameworks in the [vis.gl](http://vis.gl) framework suite.
+- **3D Projection** - The `project` and `unproject` methods now deal with 3D pixel coordinates (depth).
+- **Primitive Web Mercator Utilities** - The code used by the `WebMercatorViewport` has been componentized and exposed as a set of utility functions, enabling more use cases and code sharing.
+- **Size Reduction**: Switch to use the [math.gl](https://uber-web.github.io/math.gl/#/documentation/overview) library (smaller dependency than gl-matrix + enabled some code to be dropped)
 
 
 ## v4.1
-- **fitBounds** is back: `PerspectiveMercatorViewport.fitBounds` method
-- Replace gl-matrix dependency with cherry-pick imports
+- **fitBounds** is back: See the `PerspectiveMercatorViewport.fitBounds` method
+- **Size Reduction**: Replace gl-matrix dependency with cherry-pick imports
 
 
 ## v4.0
@@ -31,7 +30,7 @@ Adds a new perspective enabled `PerspectiveMercatorViewport` class
 
 ## v3 - Beta Releases
 
-v3 was a series of beta only releases while the new API was hammered out. There is no official v3 release.
+* **Beta only** - v3 was a series of beta only releases while the new API was hammered out. There is no official v3 release.
 
 
 ## v2 - Property renaming
