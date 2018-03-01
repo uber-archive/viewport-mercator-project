@@ -1,5 +1,8 @@
 dist/*
 dist-es6/*
+website/dist/*
+
+*/**/yarn.lock
 
 npm-debug.log
 node_modules
