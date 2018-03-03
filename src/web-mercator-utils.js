@@ -67,7 +67,7 @@ export function worldToLngLat([x, y], scale) {
 // Returns the zoom level that gives a 1 meter pixel at a certain latitude
 // S=C*cos(y)/2^(z+8)
 export function getMeterZoom({latitude}) {
-  assert(isFinite(latitude));
+  assert(Number.isFinite(latitude));
   const latCosine = Math.cos(latitude * DEGREES_TO_RADIANS);
   return scaleToZoom(EARTH_CIRCUMFERENCE * latCosine) - 8;
 }
@@ -82,7 +82,7 @@ export function getDistanceScales({latitude, longitude, zoom, scale, highPrecisi
   // Calculate scale from zoom if not provided
   scale = scale !== undefined ? scale : zoomToScale(zoom);
 
-  assert(isFinite(latitude) && isFinite(longitude) && isFinite(scale));
+  assert(Number.isFinite(latitude) && Number.isFinite(longitude) && Number.isFinite(scale));
 
   const result = {};
   const worldSize = TILE_SIZE * scale;
@@ -261,7 +261,7 @@ export function getProjectionMatrix({
  */
 export function worldToPixels(xyz, pixelProjectionMatrix) {
   const [x, y, z = 0] = xyz;
-  assert(isFinite(x) && isFinite(y) && isFinite(z));
+  assert(Number.isFinite(x) && Number.isFinite(y) && Number.isFinite(z));
 
   return transformVector(pixelProjectionMatrix, [x, y, z, 1]);
 }
@@ -277,7 +277,7 @@ export function worldToPixels(xyz, pixelProjectionMatrix) {
  */
 export function pixelsToWorld(xyz, pixelUnprojectionMatrix, targetZ = 0) {
   const [x, y, z] = xyz;
-  assert(isFinite(x) && isFinite(y));
+  assert(Number.isFinite(x) && Number.isFinite(y));
 
   if (Number.isFinite(z)) {
     // Has depth component
