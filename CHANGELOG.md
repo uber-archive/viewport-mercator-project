@@ -2,6 +2,9 @@
 
 ## 5.0 Release
 
+### 5.0.1
+- Fix bug in `getMeterZoom` where `latitude: 0` throws error
+
 ### 5.0.0
 - New util `flyToViewport`
 - New util `normalizeViewportProps`
