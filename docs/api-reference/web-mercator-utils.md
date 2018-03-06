@@ -128,6 +128,19 @@ Parameters:
 - `viewport.farZMultiplier` (Number, optional) - far plane multiplier. Default `10`.
 
 
+### `getProjectionParameters({width, height, altitude, pitch, farZMultiplier}})`
+
+Parameters:
+- `width` (Number, required)
+- `height` (Number, required)
+- `pitch` (Number, required)
+- `altitude` (Number, required)
+- `farZMultiplier`=`10` (Number, optional) - far plane multiplier. Set to `1` to get a mapbox compatible set of parameters
+
+Returns
+* Object with `{fovy, aspect, focalDistance, near, far}` fields.
+
+
 ### `fitBounds(opts)`
 
 Returns map settings (longitude, latitude and zoom) that will contain the provided corners within the provided dimensions. Only supports non-perspective mode.

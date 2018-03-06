@@ -20,6 +20,9 @@ const TILE_SIZE = 512;
 // Average circumference (40075 km equatorial, 40007 km meridional)
 const EARTH_CIRCUMFERENCE = 40.03e6;
 
+// Mapbox default altitude
+const DEFAULT_ALITITUDE = 1.5;
+
 /** Util functions **/
 export function zoomToScale(zoom) {
   return Math.pow(2, zoom);
@@ -169,25 +172,6 @@ export function getWorldPosition({
 // mapbox-gl's implementation to ensure that seamless interoperation
 // with mapbox and react-map-gl. See: https://github.com/mapbox/mapbox-gl-js
 
-// Variable fov (in radians)
-function getFov({height, altitude}) {
-  return 2 * Math.atan((height / 2) / altitude);
-}
-
-function getClippingPlanes({altitude, pitch}) {
-  // Find the distance from the center point to the center top
-  // in altitude units using law of sines.
-  const pitchRadians = pitch * DEGREES_TO_RADIANS;
-  const halfFov = Math.atan(0.5 / altitude);
-  const topHalfSurfaceDistance =
-    Math.sin(halfFov) * altitude / Math.sin(Math.PI / 2 - pitchRadians - halfFov);
-
-  // Calculate z value of the farthest fragment that should be rendered.
-  const farZ = Math.cos(Math.PI / 2 - pitchRadians) * topHalfSurfaceDistance + altitude;
-
-  return {farZ, nearZ: 0.1};
-}
-
 export function getViewMatrix({
   // Viewport props
   height,
@@ -229,8 +213,38 @@ export function getViewMatrix({
   return vm;
 }
 
+// PROJECTION MATRIX PARAMETERS
+// This is a "Mapbox" projection matrix - matches mapbox exactly if farZMultiplier === 1
+// Variable fov (in radians)
+export function getProjectionParameters({
+  width,
+  height,
+  altitude = DEFAULT_ALITITUDE,
+  pitch = 0,
+  farZMultiplier = 1
+}) {
+  // Find the distance from the center point to the center top
+  // in altitude units using law of sines.
+  const pitchRadians = pitch * DEGREES_TO_RADIANS;
+  const halfFov = Math.atan(0.5 / altitude);
+  const topHalfSurfaceDistance =
+    Math.sin(halfFov) * altitude / Math.sin(Math.PI / 2 - pitchRadians - halfFov);
+
+  // Calculate z value of the farthest fragment that should be rendered.
+  const farZ = Math.cos(Math.PI / 2 - pitchRadians) * topHalfSurfaceDistance + altitude;
+
+  return {
+    fov: 2 * Math.atan((height / 2) / altitude),
+    aspect: width / height,
+    focalDistance: altitude,
+    near: 0.1,
+    far: farZ * farZMultiplier
+  };
+}
+
 // PROJECTION MATRIX: PROJECTS FROM CAMERA (VIEW) SPACE TO CLIPSPACE
 // This is a "Mapbox" projection matrix - matches mapbox exactly if farZMultiplier === 1
+// Variable fov (in radians)
 export function getProjectionMatrix({
   width,
   height,
@@ -238,15 +252,15 @@ export function getProjectionMatrix({
   altitude,
   farZMultiplier = 10
 }) {
-  const {nearZ, farZ} = getClippingPlanes({altitude, pitch});
-  const fov = getFov({height, altitude});
+  const {fov, aspect, near, far} =
+    getProjectionParameters({width, height, altitude, pitch, farZMultiplier});
 
   const projectionMatrix = mat4_perspective(
     [],
-    fov,              // fov in radians
-    width / height,   // aspect ratio
-    nearZ,            // near plane
-    farZ * farZMultiplier // far plane
+    fov,      // fov in radians
+    aspect,   // aspect ratio
+    near,     // near plane
+    far       // far plane
   );
 
   return projectionMatrix;

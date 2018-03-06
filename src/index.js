@@ -15,7 +15,8 @@ export {
   getDistanceScales,
   getWorldPosition,
   getViewMatrix,
-  getProjectionMatrix
+  getProjectionMatrix,
+  getProjectionParameters
 } from './web-mercator-utils';
 
 // Deprecated

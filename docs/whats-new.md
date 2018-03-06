@@ -1,11 +1,17 @@
 # What's New
 
 ## v5.1
-**assert depdendency removed** - No longer imports the "built-in" `assert` module (which added size and caused issues in react-native).
+
+Release date: TBD, target April 2018
+
+* **`getProjectionParameters`** - New utility function that returns basic projection parameters, like field of view etc. Enables applications to directly create projection matrices using the math library of their choice, instead of using `getProjectionMatrix`. This can for instance be used to create orthographic projections, and to switch between perspective and orthographic projection modes.
+**`assert` Dependency Removed** - No longer imports the "built-in" `assert` module (which added size and caused issues in react-native).
 **Size Reduction** - Adds more compact, untranspiled distribution for apps that only need to run on modern browsers. To reduce your final bundle size, add the `esnext` tag to the front of webpack's `resolve.mainField` array and it will pick up the untranspiled distribution.
 
 
 ## v5.0
+
+Release Date: Jan 9, 2018
 
 - **Improved Distance Scales** - Second order polynomial approximations are now available, with significant precision improvement over the previous linear approximations.
 - **3D Projection** - `project` and `unproject` methods deal with 3d pixel coordinates (depth).
@@ -16,10 +22,15 @@
 
 ## v4.1
 
+Release Date: Jun 26, 2017
+
 - **fitBounds**: The `PerspectiveMercatorViewport.fitBounds` method is back.
 - **Size Reduction** - Replace gl-matrix dependency with cherry-pick imports
 
+
 ## v4.0
+
+Release Date: Apr 5, 2017
 
 * **Perspective Support** - Adds a new perspective enabled `PerspectiveMercatorViewport` class
 * **New method** - `getLocationAtPoint`
@@ -28,10 +39,14 @@
 
 ## v3 - Beta Releases
 
+Release Date: N/A
+
 v3 was a series of beta only releases while the new API was hammered out. There is no official v3 release.
 
 
 ## v2 - Property renaming
+
+Release Date: Dec 2, 2015
 
 * `center` property was broken up into `longitude`, `latitude` properties.
 * `dimensions` property was broken up into `width`, and `height` properties.
@@ -57,3 +72,8 @@ var viewport = ViewportMercator({
 ```
 
 The change was made to support the typical `viewport` object from the new [react-map-gl](github.com/uber/react-map-gl) [API changes](https://gist.github.com/vicapow/00017553e92f613d5361).
+
+## v1
+
+Release Date: Oct 26, 2015
+
