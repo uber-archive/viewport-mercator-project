@@ -1,8 +1,6 @@
 import WebMercatorViewport from './web-mercator-viewport';
 import assert from 'assert';
 
-const ERR_PADDING = 'Padding object missing properties in fitBounds.';
-
 /**
  * * An object describing the padding to add to the bounds.
  * @typedef {Object} PaddingObject
@@ -36,7 +34,7 @@ export default function fitBounds({
 }) {
   const [[west, south], [east, north]] = bounds;
 
-  if (typeof padding === 'number') {
+  if (Number.isFinite(padding)) {
     const p = padding;
     padding = {
       top: p,
@@ -46,11 +44,10 @@ export default function fitBounds({
     };
   } else {
     // Make sure all the required properties are set
-    assert(typeof padding.top === 'number' &&
-      typeof padding.bottom === 'number' &&
-      typeof padding.left === 'number' &&
-      typeof padding.right === 'number',
-      ERR_PADDING
+    assert(Number.isFinite(padding.top) &&
+      Number.isFinite(padding.bottom) &&
+      Number.isFinite(padding.left) &&
+      Number.isFinite(padding.right)
     );
   }
   // Find how much we need to shift the center
