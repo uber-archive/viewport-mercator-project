@@ -1,5 +1,10 @@
 # What's New
 
+## v5.1
+- Size Reduction: Adds more compact, untranspiled distribution for apps that only need to run on modern browsers. To reduce your final bundle size, add the `esnext` tag to the front of webpack's `resolve.mainField` array and it will pick up the untranspiled distribution.
+- No longer imports the "built-in" `assert` module (which added size and caused issues in react-native).
+
+
 ## v5.0 (In Progress, Release Date TBA)
 - Use math.gl library (smaller dependency than gl-matrix + enables some code to be dropped)
 - Documentation website matching other frameworks in the same suite.

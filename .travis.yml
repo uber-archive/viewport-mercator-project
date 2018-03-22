@@ -3,5 +3,4 @@ os: linux
 sudo: required
 dist: trusty
 node_js:
-  - '6'
-  - '7'
+  - '8.9.4'
