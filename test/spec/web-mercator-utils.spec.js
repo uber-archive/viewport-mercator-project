@@ -12,6 +12,7 @@ import {
   getUncenteredViewMatrix,
   getViewMatrix,
   getProjectionMatrix,
+  getProjectionParameters,
   worldToPixels,
   pixelsToWorld
 } from 'viewport-mercator-project';
@@ -31,6 +32,7 @@ test('Viewport#imports', t => {
   t.ok(getUncenteredViewMatrix,
     'getUncenteredViewMatrix imports OK');
   t.ok(getProjectionMatrix, 'getProjectionMatrix imports OK');
+  t.ok(getProjectionParameters, 'getProjectionParameters imports OK');
   t.ok(worldToPixels, 'worldToPixels imports OK');
   t.ok(pixelsToWorld, 'pixelsToWorld imports OK');
   t.end();
@@ -174,3 +176,18 @@ function getDiff(value, baseValue) {
       (${error.map(d => `${(d * 100).toFixed(3)}%`).join(', ')})`
   };
 }
+
+test('getProjectionParameters', t => {
+  for (const vc in VIEWPORT_PROPS) {
+    const props = VIEWPORT_PROPS[vc];
+
+    // TODO - for now, just tests that fields are valid number
+    const {fov, aspect, focalDistance, near, far} = getProjectionParameters(props);
+    t.ok(Number.isFinite(fov), 'getProjectionParameters: fov is a number');
+    t.ok(Number.isFinite(aspect), 'getProjectionParameters: aspect is a number');
+    t.ok(Number.isFinite(focalDistance), 'getProjectionParameters: focalDistance is a number');
+    t.ok(Number.isFinite(near), 'getProjectionParameters: near is a number');
+    t.ok(Number.isFinite(far), 'getProjectionParameters: far is a number');
+  }
+  t.end();
+});
