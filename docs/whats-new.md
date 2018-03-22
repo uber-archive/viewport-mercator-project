@@ -2,26 +2,23 @@
 
 ## v5.0
 
-- **Improved distance scales** - Second order polynomial approximations are now available.
+- **Improved Distance Scales** - Second order polynomial approximations are now available, with significant precision improvement over the previous linear approximations.
 - **3D Projection** - `project` and `unproject` methods deal with 3d pixel coordinates (depth).
-- **Improved documentation** - This website now matches other frameworks in the vis.gl framework suite.
-- **Use math.gl library** - Smaller dependency than `gl-matrix`.
-- **primitive web mercator utilities** - A more primitive set of utility functions is now available. Classes here and in other repos like deck.gl use these for increased code sharing and smaller exectables.
+- **Improved documentation** - This website now matches other frameworks in the [vis.gl](http://vis.gl) framework suite.
+- **Primitive Web Mercator Utilities** - A more primitive set of utility functions is now available. Classes here and in other repos like deck.gl use these for increased code sharing and smaller exectables.
+- **Size Reduction** - Use [math.gl](https://uber-web.github.io/math.gl/#/documentation/overview) library, which is a smaller dependency than `gl-matrix`.
 
 
 ## v4.1
-- **fitBounds** is back: `PerspectiveMercatorViewport.fitBounds` method
-- Replace gl-matrix dependency with cherry-pick imports
+
+- **fitBounds**: The `PerspectiveMercatorViewport.fitBounds` method is back.
+- **Size Reduction** - Replace gl-matrix dependency with cherry-pick imports
 
 ## v4.0
 
-* **Perspective Support**
-
-Adds a new perspective enabled `PerspectiveMercatorViewport` class
-
-* **New methods**
-- `getLocationAtPoint`
-- `getLngLatFromPos`
+* **Perspective Support** - Adds a new perspective enabled `PerspectiveMercatorViewport` class
+* **New method** - `getLocationAtPoint`
+* **New method** - `getLngLatFromPos`
 
 
 ## v3 - Beta Releases
