@@ -10,3 +10,5 @@ node_modules
 *.zip
 *.rar
 .exit_code
+
+yarn-error.log
