@@ -3,7 +3,10 @@
 ## 5.0 Release
 
 ### 5.1.0-alpha.1
-- math.gl 1.1.0-alpha.1
+- Add esnext dist
+- Add test-size-* scripts
+- Remove dependeny on external assert
+- Bump to math.gl v1.1.0-alpha.1 for esnext dist
 
 ### 5.0.1
 - Fix bug in `getMeterZoom` where `latitude: 0` throws error
