@@ -2,10 +2,12 @@
 
 ## 5.0 Release
 
-### 5.1.0-alpha.1
+### 5.1.0-alpha.2
 - Add esnext dist
 - Add test-size-* scripts
 - Remove dependeny on external assert
+
+### 5.1.0-alpha.1
 - Bump to math.gl v1.1.0-alpha.1 for esnext dist
 
 ### 5.0.1
