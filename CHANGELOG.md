@@ -2,6 +2,9 @@
 
 ## 5.0 Release
 
+### 5.1.0-alpha.1
+- math.gl 1.1.0-alpha.1
+
 ### 5.0.1
 - Fix bug in `getMeterZoom` where `latitude: 0` throws error
 

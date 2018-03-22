@@ -32,22 +32,22 @@
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@mapbox/whoots-js/-/whoots-js-3.0.0.tgz#c1de4293081424da3ac30c23afa850af1019bb54"
 
-"@turf/distance@^5.0.4":
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/@turf/distance/-/distance-5.0.4.tgz#0ef58ec9a08403bdaef7bf420cb2c9d04cc69257"
+"@turf/destination@^5.0.4":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/destination/-/destination-5.1.5.tgz#ed35381bdce83bbddcbd07a2e2bce2bddffbcc26"
   dependencies:
-    "@turf/helpers" "^5.0.4"
-    "@turf/invariant" "^5.0.4"
+    "@turf/helpers" "^5.1.5"
+    "@turf/invariant" "^5.1.5"
 
-"@turf/helpers@^5.0.4":
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-5.0.4.tgz#e47a4e4f38dee3b47a3177a69de162d7a7a5837f"
+"@turf/helpers@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-5.1.5.tgz#153405227ab933d004a5bb9641a9ed999fcbe0cf"
 
-"@turf/invariant@^5.0.4":
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-5.0.4.tgz#1cc305f4de7c0f1bfd9d7c420aac282051262b41"
+"@turf/invariant@^5.1.5":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-5.2.0.tgz#f0150ff7290b38577b73d088b7932c1ee0aa90a7"
   dependencies:
-    "@turf/helpers" "^5.0.4"
+    "@turf/helpers" "^5.1.5"
 
 "JSV@>= 4.0.x":
   version "4.0.2"
@@ -645,6 +645,10 @@ babel-plugin-transform-strict-mode@^6.24.1:
   dependencies:
     babel-runtime "^6.22.0"
     babel-types "^6.24.1"
+
+babel-plugin-version-inline@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-version-inline/-/babel-plugin-version-inline-1.0.0.tgz#b99b6f925db4a4c6789eb08836e66d128dd5993f"
 
 babel-polyfill@^6.26.0:
   version "6.26.0"
@@ -2980,10 +2984,12 @@ mapbox-gl@0.41.0:
     vt-pbf "^3.0.1"
     webworkify "^1.4.0"
 
-math.gl@^1.0.0-alpha.7:
-  version "1.0.0-alpha.7"
-  resolved "https://registry.yarnpkg.com/math.gl/-/math.gl-1.0.0-alpha.7.tgz#c8b2ed001f0f9f805f499e23f99fd69f576bdebc"
+math.gl@>=1.1.0-alpha.1:
+  version "1.1.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/math.gl/-/math.gl-1.1.0-alpha.1.tgz#efd6fdf2fca1fdd1cbad49b37760d48ffe143662"
   dependencies:
+    babel-plugin-version-inline "^1.0.0"
+    gl-mat3 "^1.0.0"
     gl-mat4 "^1.1.4"
     gl-quat "^1.0.0"
     gl-vec2 "^1.0.0"
