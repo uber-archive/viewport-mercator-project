@@ -1,32 +1,29 @@
 # What's New
 
 ## v5.1
-- Size Reduction: Adds more compact, untranspiled distribution for apps that only need to run on modern browsers. To reduce your final bundle size, add the `esnext` tag to the front of webpack's `resolve.mainField` array and it will pick up the untranspiled distribution.
-- No longer imports the "built-in" `assert` module (which added size and caused issues in react-native).
+**assert depdendency removed** - No longer imports the "built-in" `assert` module (which added size and caused issues in react-native).
+**Size Reduction** - Adds more compact, untranspiled distribution for apps that only need to run on modern browsers. To reduce your final bundle size, add the `esnext` tag to the front of webpack's `resolve.mainField` array and it will pick up the untranspiled distribution.
 
 
-## v5.0 (In Progress, Release Date TBA)
-- Use math.gl library (smaller dependency than gl-matrix + enables some code to be dropped)
-- Documentation website matching other frameworks in the same suite.
-- Includes a set of primitive web mercator utilities
-   - (classes here and in other repos like deck.gl use these for increased code sharing and smaller exectables)
-- `project` and `unproject` methods deal with 3d pixel coordinates (depth).
+## v5.0
+
+- **Improved Distance Scales** - Second order polynomial approximations are now available, with significant precision improvement over the previous linear approximations.
+- **3D Projection** - `project` and `unproject` methods deal with 3d pixel coordinates (depth).
+- **Improved documentation** - This website now matches other frameworks in the [vis.gl](http://vis.gl) framework suite.
+- **Primitive Web Mercator Utilities** - A more primitive set of utility functions is now available. Classes here and in other repos like deck.gl use these for increased code sharing and smaller exectables.
+- **Size Reduction** - Use [math.gl](https://uber-web.github.io/math.gl/#/documentation/overview) library, which is a smaller dependency than `gl-matrix`.
 
 
 ## v4.1
-- **fitBounds** is back: `PerspectiveMercatorViewport.fitBounds` method
-- Replace gl-matrix dependency with cherry-pick imports
 
+- **fitBounds**: The `PerspectiveMercatorViewport.fitBounds` method is back.
+- **Size Reduction** - Replace gl-matrix dependency with cherry-pick imports
 
 ## v4.0
 
-* **Perspective Support**
-
-Adds a new perspective enabled `PerspectiveMercatorViewport` class
-
-* **New methods**
-- `getLocationAtPoint`
-- `getLngLatFromPos`
+* **Perspective Support** - Adds a new perspective enabled `PerspectiveMercatorViewport` class
+* **New method** - `getLocationAtPoint`
+* **New method** - `getLngLatFromPos`
 
 
 ## v3 - Beta Releases
@@ -59,6 +56,4 @@ var viewport = ViewportMercator({
 });
 ```
 
-The change was made to support the typical `viewport` object from the new
-[react-map-gl](github.com/uber/react-map-gl)
-[API changes](https://gist.github.com/vicapow/00017553e92f613d5361).
+The change was made to support the typical `viewport` object from the new [react-map-gl](github.com/uber/react-map-gl) [API changes](https://gist.github.com/vicapow/00017553e92f613d5361).
