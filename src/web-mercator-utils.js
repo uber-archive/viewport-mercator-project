@@ -9,7 +9,7 @@ import mat4_translate from 'gl-mat4/translate';
 import mat4_rotateX from 'gl-mat4/rotateX';
 import mat4_rotateZ from 'gl-mat4/rotateZ';
 import vec2_lerp from 'gl-vec2/lerp';
-import assert from 'assert';
+import assert from './assert';
 
 // CONSTANTS
 const PI = Math.PI;
