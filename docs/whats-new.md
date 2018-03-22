@@ -75,5 +75,7 @@ The change was made to support the typical `viewport` object from the new [react
 
 ## v1
 
+Initial release
+
 Release Date: Oct 26, 2015
 
