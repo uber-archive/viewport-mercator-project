@@ -1,5 +1,10 @@
 # What's New
 
+## v5.1
+**assert depdendency removed** - No longer imports the "built-in" `assert` module (which added size and caused issues in react-native).
+**Size Reduction** - Adds more compact, untranspiled distribution for apps that only need to run on modern browsers. To reduce your final bundle size, add the `esnext` tag to the front of webpack's `resolve.mainField` array and it will pick up the untranspiled distribution.
+
+
 ## v5.0
 
 - **Improved Distance Scales** - Second order polynomial approximations are now available, with significant precision improvement over the previous linear approximations.
