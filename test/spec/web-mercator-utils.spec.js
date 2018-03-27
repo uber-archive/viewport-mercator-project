@@ -163,6 +163,19 @@ test('getDistanceScales#pixelsPerMeter', t => {
   t.end();
 });
 
+test('getMeterZoom', t => {
+  const TEST_LATITUDES = [0, 37.5, 75];
+
+  for (const latitude of TEST_LATITUDES) {
+    const zoom = getMeterZoom({latitude});
+
+    const {pixelsPerMeter} = getDistanceScales({latitude, longitude: 0, zoom});
+    t.deepEqual(toLowPrecision(pixelsPerMeter), [1, 1, 1], 'zoom yields 1 pixel per meter');
+  }
+
+  t.end();
+});
+
 function getDiff(value, baseValue) {
   const errorPixels = value.map((v, i) => Math.abs(v - baseValue[i]));
   const error = value.map((v, i) =>
