@@ -68,8 +68,7 @@ export function worldToLngLat([x, y], scale) {
 }
 
 // Returns the zoom level that gives a 1 meter pixel at a certain latitude
-// S=C*cos(y)/2^z/TILE_SIZE
-// S=C*cos(y)/2^(z+9)
+// 1 = C*cos(y)/2^z/TILE_SIZE = C*cos(y)/2^(z+9)
 export function getMeterZoom({latitude}) {
   assert(Number.isFinite(latitude));
   const latCosine = Math.cos(latitude * DEGREES_TO_RADIANS);
