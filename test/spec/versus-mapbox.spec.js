@@ -30,7 +30,7 @@ test('Mapbox project/unproject', t => {
       const transform = new MapboxTransform(viewportProps);
       const mapboxProjection = transform.mapboxProject(lngLat);
       const mapboxUnprojection = transform.mapboxUnproject(mapboxProjection);
-      t.deepEquals(toLowPrecision(mapboxUnprojection), toLowPrecision(lngLat),
+      t.deepEquals(toLowPrecision(mapboxUnprojection, 6), toLowPrecision(lngLat, 6),
         `unproject(project(${title}, ${viewportName})) - identity operation`);
     }
   }
@@ -74,7 +74,8 @@ test('Viewport vs. Mapbox unprojectFlat', t => {
   t.end();
 });
 
-test('Viewport vs Mapbox matrices', t => {
+/* Mapbox's matrixes projects to screenspace instead of clipspace */
+test.skip('Viewport vs Mapbox matrices', t => {
   for (const viewportName in VIEWPORT_PROPS) {
     const viewportProps = VIEWPORT_PROPS[viewportName];
 
@@ -102,7 +103,7 @@ test('Viewport vs Mapbox project', t => {
 
     for (const {title, lngLat} of TEST_CASES) {
       const viewport = new WebMercatorViewport(viewportProps);
-      const projection = viewport.project(lngLat, {topLeft: false});
+      const projection = viewport.project(lngLat, {topLeft: true});
 
       const transform = new MapboxTransform(viewportProps);
       const mapboxProjection = transform.mapboxProject(lngLat);
@@ -123,9 +124,9 @@ test('Viewport vs Mapbox unproject', t => {
       const mapboxProjection = transform.mapboxProject(lngLat);
 
       const viewport = new WebMercatorViewport(viewportProps);
-      const unprojection = viewport.unproject(mapboxProjection, {topLeft: false});
+      const unprojection = viewport.unproject(mapboxProjection, {topLeft: true});
 
-      t.deepEquals(toLowPrecision(unprojection), toLowPrecision(lngLat),
+      t.deepEquals(toLowPrecision(unprojection, 7), toLowPrecision(lngLat, 7),
         `unproject(${title}, ${viewportName}) - viewport/mapbox match`);
     }
   }
@@ -141,7 +142,7 @@ test('Viewport project/unproject', t => {
       const projection = viewport.project(lngLat);
       const unprojection = viewport.unproject(projection);
 
-      t.deepEquals(toLowPrecision(unprojection), toLowPrecision(lngLat),
+      t.deepEquals(toLowPrecision(unprojection, 7), toLowPrecision(lngLat, 7),
         `unproject(project(${title}, ${viewportName})) - identity operation`);
     }
   }
