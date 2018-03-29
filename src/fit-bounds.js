@@ -1,5 +1,5 @@
 import WebMercatorViewport from './web-mercator-viewport';
-import assert from 'assert';
+import assert from './assert';
 
 /**
  * * An object describing the padding to add to the bounds.
@@ -68,9 +68,16 @@ export default function fitBounds({
     Math.abs(se[1] - nw[1])
   ];
 
+  const targetSize = [
+    width - padding.left - padding.right - Math.abs(offset[0]) * 2,
+    height - padding.top - padding.bottom - Math.abs(offset[1]) * 2
+  ];
+
+  assert(targetSize[0] > 0 && targetSize[1] > 0);
+
   // scale = screen pixels per unit on the Web Mercator plane
-  const scaleX = (width - padding.left - padding.right - Math.abs(offset[0]) * 2) / size[0];
-  const scaleY = (height - padding.top - padding.bottom - Math.abs(offset[1]) * 2) / size[1];
+  const scaleX = targetSize[0] / size[0];
+  const scaleY = targetSize[1] / size[1];
 
   // Find how much we need to shift the center
   const offsetX = (padding.right - padding.left) / 2 / scaleX;

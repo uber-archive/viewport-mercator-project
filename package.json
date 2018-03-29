@@ -36,7 +36,7 @@
     "test-size-esm": "npm run build-esm && webpack --config test/webpack.config.js --env.import-nothing"
   },
   "dependencies": {
-    "math.gl": ">=1.1.0-alpha.1"
+    "math.gl": "^1.0.5"
   },
   "devDependencies": {
     "@turf/destination": "^5.0.4",
