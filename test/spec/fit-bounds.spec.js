@@ -29,6 +29,20 @@ const FITBOUNDS_TEST_CASES = [
       latitude: 64.86850056273362,
       zoom: 12.89199533073045
     }
+  ],
+  [
+    {
+      width: 600,
+      height: 400,
+      bounds: [[-23.407, 64.863], [-23.406, 64.874]],
+      padding: {top: 100, bottom: 10, left: 30, right: 30},
+      offset: [0, -40]
+    },
+    {
+      longitude: -23.406499999999973,
+      latitude: 64.870857602,
+      zoom: 12.476957831
+    }
   ]
 ];
 
