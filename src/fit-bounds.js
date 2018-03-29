@@ -50,9 +50,6 @@ export default function fitBounds({
       Number.isFinite(padding.right)
     );
   }
-  // Find how much we need to shift the center
-  const verticalOffset = (padding.top - padding.bottom) / 2;
-  const lateralOffset = (padding.left - padding.right) / 2;
 
   const viewport = new WebMercatorViewport({
     width,
@@ -64,17 +61,25 @@ export default function fitBounds({
 
   const nw = viewport.project([west, north]);
   const se = viewport.project([east, south]);
+
+  // width/height on the Web Mercator plane
   const size = [
     Math.abs(se[0] - nw[0]),
     Math.abs(se[1] - nw[1])
   ];
-  const center = [
-    (se[0] + nw[0]) / 2 + lateralOffset,
-    (se[1] + nw[1]) / 2 + verticalOffset
-  ];
 
+  // scale = screen pixels per unit on the Web Mercator plane
   const scaleX = (width - padding.left - padding.right - Math.abs(offset[0]) * 2) / size[0];
   const scaleY = (height - padding.top - padding.bottom - Math.abs(offset[1]) * 2) / size[1];
+
+  // Find how much we need to shift the center
+  const offsetX = (padding.right - padding.left) / 2 / scaleX;
+  const offsetY = (padding.bottom - padding.top) / 2 / scaleY;
+
+  const center = [
+    (se[0] + nw[0]) / 2 + offsetX,
+    (se[1] + nw[1]) / 2 + offsetY
+  ];
 
   const centerLngLat = viewport.unproject(center);
   const zoom = viewport.zoom + Math.log2(Math.abs(Math.min(scaleX, scaleY)));
