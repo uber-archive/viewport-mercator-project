@@ -21,7 +21,7 @@ const TILE_SIZE = 512;
 const EARTH_CIRCUMFERENCE = 40.03e6;
 
 // Mapbox default altitude
-const DEFAULT_ALITITUDE = 1.5;
+const DEFAULT_ALTITUDE = 1.5;
 
 /** Util functions **/
 export function zoomToScale(zoom) {
@@ -219,7 +219,7 @@ export function getViewMatrix({
 export function getProjectionParameters({
   width,
   height,
-  altitude = DEFAULT_ALITITUDE,
+  altitude = DEFAULT_ALTITUDE,
   pitch = 0,
   farZMultiplier = 1
 }) {
