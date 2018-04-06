@@ -1,49 +1,13 @@
-// Copyright (c) 2017 Uber Technologies, Inc.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
 const {resolve} = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-// const webpack = require('webpack');
+const ALIASES = require('../aliases');
 
-const ALIASES = require(resolve(__dirname, '../aliases'));
+const TEST_CONFIG = {
+  mode: 'development',
 
-const COMMON_CONFIG = {
-  stats: {
-    warnings: false
-  },
-
-  module: {
-    rules: []
-  },
-
-  plugins: [],
-
-  node: {
-    fs: 'empty'
-  }
-};
-
-const TEST_CONFIG = Object.assign({}, COMMON_CONFIG, {
   devServer: {
     stats: {
       warnings: false
@@ -51,18 +15,21 @@ const TEST_CONFIG = Object.assign({}, COMMON_CONFIG, {
     quiet: true
   },
 
-  // Bundle the tests for running in the browser
-  entry: {
-    'test-browser': resolve('./test/browser.js')
-  },
-
   // Generate a bundle in dist folder
   output: {
     path: resolve('./dist'),
-    filename: '[name]-bundle.js'
+    filename: 'bundle.js'
   },
 
-  devtool: '#source-maps',
+  resolve: {
+    alias: Object.assign({}, ALIASES, {
+      // Aliases needed to defeat root scripts from getting duplicate dependencies
+      // from sub module node_modules
+      'math.gl': resolve('./node_modules/math.gl')
+    })
+  },
+
+  devtool: '#inline-source-maps',
 
   module: {
     rules: [
@@ -75,78 +42,148 @@ const TEST_CONFIG = Object.assign({}, COMMON_CONFIG, {
     ]
   },
 
-  resolve: {
-    alias: Object.assign({}, ALIASES)
+  node: {
+    fs: 'empty'
   },
 
-  plugins: [
-    new HtmlWebpackPlugin({title: 'viewport-mercator-project tests'})
-  ]
-});
+  plugins: [new HtmlWebpackPlugin({title: 'deck.gl tests'})]
+};
 
-const SIZE_ES6_CONFIG = Object.assign({}, TEST_CONFIG, {
-  resolve: {
-    mainFields: ['esnext', 'browser', 'module', 'main'],
-    alias: Object.assign({}, ALIASES, {
-      'viewport-mercator-project': resolve(__dirname, '../dist/es6')
-    })
+function getDist(env) {
+  if (env.esm) {
+    return 'esm';
   }
-});
-
-const SIZE_ESM_CONFIG = Object.assign({}, TEST_CONFIG, {
-  resolve: {
-    alias: Object.assign({}, ALIASES, {
-      'viewport-mercator-project': resolve(__dirname, '../dist/esm')
-    })
+  if (env.es5) {
+    return 'es5';
   }
-});
-
-const BENCH_CONFIG = Object.assign({}, TEST_CONFIG, {
-  entry: {
-    'test-browser': resolve(__dirname, './bench/browser.js')
-  }
-});
-
-// Get first key in an object
-function getFirstKey(object) {
-  for (const key in object) {
-    return key;
-  }
-  return null;
+  return 'es6';
 }
 
-// Generate a webpack config for a bundle size test app
-function getBundleSizeTestAppConfig(env) {
-  const app = getFirstKey(env);
+const CONFIGS = {
+  test: env =>
+    Object.assign({}, TEST_CONFIG, {
+      // Bundle the tests for running in the browser
+      entry: {
+        'test-browser': resolve('./test/test-browser.js')
+      }
+      // plugins: [new HtmlWebpackPlugin()]
+    }),
 
-  return Object.assign({}, env.es6 ? SIZE_ES6_CONFIG : SIZE_ESM_CONFIG, {
-    // Replace the entry point for webpack-dev-server
-    entry: {
-      'test-browser': resolve(__dirname, './size', `${app}.js`)
-    },
-    output: {
-      path: resolve('./dist'),
-      filename: '[name]-bundle.js'
-    },
-    plugins: [new UglifyJsPlugin(), new BundleAnalyzerPlugin()]
-  });
-}
+  bench: env =>
+    Object.assign({}, TEST_CONFIG, {
+      entry: {
+        'test-browser': resolve(__dirname, './test/bench/browser.js')
+      },
 
+      plugins: [new HtmlWebpackPlugin()]
+    }),
+
+  render: env =>
+    Object.assign({}, TEST_CONFIG, {
+      // Bundle the tests for running in the browser
+      entry: {
+        'test-browser': resolve('./test/render/test-rendering.js')
+      },
+      plugins: [new HtmlWebpackPlugin()]
+    }),
+
+  renderReact: env =>
+    Object.assign({}, TEST_CONFIG, {
+      // Bundle the tests for running in the browser
+      entry: {
+        'test-browser': resolve('./test/render/old/test-rendering.react.js')
+      },
+      plugins: [new HtmlWebpackPlugin()]
+    }),
+
+  size: env => {
+    const dist = getDist(env);
+
+    const config = Object.assign({}, TEST_CONFIG, {
+      resolve: {
+        alias: Object.assign({}, ALIASES, {
+          'math.gl': resolve(__dirname, `../dist/${dist}`)
+        })
+      }
+    });
+    if (dist === 'es6') {
+      resolve.mainFields = ['esnext', 'browser', 'module', 'main'];
+    }
+    return config;
+  },
+
+  bundle: env => {
+    const dist = getDist(env);
+
+    const config = CONFIGS.size(env);
+
+    Object.assign(config, {
+      mode: 'production',
+
+      // Replace the entry point for webpack-dev-server
+      entry: {
+        'test-browser': resolve(__dirname, './size', 'import-nothing.js')
+      },
+      output: {
+        path: resolve('/tmp'),
+        filename: 'bundle.js'
+      },
+      resolve: {
+        mainFields: env.es6 ?
+          ['esnext', 'browser', 'module', 'main'] :
+          ['browser', 'module', 'main'],
+        alias: Object.assign({}, ALIASES, {
+          'deck.gl': resolve(__dirname, `../dist/${dist}`)
+        })
+      },
+      plugins: [
+        // leave minification to app
+        // new webpack.optimize.UglifyJsPlugin({comments: false})
+        new webpack.DefinePlugin({NODE_ENV: JSON.stringify('production')})
+      ]
+    });
+
+    delete config.devtool;
+    return config;
+  },
+
+  // Bundles a test app for size analysis and starts the webpack bundle analyzer
+  analyze: env => {
+    const config = CONFIGS.bundle(env);
+    config.plugins.push(new BundleAnalyzerPlugin());
+    return config;
+  }
+};
+
+// Pick a webpack config based on --env.*** argument to webpack
 function getConfig(env) {
-  if (env.bench) {
-    return BENCH_CONFIG;
+  if (env.test || env.testBrowser || env.test_browser) {
+    return CONFIGS.test(env);
   }
-  if (env.test) {
-    return TEST_CONFIG;
+  if (env.render) {
+    return CONFIGS.render(env);
+  }
+  if (env.renderReact || env.render_react) {
+    return CONFIGS.renderReact(env);
+  }
+  if (env.bench) {
+    return CONFIGS.bench(env);
+  }
+  if (env.analyze) {
+    return CONFIGS.analyze(env);
   }
 
-  return getBundleSizeTestAppConfig(env);
+  return CONFIGS.bundle(env);
 }
 
-module.exports = env => {
-  const config = getConfig(env || {});
-  // NOTE uncomment to display config
+module.exports = (env = {}) => {
+  // env = getEnv(env);
+  // NOTE uncomment to display env
   // console.log('webpack env', JSON.stringify(env));
+
+  const config = getConfig(env);
+  // NOTE uncomment to display config
   // console.log('webpack config', JSON.stringify(config));
+
   return config;
 };
