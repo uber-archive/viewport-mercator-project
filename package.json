@@ -1,6 +1,6 @@
 {
   "name": "viewport-mercator-project",
-  "version": "5.1.0-alpha.2",
+  "version": "5.1.0",
   "description": "Utilities for perspective-enabled Web Mercator projections",
   "author": "Uber Technologies, Inc.",
   "license": "MIT",
@@ -32,7 +32,7 @@
     "test-bundle-size": "./scripts/build.sh  && webpack --config test/webpack.config.js --env.analyze --env.es6"
   },
   "dependencies": {
-    "math.gl": "^1.0.5"
+    "math.gl": "^1.1.0"
   },
   "devDependencies": {
     "@babel/cli": "7.0.0-beta.44",
