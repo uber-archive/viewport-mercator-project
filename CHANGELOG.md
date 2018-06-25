@@ -1,5 +1,10 @@
 # Change Log
 
+## 5.2 Release
+
+### 5.2.0
+- Upgrade to math.gl@2.0.0
+
 ## 5.1 Release
 
 ### 5.1.0

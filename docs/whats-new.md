@@ -1,8 +1,15 @@
 # What's New
 
+## v5.2
+
+Release date: June 25, 2018
+
+* Upgrade to `math.gl@2.0.0`
+
+
 ## v5.1
 
-Release date: TBD, target April 2018
+Release date: April 16, 2018
 
 * **`getProjectionParameters`** - New utility function that returns basic projection parameters, like field of view etc. Enables applications to directly create projection matrices using the math library of their choice, instead of using `getProjectionMatrix`. This can for instance be used to create orthographic projections, and to switch between perspective and orthographic projection modes.
 **`assert` Dependency Removed** - No longer imports the "built-in" `assert` module (which added size and caused issues in react-native).
