@@ -14,3 +14,5 @@ require('./spec/fit-bounds.spec');
 require('./spec/normalize-viewport-props.spec');
 // Fly to
 require('./spec/fly-to-viewport.spec');
+// Compare FP32 and Offset
+require('./fp32-limits');
