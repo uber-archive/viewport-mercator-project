@@ -57,10 +57,14 @@ test('FP32 & Offset Comparison', t => {
         -(lngLatToWorld(point, scale)[1] - lngLatToWorld([longitude, latitude], scale)[1])
       ];
 
+      const longitudeFP32 = Math.fround(longitude);
+      const latitudeFP32 = Math.fround(latitude);
       const pointFP32 = point.map(f => Math.fround(f));
       const coordsFP32 = [
-        lngLatToWorld(pointFP32, scale)[0] - lngLatToWorld([longitude, latitude], scale)[0],
-        -(lngLatToWorld(pointFP32, scale)[1] - lngLatToWorld([longitude, latitude], scale)[1])
+        Math.fround(lngLatToWorld(pointFP32, scale)[0]) -
+        Math.fround(lngLatToWorld([longitudeFP32, latitudeFP32], scale)[0]),
+        -(Math.fround(lngLatToWorld(pointFP32, scale)[1]) -
+          Math.fround(lngLatToWorld([longitudeFP32, latitudeFP32], scale)[1]))
       ];
 
       const diff = getDiff(coordsFP32, realPixelPos);
