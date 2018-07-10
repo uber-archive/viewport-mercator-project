@@ -30,33 +30,23 @@ test('FP32 & Offset Comparison', t => {
       t.comment(vc);
       const props = VIEWPORT_PROPS[vc];
       const {longitude, latitude} = props;
-      const {pixelsPerMeter, pixelsPerMeter2} = getDistanceScales({
-        latitude,
-        longitude,
-        scale,
-        highPrecision: true
-      });
 
       // Test distance from one edge of the viewport to the other
+      // TODO: Find better way to do "one edge of the viewport to the other"
       const delta = Math.pow(2, 20 - zoom) * 50;
       t.comment(`R = ${delta} meters`);
 
-      // To pixels
-      const offsetPixelPos = [
-        delta * (pixelsPerMeter[0] + pixelsPerMeter2[0] * delta),
-        delta * (pixelsPerMeter[1] + pixelsPerMeter2[1] * delta)
-      ];
-
       let point = [longitude, latitude];
       // turf unit is kilometers
-      point = destination(point, (delta / 1000) * Math.sqrt(2), 45);
-      point = point.geometry.coordinates;
+      point = destination(point, (delta / 1000) * Math.sqrt(2), 45).geometry.coordinates;
 
+      // Calculate real position
       const realPixelPos = [
         lngLatToWorld(point, scale)[0] - lngLatToWorld([longitude, latitude], scale)[0],
         -(lngLatToWorld(point, scale)[1] - lngLatToWorld([longitude, latitude], scale)[1])
       ];
 
+      // Calculate using FP32 mode
       const longitudeFP32 = Math.fround(longitude);
       const latitudeFP32 = Math.fround(latitude);
       const pointFP32 = point.map(f => Math.fround(f));
@@ -67,11 +57,38 @@ test('FP32 & Offset Comparison', t => {
           Math.fround(lngLatToWorld([longitudeFP32, latitudeFP32], scale)[1]))
       ];
 
-      const diff = getDiff(coordsFP32, realPixelPos);
-      const diffOffset = getDiff(offsetPixelPos, realPixelPos);
+      t.comment(`- Absolute Coordinates FP32: ${getDiff(coordsFP32, realPixelPos).message}`);
 
-      t.comment(`- Absolute Coordinates FP32: ${diff.message}`);
-      t.comment(`- Offset Coordinates: ${diffOffset.message}`);
+      // Calculate using FP32+64 mixed offset mode (NEW WAY IN DECK.GL 6.0)
+      // Select center point (the center is in 32-bit coords)
+      const centerPointFP32 = [longitude, latitude].map(f => Math.fround(f));
+      const {pixelsPerDegree, pixelsPerDegree2} = getDistanceScales({
+        longitude: centerPointFP32[0],
+        latitude: centerPointFP32[1],
+        scale,
+        highPrecision: true
+      });
+      // these are passed as FP32
+      const pixelsPerDegreeFP32 = pixelsPerDegree.map(f => Math.fround(f));
+      const pixelsPerDegree2FP32 = pixelsPerDegree2.map(f => Math.fround(f));
+      // Only the offset is FP64
+      const offsetFP64 = [point[0] - centerPointFP32[0], point[1] - centerPointFP32[1]];
+
+      // To pixels
+      const offsetPixelPos = [
+        offsetFP64[0] * (pixelsPerDegreeFP32[0] + pixelsPerDegree2FP32[0] * offsetFP64[0]),
+        offsetFP64[1] * (pixelsPerDegreeFP32[1] + pixelsPerDegree2FP32[1] * offsetFP64[1])
+      ];
+
+      // We need to recalculate the "real" one because we re-centered
+      const realPixelPos2 = [
+        lngLatToWorld(point, scale)[0] -
+        lngLatToWorld([centerPointFP32[0], centerPointFP32[1]], scale)[0],
+        -(lngLatToWorld(point, scale)[1] -
+          lngLatToWorld([centerPointFP32[0], centerPointFP32[1]], scale)[1])
+      ];
+
+      t.comment(`- Offset Coordinates FP32+64: ${getDiff(offsetPixelPos, realPixelPos2).message}`);
     }
   }
   t.end();
