@@ -16,6 +16,7 @@
     "src",
     "dist"
   ],
+  "sideEffects": false,
   "scripts": {
     "start": "npm run test",
     "clean": "rm -fr dist && mkdir -p dist/es5 dist/esm dist/es6",
