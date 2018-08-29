@@ -16,7 +16,7 @@ The `WebMercatorViewport` class offers the equivalent of a 3D matrix "camera" cl
 import WebMercatorViewport from 'viewport-mercator-project';
 
 // A viewport looking at San Francisco city area
-const viewport = WebMercatorViewport({
+const viewport = new WebMercatorViewport({
   width: 800,
   height: 600,
   longitude: -122.45,
