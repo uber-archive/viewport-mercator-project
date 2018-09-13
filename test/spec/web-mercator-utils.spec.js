@@ -91,7 +91,7 @@ test('getDistanceScales#pixelsPerDegree', t => {
 
       const realCoords = [
         lngLatToWorld(pt, scale)[0] - lngLatToWorld([longitude, latitude], scale)[0],
-        -(lngLatToWorld(pt, scale)[1] - lngLatToWorld([longitude, latitude], scale)[1]),
+        lngLatToWorld(pt, scale)[1] - lngLatToWorld([longitude, latitude], scale)[1],
         z * getDistanceScales({longitude: pt[0], latitude: pt[1], scale}).pixelsPerMeter[2]
       ];
 
@@ -144,7 +144,7 @@ test('getDistanceScales#pixelsPerMeter', t => {
 
       const realCoords = [
         lngLatToWorld(pt, scale)[0] - lngLatToWorld([longitude, latitude], scale)[0],
-        -(lngLatToWorld(pt, scale)[1] - lngLatToWorld([longitude, latitude], scale)[1]),
+        lngLatToWorld(pt, scale)[1] - lngLatToWorld([longitude, latitude], scale)[1],
         z * getDistanceScales({longitude: pt[0], latitude: pt[1], scale}).pixelsPerMeter[2]
       ];
 
@@ -170,7 +170,7 @@ test('getMeterZoom', t => {
     const zoom = getMeterZoom({latitude});
 
     const {pixelsPerMeter} = getDistanceScales({latitude, longitude: 0, zoom});
-    t.deepEqual(toLowPrecision(pixelsPerMeter), [1, 1, 1], 'zoom yields 1 pixel per meter');
+    t.deepEqual(toLowPrecision(pixelsPerMeter), [1, -1, 1], 'zoom yields 1 pixel per meter');
   }
 
   t.end();

@@ -106,11 +106,18 @@ export function getDistanceScales({latitude, longitude, zoom, scale, highPrecisi
    */
   const altPixelsPerMeter = worldSize / EARTH_CIRCUMFERENCE / latCosine;
 
-  result.pixelsPerMeter = [altPixelsPerMeter, altPixelsPerMeter, altPixelsPerMeter];
-  result.metersPerPixel = [1 / altPixelsPerMeter, 1 / altPixelsPerMeter, 1 / altPixelsPerMeter];
+  /**
+   * LngLat: longitude -> east and latitude -> north (bottom left)
+   * UTM meter offset: x -> east and y -> north (bottom left)
+   * World space: x -> east and y -> south (top left)
+   *
+   * Y needs to be flipped when converting delta degree/meter to delta pixels
+   */
+  result.pixelsPerMeter = [altPixelsPerMeter, -altPixelsPerMeter, altPixelsPerMeter];
+  result.metersPerPixel = [1 / altPixelsPerMeter, -1 / altPixelsPerMeter, 1 / altPixelsPerMeter];
 
-  result.pixelsPerDegree = [pixelsPerDegreeX, pixelsPerDegreeY, altPixelsPerMeter];
-  result.degreesPerPixel = [1 / pixelsPerDegreeX, 1 / pixelsPerDegreeY, 1 / altPixelsPerMeter];
+  result.pixelsPerDegree = [pixelsPerDegreeX, -pixelsPerDegreeY, altPixelsPerMeter];
+  result.degreesPerPixel = [1 / pixelsPerDegreeX, -1 / pixelsPerDegreeY, 1 / altPixelsPerMeter];
 
   /**
    * Taylor series 2nd order for 1/latCosine
@@ -124,7 +131,7 @@ export function getDistanceScales({latitude, longitude, zoom, scale, highPrecisi
     const altPixelsPerDegree2 = worldSize / EARTH_CIRCUMFERENCE * latCosine2;
     const altPixelsPerMeter2 = altPixelsPerDegree2 / pixelsPerDegreeY * altPixelsPerMeter;
 
-    result.pixelsPerDegree2 = [0, pixelsPerDegreeY2, altPixelsPerDegree2];
+    result.pixelsPerDegree2 = [0, -pixelsPerDegreeY2, altPixelsPerDegree2];
     result.pixelsPerMeter2 = [altPixelsPerMeter2, 0, altPixelsPerMeter2];
   }
 
