@@ -15,9 +15,6 @@
         [ "@babel/es2015", {
           "modules": false
         }],
-        [ "minify", {
-          "mangle": false
-        }]
       ],
       "plugins": [
         "version-inline"
@@ -36,9 +33,6 @@
           },
           "modules": false
         }],
-        [ "minify", {
-          "mangle": false
-        }]
       ],
       "plugins": [
         "version-inline"
