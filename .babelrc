@@ -3,22 +3,19 @@
   "env": {
     "es5": {
       "presets": [
-        [ "@babel/env", {
-          forceAllTransforms: true,
-          "modules": "commonjs"
-        }]
+        "@babel/env"
       ],
       "plugins": [
+        "@babel/transform-runtime",
         "version-inline"
       ]
     },
     "esm": {
       "presets": [
-        [ "@babel/env", {
-          "modules": false
-        }]
+        ["@babel/env", { "modules": false }],
       ],
       "plugins": [
+        ["@babel/transform-runtime", { useESModules: true }],
         "version-inline"
       ]
     },
@@ -34,9 +31,10 @@
             "node": "8"
           },
           "modules": false
-        }]
+        } ],
       ],
       "plugins": [
+        ["@babel/transform-runtime", { useESModules: true }],
         "version-inline"
       ]
     },
