@@ -51,6 +51,7 @@ export default class Viewport {
     this.width = width || 1;
     this.height = height || 1;
     this.scale = 1;
+    this.pixelsPerMeter = 1;
 
     this.viewMatrix = viewMatrix;
     this.projectionMatrix = projectionMatrix;
@@ -123,10 +124,11 @@ export default class Viewport {
    * @return {Array} - screen coordinates [x, y] or [x, y, z], z as pixel depth
    */
   project(xyz, {topLeft = true} = {}) {
-    const [x0, y0, z0] = xyz;
+    const [x0, y0, z0 = 0] = xyz;
 
     const [X, Y] = this.projectFlat([x0, y0]);
-    const coord = worldToPixels([X, Y, z0], this.pixelProjectionMatrix);
+    const Z = z0 * this.pixelsPerMeter;
+    const coord = worldToPixels([X, Y, Z], this.pixelProjectionMatrix);
 
     const [x, y] = coord;
     const y2 = topLeft ? y : this.height - y;
@@ -149,12 +151,14 @@ export default class Viewport {
     const [x, y, z] = xyz;
 
     const y2 = topLeft ? y : this.height - y;
-    const coord = pixelsToWorld([x, y2, z], this.pixelUnprojectionMatrix, targetZ);
+    const targetZWorld = targetZ && targetZ * this.pixelsPerMeter;
+    const coord = pixelsToWorld([x, y2, z], this.pixelUnprojectionMatrix, targetZWorld);
     const [X, Y] = this.unprojectFlat(coord);
 
     if (Number.isFinite(z)) {
       // Has depth component
-      return [X, Y, coord[2]];
+      const Z = coord[2] / this.pixelsPerMeter;
+      return [X, Y, Z];
     }
 
     return Number.isFinite(targetZ) ? [X, Y, targetZ] : [X, Y];

@@ -8,6 +8,7 @@ import {
   lngLatToWorld,
   worldToLngLat,
   getProjectionMatrix,
+  getDistanceScales,
   getViewMatrix
 } from './web-mercator-utils';
 import fitBounds from './fit-bounds';
@@ -99,6 +100,7 @@ export default class WebMercatorViewport extends Viewport {
 
     this.scale = scale;
     this.center = center;
+    this.pixelsPerMeter = getDistanceScales(this).pixelsPerMeter[2];
 
     Object.freeze(this);
   }

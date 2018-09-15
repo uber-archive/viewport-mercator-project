@@ -7,8 +7,6 @@ import {equals, config} from 'math.gl';
 
 import VIEWPORT_PROPS from '../utils/sample-viewports';
 
-config.EPSILON = 1e-6;
-
 const TEST_CASES = [
   {
     title: '(center)',
@@ -150,6 +148,8 @@ test('Viewport project/unproject', t => {
 });
 
 test('WebMercatorViewport.project#3D', t => {
+  config.EPSILON = 1e-6;
+
   for (const viewportName in VIEWPORT_PROPS) {
     const viewportProps = VIEWPORT_PROPS[viewportName];
     const viewport = new WebMercatorViewport(viewportProps);
