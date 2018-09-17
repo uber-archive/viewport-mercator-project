@@ -1,6 +1,6 @@
 {
   "name": "viewport-mercator-project",
-  "version": "5.3.0-alpha.1",
+  "version": "5.3.0-alpha.2",
   "description": "Utilities for perspective-enabled Web Mercator projections",
   "author": "Uber Technologies, Inc.",
   "license": "MIT",

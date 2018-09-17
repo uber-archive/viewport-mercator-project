@@ -1,6 +1,10 @@
 # Change Log
 
 ### 5.2.1-alpha.1 - Aug 1, 2018
+- Babel 7 - upgrade from beta to official release
+- Remove `babel-minify` to preserve debugging.
+
+### 5.2.1-alpha.1 - Aug 1, 2018
 - Add `sideEffects` field to `package.json` to optimize tree-shaking performance.
 
 
