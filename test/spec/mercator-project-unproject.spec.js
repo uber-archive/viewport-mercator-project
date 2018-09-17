@@ -1,6 +1,6 @@
 import {WebMercatorViewport} from 'viewport-mercator-project';
 import test from 'tape-catch';
-import {toLowPrecision} from '../utils/test-utils';
+import {config, equals} from 'math.gl';
 
 const viewportProps = {
   latitude: 37.75,
@@ -54,14 +54,11 @@ test('Viewport constructor', t => {
 });
 
 test('Viewport projection', t => {
+  config.EPSILON = 1e-7;
   const viewport = new WebMercatorViewport(viewportProps);
   TEST_CASES.forEach(({title, func, input, expected}) => {
     const output = viewport[func](input);
-    t.deepEquals(
-      output.map(x => toLowPrecision(x)),
-      expected.map(x => toLowPrecision(x)),
-      `viewport.${func}(${title})`
-    );
+    t.ok(equals(output, expected), `viewport.${func}(${title})`);
   });
   t.end();
 });

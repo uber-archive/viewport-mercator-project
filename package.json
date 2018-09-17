@@ -29,8 +29,8 @@
     "test": "npm run lint && npm run test-node && ./scripts/build.sh",
     "test-fast": "npm run test-node",
     "test-node": "node test/node.js",
-    "test-browser": "webpack-dev-server --env.browser --progress --hot --open",
-    "test-bundle-size": "./scripts/build.sh  && webpack --config test/webpack.config.js --env.analyze --env.es6"
+    "test-browser": "webpack-dev-server --config test/webpack.config.js --env.testBrowser --progress --hot --open",
+    "test-bundle-size": "./scripts/build.sh && webpack --config test/webpack.config.js --env.analyze --env.es6"
   },
   "dependencies": {
     "math.gl": "^2.0.0"
@@ -52,7 +52,7 @@
     "gl": "^4.0.3",
     "html-webpack-plugin": "^3.0.7",
     "jsdom": "~9.9.1",
-    "mapbox-gl": "0.41.0",
+    "mapbox-gl": "~0.49.0",
     "mock-browser": "^0.92.14",
     "module-alias": "^2.0.0",
     "pre-commit": "^1.2.2",

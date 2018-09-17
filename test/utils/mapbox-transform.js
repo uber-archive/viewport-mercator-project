@@ -31,7 +31,9 @@ try {
       Transform = this.transform.constructor;
     }
   });
-  new Map();
+  new Map({
+    container: window.document.body
+  });
 
 } catch (err) {
   // Ignore
