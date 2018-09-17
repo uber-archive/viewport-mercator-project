@@ -214,7 +214,6 @@ export function getViewMatrix({
 }
 
 // PROJECTION MATRIX PARAMETERS
-// This is a "Mapbox" projection matrix - matches mapbox exactly if farZMultiplier === 1
 // Variable fov (in radians)
 export function getProjectionParameters({
   width,
@@ -243,8 +242,7 @@ export function getProjectionParameters({
 }
 
 // PROJECTION MATRIX: PROJECTS FROM CAMERA (VIEW) SPACE TO CLIPSPACE
-// This is a "Mapbox" projection matrix - matches mapbox exactly if farZMultiplier === 1
-// Variable fov (in radians)
+// This is a "Mapbox" projection matrix - matches mapbox exactly if farZMultiplier === height
 export function getProjectionMatrix({
   width,
   height,
