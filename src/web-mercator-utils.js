@@ -237,7 +237,7 @@ export function getProjectionParameters({
     fov: 2 * Math.atan((height / 2) / altitude),
     aspect: width / height,
     focalDistance: altitude,
-    near: 0.1,
+    near: 1 / farZMultiplier,
     far: farZ * farZMultiplier
   };
 }

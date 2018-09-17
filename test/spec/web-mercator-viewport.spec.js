@@ -26,7 +26,7 @@ test('WebMercatorViewport#constructor - 0 width/height', t => {
 });
 
 test('WebMercatorViewport.projectFlat', t => {
-  config.EPSILON = 1e-6;
+  config.EPSILON = 1e-8;
 
   for (const vc in VIEWPORT_PROPS) {
     const viewport = new WebMercatorViewport(VIEWPORT_PROPS[vc]);
@@ -43,7 +43,7 @@ test('WebMercatorViewport.projectFlat', t => {
 });
 
 test('WebMercatorViewport.project#3D', t => {
-  config.EPSILON = 1e-6;
+  config.EPSILON = 1e-7;
 
   for (const vc in VIEWPORT_PROPS) {
     const viewport = new WebMercatorViewport(VIEWPORT_PROPS[vc]);
@@ -62,7 +62,7 @@ test('WebMercatorViewport.project#3D', t => {
 });
 
 test('WebMercatorViewport.project#2D', t => {
-  config.EPSILON = 1e-6;
+  config.EPSILON = 1e-8;
 
   for (const vc in VIEWPORT_PROPS) {
     const viewport = new WebMercatorViewport(VIEWPORT_PROPS[vc]);
@@ -85,7 +85,7 @@ test('WebMercatorViewport.project#2D', t => {
 });
 
 test('WebMercatorViewport.getLocationAtPoint', t => {
-  config.EPSILON = 1e-6;
+  config.EPSILON = 1e-8;
   const TEST_POS = [200, 200];
 
   for (const vc in VIEWPORT_PROPS) {
