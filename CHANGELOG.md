@@ -1,6 +1,9 @@
 # Change Log
 
 ### 5.2.1-alpha.1 - Aug 1, 2018
+- Remove `babel-minify` to preserve debugging.
+
+### 5.2.1-alpha.1 - Aug 1, 2018
 - Add `sideEffects` field to `package.json` to optimize tree-shaking performance.
 
 
