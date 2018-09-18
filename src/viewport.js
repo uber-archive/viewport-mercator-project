@@ -93,6 +93,8 @@ export default class Viewport {
     this.equals = this.equals.bind(this);
     this.project = this.project.bind(this);
     this.unproject = this.unproject.bind(this);
+    this.projectPosition = this.projectPosition.bind(this);
+    this.unprojectPosition = this.unprojectPosition.bind(this);
     this.projectFlat = this.projectFlat.bind(this);
     this.unprojectFlat = this.unprojectFlat.bind(this);
   }
@@ -124,11 +126,8 @@ export default class Viewport {
    * @return {Array} - screen coordinates [x, y] or [x, y, z], z as pixel depth
    */
   project(xyz, {topLeft = true} = {}) {
-    const [x0, y0, z0 = 0] = xyz;
-
-    const [X, Y] = this.projectFlat([x0, y0]);
-    const Z = z0 * this.pixelsPerMeter;
-    const coord = worldToPixels([X, Y, Z], this.pixelProjectionMatrix);
+    const worldPosition = this.projectPosition(xyz);
+    const coord = worldToPixels(worldPosition, this.pixelProjectionMatrix);
 
     const [x, y] = coord;
     const y2 = topLeft ? y : this.height - y;
@@ -153,19 +152,28 @@ export default class Viewport {
     const y2 = topLeft ? y : this.height - y;
     const targetZWorld = targetZ && targetZ * this.pixelsPerMeter;
     const coord = pixelsToWorld([x, y2, z], this.pixelUnprojectionMatrix, targetZWorld);
-    const [X, Y] = this.unprojectFlat(coord);
+    const [X, Y, Z] = this.unprojectPosition(coord);
 
     if (Number.isFinite(z)) {
-      // Has depth component
-      const Z = coord[2] / this.pixelsPerMeter;
       return [X, Y, Z];
     }
-
     return Number.isFinite(targetZ) ? [X, Y, targetZ] : [X, Y];
   }
 
   // NON_LINEAR PROJECTION HOOKS
   // Used for web meractor projection
+
+  projectPosition(xyz) {
+    const [X, Y] = this.projectFlat(xyz);
+    const Z = (xyz[2] || 0) * this.pixelsPerMeter;
+    return [X, Y, Z];
+  }
+
+  unprojectPosition(xyz) {
+    const [X, Y] = this.unprojectFlat(xyz);
+    const Z = (xyz[2] || 0) / this.pixelsPerMeter;
+    return [X, Y, Z];
+  }
 
   /**
    * Project map coordinates to world coordinates.
