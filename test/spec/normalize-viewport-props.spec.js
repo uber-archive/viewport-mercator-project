@@ -1,6 +1,6 @@
 import test from 'tape-catch';
 import {normalizeViewportProps} from 'viewport-mercator-project';
-import {toLowPrecision} from '../utils/test-utils';
+import {config, equals} from 'math.gl';
 
 const NORMALIZATION_TEST_CASES = [
   [
@@ -36,7 +36,7 @@ const NORMALIZATION_TEST_CASES = [
     {
       width: 1000,
       height: 1000,
-      latitude: 7.63333123551244e-14,
+      latitude: 0,
       longitude: 80,
       zoom: 0.9657841712949484,
       bearing: 0,
@@ -46,12 +46,15 @@ const NORMALIZATION_TEST_CASES = [
 ];
 
 test('normalizeViewportProps', (t) => {
+  config.EPSILON = 1e-7;
+
   for (const [input, expected] of NORMALIZATION_TEST_CASES) {
     const result = normalizeViewportProps(input);
 
-    t.deepEqual(
-      toLowPrecision(result),
-      toLowPrecision(expected),
+    t.ok(equals(
+        Object.keys(expected).map(key => result[key]),
+        Object.keys(expected).map(key => expected[key])
+      ),
       'correct viewport returned'
     );
   }

@@ -3,11 +3,9 @@ import {MapboxTransform} from '../utils/mapbox-transform';
 import {WebMercatorViewport} from 'viewport-mercator-project';
 import test from 'tape-catch';
 import {toLowPrecision} from '../utils/test-utils';
-import {equals, config} from 'math.gl';
+import {equals, config, Matrix4} from 'math.gl';
 
 import VIEWPORT_PROPS from '../utils/sample-viewports';
-
-config.EPSILON = 1e-6;
 
 const TEST_CASES = [
   {
@@ -22,38 +20,18 @@ const TEST_CASES = [
   }
 ];
 
-test('Mapbox project/unproject', t => {
+test('Viewport vs. Mapbox projectFlat', t => {
   for (const viewportName in VIEWPORT_PROPS) {
     const viewportProps = VIEWPORT_PROPS[viewportName];
 
-    for (const {title, lngLat} of TEST_CASES) {
-      const transform = new MapboxTransform(viewportProps);
-      const mapboxProjection = transform.mapboxProject(lngLat);
-      const mapboxUnprojection = transform.mapboxUnproject(mapboxProjection);
-      t.deepEquals(toLowPrecision(mapboxUnprojection, 6), toLowPrecision(lngLat, 6),
-        `unproject(project(${title}, ${viewportName})) - identity operation`);
-    }
-  }
-  t.end();
-});
-
-test('Viewport constructor', t => {
-  for (const viewportName in VIEWPORT_PROPS) {
-    const viewportProps = VIEWPORT_PROPS[viewportName];
     const viewport = new WebMercatorViewport(viewportProps);
-    t.ok(viewport, 'Viewport construction successful');
+    const projection = viewport.projectFlat([-122.43, 37.75]);
 
-    const viewportState = {};
-    Object.keys(viewportProps).forEach(key => {
-      viewportState[key] = viewport[key];
-    });
+    const transform = new MapboxTransform(viewportProps);
+    const mapboxProjection = transform.mapboxProjectFlat([-122.43, 37.75]);
 
-    const props = Object.assign({}, viewportProps);
-
-    delete viewportState.farZMultiplier;
-    delete props.farZMultiplier;
-
-    t.deepEquals(viewportState, props, `Viewport props assigned ${viewportName}`);
+    t.deepEquals(toLowPrecision(projection), toLowPrecision(mapboxProjection),
+      `projectFlat(${viewportName}) - viewport/mapbox match`);
   }
   t.end();
 });
@@ -69,35 +47,14 @@ test('Viewport vs. Mapbox unprojectFlat', t => {
     const mapboxUnprojection = transform.mapboxUnprojectFlat([587, 107]);
 
     t.deepEquals(toLowPrecision(unprojection), toLowPrecision(mapboxUnprojection),
-      `unproject(${viewportName}) - viewport/mapbox match`);
-  }
-  t.end();
-});
-
-/* Mapbox's matrixes projects to screenspace instead of clipspace */
-test.skip('Viewport vs Mapbox matrices', t => {
-  for (const viewportName in VIEWPORT_PROPS) {
-    const viewportProps = VIEWPORT_PROPS[viewportName];
-
-    const viewport = new WebMercatorViewport(viewportProps);
-    const transform = new MapboxTransform(viewportProps);
-
-    const viewportProjMatrix = viewport.viewProjectionMatrix;
-    const mapboxProjMatrix = transform.projMatrix;
-
-    t.deepEquals(toLowPrecision(viewportProjMatrix), toLowPrecision(mapboxProjMatrix),
-      `projection matrices for ${viewportName} - viewport/mapbox match`);
-
-    const viewportPixelMatrix = viewport.pixelProjectionMatrix;
-    const mapboxPixelMatrix = transform.pixelMatrix;
-
-    t.deepEquals(toLowPrecision(viewportPixelMatrix), toLowPrecision(mapboxPixelMatrix),
-      `pixel matrices for ${viewportName} - viewport/mapbox match`);
+      `unprojectFlat(${viewportName}) - viewport/mapbox match`);
   }
   t.end();
 });
 
 test('Viewport vs Mapbox project', t => {
+  config.EPSILON = 1e-8;
+
   for (const viewportName in VIEWPORT_PROPS) {
     const viewportProps = VIEWPORT_PROPS[viewportName];
 
@@ -108,14 +65,16 @@ test('Viewport vs Mapbox project', t => {
       const transform = new MapboxTransform(viewportProps);
       const mapboxProjection = transform.mapboxProject(lngLat);
 
-      t.deepEquals(toLowPrecision(projection), toLowPrecision(mapboxProjection),
-        `unproject(${title}, ${viewportName}) - viewport/mapbox match`);
+      t.ok(equals(projection, mapboxProjection),
+        `project(${title}, ${viewportName}) - viewport ${projection} mapbox ${mapboxProjection}`);
     }
   }
   t.end();
 });
 
 test('Viewport vs Mapbox unproject', t => {
+  config.EPSILON = 1e-8;
+
   for (const viewportName in VIEWPORT_PROPS) {
     const viewportProps = VIEWPORT_PROPS[viewportName];
 
@@ -126,54 +85,40 @@ test('Viewport vs Mapbox unproject', t => {
       const viewport = new WebMercatorViewport(viewportProps);
       const unprojection = viewport.unproject(mapboxProjection, {topLeft: true});
 
-      t.deepEquals(toLowPrecision(unprojection, 7), toLowPrecision(lngLat, 7),
+      t.ok(equals(unprojection, lngLat),
         `unproject(${title}, ${viewportName}) - viewport/mapbox match`);
     }
   }
   t.end();
 });
 
-test('Viewport project/unproject', t => {
+/* Mapbox's matrixes projects to screenspace instead of clipspace */
+test('Viewport vs Mapbox project 3D', t => {
+  config.EPSILON = 1e-2;
+
   for (const viewportName in VIEWPORT_PROPS) {
-    const viewportProps = VIEWPORT_PROPS[viewportName];
+    const viewportProps = Object.assign({}, VIEWPORT_PROPS[viewportName]);
+    viewportProps.nearZMultiplier = 1 / viewportProps.height;
+    viewportProps.farZMultiplier = viewportProps.height;
+
     const viewport = new WebMercatorViewport(viewportProps);
-
-    for (const {title, lngLat} of TEST_CASES) {
-      const projection = viewport.project(lngLat);
-      const unprojection = viewport.unproject(projection);
-
-      t.deepEquals(toLowPrecision(unprojection, 7), toLowPrecision(lngLat, 7),
-        `unproject(project(${title}, ${viewportName})) - identity operation`);
-    }
-  }
-  t.end();
-});
-
-test('WebMercatorViewport.project#3D', t => {
-  for (const viewportName in VIEWPORT_PROPS) {
-    const viewportProps = VIEWPORT_PROPS[viewportName];
-    const viewport = new WebMercatorViewport(viewportProps);
-
     const transform = new MapboxTransform(viewportProps);
 
-    for (const offset of [0, 0.5, 1.0, 5.0]) {
-      const mapState = viewportProps;
-      const lnglatIn = [mapState.longitude + offset, mapState.latitude + offset];
-      const xyz = viewport.project(lnglatIn);
-      const lnglat = viewport.unproject(xyz);
-      t.ok(equals(lnglatIn, lnglat), `Project/unproject ${lnglatIn} to ${lnglat}`);
+    const viewportProjMatrix = new Matrix4(viewport.viewProjectionMatrix)
+      // our projection matrix does not convert z from meter to pixels
+      .scale([1, 1, viewport.pixelsPerMeter]);
+    const mapboxProjMatrix = new Matrix4(Array.from(transform.projMatrix));
 
-      const lnglatIn3 = [mapState.longitude + offset, mapState.latitude + offset, 0];
-      const xyz3m = transform.mapboxProject(lnglatIn3);
-      const lnglat3m = transform.mapboxUnproject(xyz3m);
-      t.ok(equals(lnglatIn3, lnglat3m),
-        `Project/unproject ${lnglatIn3}=>${xyz3m}=>${lnglat3m}`);
+    const sphericalPosition = [viewport.longitude - 0.05, viewport.latitude - 0.05, 100];
+    const worldPosition = viewport.projectFlat(sphericalPosition).concat([sphericalPosition[2], 1]);
+    const viewportProjected = viewportProjMatrix.transformVector(worldPosition);
+    const mapboxProjected = mapboxProjMatrix.transformVector(worldPosition);
 
-      const xyz3 = viewport.project(lnglatIn3);
-      const lnglat3 = viewport.unproject(xyz3);
-      t.ok(equals(lnglatIn3, lnglat3),
-        `Project/unproject ${lnglatIn3}=>${xyz3}=>${lnglat3}`);
-    }
+    viewportProjected.scale(1 / viewportProjected[3]);
+    mapboxProjected.scale(1 / mapboxProjected[3]);
+
+    t.ok(equals(viewportProjected, mapboxProjected),
+      `project 3D ${viewportName} - viewport/mapbox match`);
   }
   t.end();
 });

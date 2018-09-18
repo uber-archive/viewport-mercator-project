@@ -8,6 +8,7 @@ import {
   lngLatToWorld,
   worldToLngLat,
   getProjectionMatrix,
+  getDistanceScales,
   getViewMatrix
 } from './web-mercator-utils';
 import fitBounds from './fit-bounds';
@@ -56,6 +57,7 @@ export default class WebMercatorViewport extends Viewport {
     pitch = 0,
     bearing = 0,
     altitude = 1.5,
+    nearZMultiplier = 0.1,
     farZMultiplier = 10
   } = {}) {
     // Silently allow apps to send in 0,0 to facilitate isomorphic render etc
@@ -75,6 +77,7 @@ export default class WebMercatorViewport extends Viewport {
       pitch,
       bearing,
       altitude,
+      nearZMultiplier,
       farZMultiplier
     });
 
@@ -99,6 +102,7 @@ export default class WebMercatorViewport extends Viewport {
 
     this.scale = scale;
     this.center = center;
+    this.pixelsPerMeter = getDistanceScales(this).pixelsPerMeter[2];
 
     Object.freeze(this);
   }
