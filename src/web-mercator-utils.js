@@ -140,6 +140,31 @@ export function getDistanceScales({latitude, longitude, zoom, scale, highPrecisi
 }
 
 /**
+ * Offset a lng/lat position by meterOffset (northing, easting)
+ */
+export function addMetersToLngLat(lngLatZ, xyz) {
+  const [longitude, latitude, z0] = lngLatZ;
+  const [x, y, z] = xyz;
+
+  const scale = 1; // any constant works
+  const {pixelsPerMeter, pixelsPerMeter2} = getDistanceScales({
+    longitude,
+    latitude,
+    scale,
+    highPrecision: true
+  });
+
+  const worldspace = lngLatToWorld(lngLatZ, scale);
+  worldspace[0] += x * (pixelsPerMeter[0] + pixelsPerMeter2[0] * y);
+  worldspace[1] += y * (pixelsPerMeter[1] + pixelsPerMeter2[1] * y);
+
+  const newLngLat = worldToLngLat(worldspace, scale);
+  const newZ = (z0 || 0) + (z || 0);
+
+  return Number.isFinite(z0) || Number.isFinite(z) ? [newLngLat[0], newLngLat[1], newZ] : newLngLat;
+}
+
+/**
  * Calculates a mercator world position ("pixels" in given zoom level)
  * from a lng/lat and meterOffset
  */

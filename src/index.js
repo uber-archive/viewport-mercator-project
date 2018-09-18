@@ -13,6 +13,7 @@ export {
   pixelsToWorld,
   getMeterZoom,
   getDistanceScales,
+  addMetersToLngLat,
   getWorldPosition,
   getViewMatrix,
   getProjectionMatrix,
