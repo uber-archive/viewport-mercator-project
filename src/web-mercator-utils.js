@@ -164,41 +164,6 @@ export function addMetersToLngLat(lngLatZ, xyz) {
   return Number.isFinite(z0) || Number.isFinite(z) ? [newLngLat[0], newLngLat[1], newZ] : newLngLat;
 }
 
-/**
- * Calculates a mercator world position ("pixels" in given zoom level)
- * from a lng/lat and meterOffset
- */
-export function getWorldPosition({
-  longitude,
-  latitude,
-  zoom,
-  scale,
-  meterOffset,
-  distanceScales = null
-}) {
-  // Calculate scale from zoom if not provided
-  scale = scale !== undefined ? scale : zoomToScale(zoom);
-
-  // Make a centered version of the matrix for projection modes without an offset
-  const center2d = lngLatToWorld([longitude, latitude], scale);
-  const center = new Vector3(center2d[0], center2d[1], 0);
-
-  if (meterOffset) {
-    // Calculate distance scales if lng/lat/zoom are provided
-    distanceScales = distanceScales || getDistanceScales({latitude, longitude, scale});
-
-    const pixelPosition = new Vector3(meterOffset)
-      // Convert to pixels in current zoom
-      .scale(distanceScales.pixelsPerMeter)
-      // We want positive Y to represent an offset towards north,
-      // but web mercator world coordinates is top-left
-      .scale([1, -1, 1]);
-    center.add(pixelPosition);
-  }
-
-  return center;
-}
-
 // ATTRIBUTION:
 // view and projection matrix creation is intentionally kept compatible with
 // mapbox-gl's implementation to ensure that seamless interoperation

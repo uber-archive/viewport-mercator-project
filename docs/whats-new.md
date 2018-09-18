@@ -1,5 +1,15 @@
 # What's New
 
+## v6.0
+
+Release date: TBD
+
+* NEW: `getProjectionMatrix` can match the behavior of the latest Mapbox (when called witch `farZMultiplier: viewport.height`)
+* NEW: `addMetersToLngLat` utility
+* FIX: returned values by `getDistanceScales` now reflect the flipped y-direction between spherical coordinates and the WebMercator world.
+* FIX: `WebMercatorViewport`'s `project` and `unproject` handle altitude correctly
+* BREAKING: `getWorldPosition` is removed
+
 ## v5.2
 
 Release date: June 25, 2018

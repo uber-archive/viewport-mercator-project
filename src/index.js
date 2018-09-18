@@ -14,7 +14,6 @@ export {
   getMeterZoom,
   getDistanceScales,
   addMetersToLngLat,
-  getWorldPosition,
   getViewMatrix,
   getProjectionMatrix,
   getProjectionParameters

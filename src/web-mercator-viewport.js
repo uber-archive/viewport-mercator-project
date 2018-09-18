@@ -3,7 +3,6 @@ import Viewport from './viewport';
 
 import {
   zoomToScale,
-  getWorldPosition,
   pixelsToWorld,
   lngLatToWorld,
   worldToLngLat,
@@ -69,7 +68,8 @@ export default class WebMercatorViewport extends Viewport {
     // TODO - just throw an Error instead?
     altitude = Math.max(0.75, altitude);
 
-    const center = getWorldPosition({longitude, latitude, scale});
+    const center = lngLatToWorld([longitude, latitude], scale);
+    center[2] = 0;
 
     const projectionMatrix = getProjectionMatrix({
       width,
