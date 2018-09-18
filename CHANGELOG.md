@@ -1,10 +1,22 @@
 # Change Log
 
-### 5.2.1-alpha.1 - Aug 1, 2018
+## 6.0 Release
+
+### 6.0-alpha.1
+
+- NEW: `getProjectionMatrix` can match the behavior of the latest Mapbox (when called with `nearZMultipler: 1 / viewport.height, farZMultiplier: viewport.height`)
+- NEW: `addMetersToLngLat` utility
+- FIX: returned values by `getDistanceScales` now reflect the flipped y-direction between spherical coordinates and the WebMercator world.
+- FIX: `WebMercatorViewport`'s `project` and `unproject` handle altitude correctly
+- BREAKING: `getWorldPosition` is removed
+
+## 5.3 Release
+
+### 5.3.0
+
+- Use `@babel/runtime` in the ES5 entry point
 - Babel 7 - upgrade from beta to official release
 - Remove `babel-minify` to preserve debugging.
-
-### 5.2.1-alpha.1 - Aug 1, 2018
 - Add `sideEffects` field to `package.json` to optimize tree-shaking performance.
 
 
