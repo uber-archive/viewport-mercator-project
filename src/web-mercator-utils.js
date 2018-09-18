@@ -220,6 +220,7 @@ export function getProjectionParameters({
   height,
   altitude = DEFAULT_ALTITUDE,
   pitch = 0,
+  nearZMultiplier = 1,
   farZMultiplier = 1
 }) {
   // Find the distance from the center point to the center top
@@ -236,22 +237,25 @@ export function getProjectionParameters({
     fov: 2 * Math.atan((height / 2) / altitude),
     aspect: width / height,
     focalDistance: altitude,
-    near: 1 / farZMultiplier,
+    near: nearZMultiplier,
     far: farZ * farZMultiplier
   };
 }
 
 // PROJECTION MATRIX: PROJECTS FROM CAMERA (VIEW) SPACE TO CLIPSPACE
-// This is a "Mapbox" projection matrix - matches mapbox exactly if farZMultiplier === height
+// This is a "Mapbox" projection matrix - matches mapbox exactly if
+// nearZMultiplier === 1 / height
+// farZMultiplier === height
 export function getProjectionMatrix({
   width,
   height,
   pitch,
   altitude,
+  nearZMultiplier = 0.1,
   farZMultiplier = 10
 }) {
   const {fov, aspect, near, far} =
-    getProjectionParameters({width, height, altitude, pitch, farZMultiplier});
+    getProjectionParameters({width, height, altitude, pitch, nearZMultiplier, farZMultiplier});
 
   const projectionMatrix = mat4_perspective(
     [],

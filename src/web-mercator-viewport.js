@@ -57,6 +57,7 @@ export default class WebMercatorViewport extends Viewport {
     pitch = 0,
     bearing = 0,
     altitude = 1.5,
+    nearZMultiplier = 0.1,
     farZMultiplier = 10
   } = {}) {
     // Silently allow apps to send in 0,0 to facilitate isomorphic render etc
@@ -76,6 +77,7 @@ export default class WebMercatorViewport extends Viewport {
       pitch,
       bearing,
       altitude,
+      nearZMultiplier,
       farZMultiplier
     });
 

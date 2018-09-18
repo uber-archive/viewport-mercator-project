@@ -6,6 +6,7 @@ export default {
     bearing: 0,
     width: 800,
     height: 600,
+    nearZMultiplier: 1,
     farZMultiplier: 1
   },
   pitched: {
@@ -16,6 +17,7 @@ export default {
     bearing: 0,
     width: 800,
     height: 600,
+    nearZMultiplier: 1,
     farZMultiplier: 1
   },
   rotated: {
@@ -27,6 +29,7 @@ export default {
     pitch: 60,
     width: 1267,
     height: 400,
+    nearZMultiplier: 1,
     farZMultiplier: 1
   },
   highLatitude: {
@@ -38,6 +41,7 @@ export default {
     pitch: 20,
     width: 500,
     height: 500,
+    nearZMultiplier: 1,
     farZMultiplier: 1
   }
 };

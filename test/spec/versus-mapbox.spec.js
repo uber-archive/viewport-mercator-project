@@ -98,6 +98,7 @@ test('Viewport vs Mapbox project 3D', t => {
 
   for (const viewportName in VIEWPORT_PROPS) {
     const viewportProps = Object.assign({}, VIEWPORT_PROPS[viewportName]);
+    viewportProps.nearZMultiplier = 1 / viewportProps.height;
     viewportProps.farZMultiplier = viewportProps.height;
 
     const viewport = new WebMercatorViewport(viewportProps);
