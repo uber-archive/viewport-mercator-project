@@ -10,7 +10,6 @@ import {
   getMeterZoom,
   getDistanceScales,
   addMetersToLngLat,
-  getWorldPosition,
   getUncenteredViewMatrix,
   getViewMatrix,
   getProjectionMatrix,
@@ -29,7 +28,6 @@ test('Viewport#imports', t => {
   t.ok(lngLatToWorld, 'lngLatToWorld imports OK');
   t.ok(worldToLngLat, 'worldToLngLat imports OK');
   t.ok(getMeterZoom, 'getMeterZoom imports OK');
-  t.ok(getWorldPosition, 'getWorldPosition imports OK');
   t.ok(getViewMatrix, 'getViewMatrix imports OK');
   t.ok(getUncenteredViewMatrix,
     'getUncenteredViewMatrix imports OK');
