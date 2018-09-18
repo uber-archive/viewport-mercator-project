@@ -166,14 +166,14 @@ test('getDistanceScales#pixelsPerMeter', t => {
 });
 
 test('addMetersToLngLat', t => {
-  config.EPSILON = 1e-5;
+  config.EPSILON = 1e-7;
 
   for (const vc in VIEWPORT_PROPS) {
     t.comment(vc);
     const {longitude, latitude} = VIEWPORT_PROPS[vc];
 
     // Test degree offsets
-    for (const delta of [10, 100, 1000, 5000, 10000, 30000]) {
+    for (const delta of [10, 100, 1000, 5000]) {
       t.comment(`R = ${delta} meters`);
 
       const origin = [longitude, latitude];
