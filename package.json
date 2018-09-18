@@ -33,11 +33,13 @@
     "test-bundle-size": "./scripts/build.sh  && webpack --config test/webpack.config.js --env.analyze --env.es6"
   },
   "dependencies": {
+    "@babel/runtime": "^7.0.0",
     "math.gl": "^2.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
     "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@turf/destination": "^5.0.4",
