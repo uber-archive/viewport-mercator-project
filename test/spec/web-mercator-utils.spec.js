@@ -2,12 +2,14 @@
 import test from 'tape-catch';
 import destination from '@turf/destination';
 import {toLowPrecision} from '../utils/test-utils';
+import {config, equals} from 'math.gl';
 
 import {
   lngLatToWorld,
   worldToLngLat,
   getMeterZoom,
   getDistanceScales,
+  addMetersToLngLat,
   getWorldPosition,
   getUncenteredViewMatrix,
   getViewMatrix,
@@ -158,6 +160,32 @@ test('getDistanceScales#pixelsPerMeter', t => {
         'Error within ratio tolerance');
       t.ok(diffAdjusted.errorPixels.every(p => p < DISTANCE_TOLERANCE_PIXELS),
         'Error within pixel tolerance');
+    }
+  }
+  t.end();
+});
+
+test('addMetersToLngLat', t => {
+  config.EPSILON = 1e-7;
+
+  for (const vc in VIEWPORT_PROPS) {
+    t.comment(vc);
+    const {longitude, latitude} = VIEWPORT_PROPS[vc];
+
+    // Test degree offsets
+    for (const delta of [10, 100, 1000, 5000]) {
+      t.comment(`R = ${delta} meters`);
+
+      const origin = [longitude, latitude];
+      // turf unit is kilometers
+      let pt = destination(origin, delta / 1000 * Math.sqrt(2), 45);
+      pt = pt.geometry.coordinates.concat(delta);
+
+      const result = addMetersToLngLat(origin, [delta, delta, delta]);
+
+      t.comment(`Comparing: ${result}, ${pt}`);
+
+      t.ok(equals(result, pt), 'Returns correct result');
     }
   }
   t.end();

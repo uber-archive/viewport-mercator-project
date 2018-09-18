@@ -82,6 +82,19 @@ Returns:
 - `distanceScales.pixelsPerDegree2` (Array) - if `highPrecision` is `true`, returns pixels per degree adjustment in `[x2, y2, z2]`. It offers a cheap way to compensate for the precision loss with latitude. Amends `pixelsPerDegree` by y offset (in degrees): `[x + x2 * dy, y + y2 * dy, z + z2 * dy]`.
 
 
+### `addMetersToLngLat(lngLatZ, xyz)`
+
+Offset a spherical position by meters.
+
+Parameters:
+- `lngLatZ` (Array) - origin in `[lng, lat, alt]`. Altitude is optional.
+- `xyz` (Array) - offset from the origin `[x, y, z]` in meters. `x` is easting and `y` is northing. `z` is optional.
+
+Returns:
+- `[lng, lat]` if the third component in neither argument is specified, or
+- `[lng, lat, alt]` otherwise.
+
+
 ### `getWorldPosition(point)`
 
 Calculates a mercator world position at the given zoom level from longitude, latitude and meter offset. This is a more powerful version of `projectFlat`.
