@@ -94,12 +94,10 @@ test('Viewport vs Mapbox unproject', t => {
 
 /* Mapbox's matrixes projects to screenspace instead of clipspace */
 test('Viewport vs Mapbox project 3D', t => {
-  config.EPSILON = 1e-2;
-
   for (const viewportName in VIEWPORT_PROPS) {
     const viewportProps = Object.assign({}, VIEWPORT_PROPS[viewportName]);
     viewportProps.nearZMultiplier = 1 / viewportProps.height;
-    viewportProps.farZMultiplier = viewportProps.height;
+    viewportProps.farZMultiplier = 1;
 
     const viewport = new WebMercatorViewport(viewportProps);
     const transform = new MapboxTransform(viewportProps);
@@ -117,7 +115,8 @@ test('Viewport vs Mapbox project 3D', t => {
     viewportProjected.scale(1 / viewportProjected[3]);
     mapboxProjected.scale(1 / mapboxProjected[3]);
 
-    t.ok(equals(viewportProjected, mapboxProjected),
+    // TODO - math.gl does not deal with significant digits
+    t.deepEquals(toLowPrecision(viewportProjected, 4), toLowPrecision(mapboxProjected, 4),
       `project 3D ${viewportName} - viewport/mapbox match`);
   }
   t.end();

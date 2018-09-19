@@ -123,7 +123,7 @@ Parameters:
 - `viewport.pitch` (Number, required)
 - `viewport.altitude` (Number, required)
 - `viewport.nearZMultiplier` (Number, optional) - near plane multiplier. Default `0.1`. Set to `1 / viewport.height` to get a Mapbox compatible projection matrix.
-- `viewport.farZMultiplier` (Number, optional) - far plane multiplier. Default `10`. Set to `viewport.height` to get a Mapbox compatible projection matrix.
+- `viewport.farZMultiplier` (Number, optional) - far plane multiplier. Default `10`. Set to `1` to get a Mapbox compatible projection matrix.
 
 
 ### `getProjectionParameters({width, height, altitude, pitch, farZMultiplier}})`

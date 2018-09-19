@@ -242,7 +242,7 @@ export function getProjectionParameters({
 // PROJECTION MATRIX: PROJECTS FROM CAMERA (VIEW) SPACE TO CLIPSPACE
 // This is a "Mapbox" projection matrix - matches mapbox exactly if
 // nearZMultiplier === 1 / height
-// farZMultiplier === height
+// farZMultiplier === 1
 export function getProjectionMatrix({
   width,
   height,
