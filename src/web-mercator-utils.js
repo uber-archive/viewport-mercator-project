@@ -240,16 +240,16 @@ export function getProjectionParameters({
 }
 
 // PROJECTION MATRIX: PROJECTS FROM CAMERA (VIEW) SPACE TO CLIPSPACE
-// This is a "Mapbox" projection matrix - matches mapbox exactly if
-// nearZMultiplier === 1 / height
-// farZMultiplier === 1
+// To match mapbox's z buffer:
+// <= 0.28 - nearZMultiplier: 0.1, farZmultiplier: 1
+// >= 0.29 - nearZMultiplier: 1 / height, farZMultiplier: 1.01
 export function getProjectionMatrix({
   width,
   height,
   pitch,
   altitude,
-  nearZMultiplier = 0.1,
-  farZMultiplier = 10
+  nearZMultiplier,
+  farZMultiplier
 }) {
   const {fov, aspect, near, far} =
     getProjectionParameters({width, height, altitude, pitch, nearZMultiplier, farZMultiplier});

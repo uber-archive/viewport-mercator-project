@@ -4,7 +4,7 @@
 
 Release date: TBD
 
-* NEW: `getProjectionMatrix` can match the behavior of the latest Mapbox (when called with `nearZMultipler: 1 / viewport.height, farZMultiplier: 1`)
+* NEW: `getProjectionMatrix` can now match the z-buffer of the latest Mapbox (when called with `nearZMultipler: 1 / viewport.height, farZMultiplier: 1.01`)
 * NEW: `addMetersToLngLat` utility
 * FIX: returned values by `getDistanceScales` now reflect the flipped y-direction between spherical coordinates and the WebMercator world.
 * FIX: `WebMercatorViewport`'s `project` and `unproject` handle altitude correctly

@@ -56,8 +56,8 @@ export default class WebMercatorViewport extends Viewport {
     pitch = 0,
     bearing = 0,
     altitude = 1.5,
-    nearZMultiplier = 0.1,
-    farZMultiplier = 10
+    nearZMultiplier,
+    farZMultiplier
   } = {}) {
     // Silently allow apps to send in 0,0 to facilitate isomorphic render etc
     width = width || 1;
@@ -77,8 +77,8 @@ export default class WebMercatorViewport extends Viewport {
       pitch,
       bearing,
       altitude,
-      nearZMultiplier,
-      farZMultiplier
+      nearZMultiplier: nearZMultiplier || (1 / height),
+      farZMultiplier: farZMultiplier || 1.01
     });
 
     const viewMatrix = getViewMatrix({
