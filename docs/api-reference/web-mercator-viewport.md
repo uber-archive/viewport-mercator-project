@@ -98,9 +98,11 @@ Returns:
 
 Get a new flat viewport that fits around the given bounding box.
 
-* `bounds` ([[Number,Number],[Number,Number]]) - an array of two opposite corners of
-the bounding box. Each corner is specified in `[lon, lat]`.
 * `options` (Object)
+  + `options.width` - viewport width
+  + `options.height` - viewport height
+  + `options.bounds` ([[Number,Number],[Number,Number]]) - an array of two opposite corners of
+  the bounding box. Each corner is specified in `[lon, lat]`.
   + `options.padding` (Number|{top:Number, bottom: Number, left: Number, right: Number}, optional) - The amount of
   padding in pixels to add to the given bounds from the edge of the viewport. If padding is set as object, all parameters are
   required.
