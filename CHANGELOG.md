@@ -2,7 +2,9 @@
 
 ## 6.0 Release
 
-### 6.0-alpha.1
+### 6.0.0
+
+### 6.0.0-alpha.1
 
 - NEW: `getProjectionMatrix` can match the behavior of the latest Mapbox (when called with `nearZMultipler: 1 / viewport.height, farZMultiplier: viewport.height`)
 - NEW: `addMetersToLngLat` utility
