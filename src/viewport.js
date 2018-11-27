@@ -1,14 +1,10 @@
 // View and Projection Matrix management
 
-/* eslint-disable camelcase */
 import {equals} from 'math.gl';
 import {createMat4} from './math-utils';
 import {worldToPixels, pixelsToWorld} from './web-mercator-utils';
 
-import mat4_scale from 'gl-mat4/scale';
-import mat4_translate from 'gl-mat4/translate';
-import mat4_multiply from 'gl-mat4/multiply';
-import mat4_invert from 'gl-mat4/invert';
+import * as mat4 from 'gl-matrix/mat4';
 
 const IDENTITY = createMat4();
 
@@ -59,8 +55,8 @@ export default class Viewport {
     // Note: As usual, matrix operations should be applied in "reverse" order
     // since vectors will be multiplied in from the right during transformation
     const vpm = createMat4();
-    mat4_multiply(vpm, vpm, this.projectionMatrix);
-    mat4_multiply(vpm, vpm, this.viewMatrix);
+    mat4.multiply(vpm, vpm, this.projectionMatrix);
+    mat4.multiply(vpm, vpm, this.viewMatrix);
     this.viewProjectionMatrix = vpm;
 
     // Calculate matrices and scales needed for projection
@@ -76,12 +72,12 @@ export default class Viewport {
     const m = createMat4();
 
     // matrix for conversion from location to screen coordinates
-    mat4_scale(m, m, [this.width / 2, -this.height / 2, 1]);
-    mat4_translate(m, m, [1, -1, 0]);
+    mat4.scale(m, m, [this.width / 2, -this.height / 2, 1]);
+    mat4.translate(m, m, [1, -1, 0]);
 
-    mat4_multiply(m, m, this.viewProjectionMatrix);
+    mat4.multiply(m, m, this.viewProjectionMatrix);
 
-    const mInverse = mat4_invert(createMat4(), m);
+    const mInverse = mat4.invert(createMat4(), m);
     if (!mInverse) {
       throw new Error('Pixel project matrix not invertible');
     }

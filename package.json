@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
+    "gl-matrix": "^3.0.0-0",
     "math.gl": "^2.1.0"
   },
   "devDependencies": {
