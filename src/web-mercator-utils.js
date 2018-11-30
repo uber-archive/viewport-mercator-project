@@ -3,12 +3,8 @@
 import {Vector3} from 'math.gl';
 import {createMat4, transformVector} from './math-utils';
 
-import mat4_perspective from 'gl-mat4/perspective';
-import mat4_scale from 'gl-mat4/scale';
-import mat4_translate from 'gl-mat4/translate';
-import mat4_rotateX from 'gl-mat4/rotateX';
-import mat4_rotateZ from 'gl-mat4/rotateZ';
-import vec2_lerp from 'gl-vec2/lerp';
+import * as mat4 from 'gl-matrix/mat4';
+import * as vec2 from 'gl-matrix/vec2';
 import assert from './assert';
 
 // CONSTANTS
@@ -189,22 +185,22 @@ export function getViewMatrix({
   const vm = createMat4();
 
   // Move camera to altitude (along the pitch & bearing direction)
-  mat4_translate(vm, vm, [0, 0, -altitude]);
+  mat4.translate(vm, vm, [0, 0, -altitude]);
 
   // After the rotateX, z values are in pixel units. Convert them to
   // altitude units. 1 altitude unit = the screen height.
-  mat4_scale(vm, vm, [1, 1, 1 / height]);
+  mat4.scale(vm, vm, [1, 1, 1 / height]);
 
   // Rotate by bearing, and then by pitch (which tilts the view)
-  mat4_rotateX(vm, vm, -pitch * DEGREES_TO_RADIANS);
-  mat4_rotateZ(vm, vm, bearing * DEGREES_TO_RADIANS);
+  mat4.rotateX(vm, vm, -pitch * DEGREES_TO_RADIANS);
+  mat4.rotateZ(vm, vm, bearing * DEGREES_TO_RADIANS);
 
   if (flipY) {
-    mat4_scale(vm, vm, [1, -1, 1]);
+    mat4.scale(vm, vm, [1, -1, 1]);
   }
 
   if (center) {
-    mat4_translate(vm, vm, new Vector3(center).negate());
+    mat4.translate(vm, vm, new Vector3(center).negate());
   }
 
   return vm;
@@ -254,7 +250,7 @@ export function getProjectionMatrix({
   const {fov, aspect, near, far} =
     getProjectionParameters({width, height, altitude, pitch, nearZMultiplier, farZMultiplier});
 
-  const projectionMatrix = mat4_perspective(
+  const projectionMatrix = mat4.perspective(
     [],
     fov,      // fov in radians
     aspect,   // aspect ratio
@@ -307,5 +303,5 @@ export function pixelsToWorld(xyz, pixelUnprojectionMatrix, targetZ = 0) {
   const z1 = coord1[2];
 
   const t = z0 === z1 ? 0 : ((targetZ || 0) - z0) / (z1 - z0);
-  return vec2_lerp([], coord0, coord1, t);
+  return vec2.lerp([], coord0, coord1, t);
 }
