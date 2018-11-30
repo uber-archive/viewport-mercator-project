@@ -1,4 +1,3 @@
-import {Vector2} from 'math.gl';
 import {lerp} from './math-utils';
 import {
   scaleToZoom,
@@ -6,6 +5,7 @@ import {
   lngLatToWorld,
   worldToLngLat
 } from './web-mercator-utils';
+import * as vec2 from 'gl-matrix/vec2';
 
 const EPSILON = 0.01;
 const VIEWPORT_TRANSITION_PROPS = ['longitude', 'latitude', 'zoom'];
@@ -31,13 +31,13 @@ export default function flyToViewport(startProps, endProps, t) {
   const endCenter = [endProps.longitude, endProps.latitude];
   const scale = zoomToScale(endZoom - startZoom);
 
-  const startCenterXY = new Vector2(lngLatToWorld(startCenter, startScale));
-  const endCenterXY = new Vector2(lngLatToWorld(endCenter, startScale));
-  const uDelta = endCenterXY.subtract(startCenterXY);
+  const startCenterXY = lngLatToWorld(startCenter, startScale);
+  const endCenterXY = lngLatToWorld(endCenter, startScale);
+  const uDelta = vec2.sub([], endCenterXY, startCenterXY);
 
   const w0 = Math.max(startProps.width, startProps.height);
   const w1 = w0 / scale;
-  const u1 = Math.sqrt((uDelta.x * uDelta.x) + (uDelta.y * uDelta.y));
+  const u1 = vec2.length(uDelta);
   // u0 is treated as '0' in Eq (9).
 
   // If change in center is too small, do linear interpolaiton.
@@ -65,8 +65,12 @@ export default function flyToViewport(startProps, endProps, t) {
   const scaleIncrement = 1 / w; // Using w method for scaling.
   const newZoom = startZoom + scaleToZoom(scaleIncrement);
 
+  const newCenterWorld = vec2.scale([], uDelta, u);
+  vec2.add(newCenterWorld, newCenterWorld, startCenterXY);
+  vec2.scale(newCenterWorld, newCenterWorld, scaleIncrement);
+
   const newCenter = worldToLngLat(
-    (startCenterXY.add(uDelta.scale(u))).scale(scaleIncrement),
+    newCenterWorld,
     zoomToScale(newZoom));
   viewport.longitude = newCenter[0];
   viewport.latitude = newCenter[1];

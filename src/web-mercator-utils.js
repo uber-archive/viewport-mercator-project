@@ -1,10 +1,10 @@
 // TODO - THE UTILITIES IN THIS FILE SHOULD BE IMPORTED FROM WEB-MERCATOR-VIEWPORT MODULE
 
-import {Vector3} from 'math.gl';
 import {createMat4, transformVector} from './math-utils';
 
 import * as mat4 from 'gl-matrix/mat4';
 import * as vec2 from 'gl-matrix/vec2';
+import * as vec3 from 'gl-matrix/vec3';
 import assert from './assert';
 
 // CONSTANTS
@@ -200,7 +200,7 @@ export function getViewMatrix({
   }
 
   if (center) {
-    mat4.translate(vm, vm, new Vector3(center).negate());
+    mat4.translate(vm, vm, vec3.negate([], center));
   }
 
   return vm;

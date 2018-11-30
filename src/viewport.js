@@ -1,6 +1,5 @@
 // View and Projection Matrix management
 
-import {equals} from 'math.gl';
 import {createMat4} from './math-utils';
 import {worldToPixels, pixelsToWorld} from './web-mercator-utils';
 
@@ -105,8 +104,8 @@ export default class Viewport {
 
     return viewport.width === this.width &&
       viewport.height === this.height &&
-      equals(viewport.projectionMatrix, this.projectionMatrix) &&
-      equals(viewport.viewMatrix, this.viewMatrix);
+      mat4.equals(viewport.projectionMatrix, this.projectionMatrix) &&
+      mat4.equals(viewport.viewMatrix, this.viewMatrix);
   }
 
   /**

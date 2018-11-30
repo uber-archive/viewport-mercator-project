@@ -34,8 +34,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "gl-matrix": "^3.0.0-0",
-    "math.gl": "^2.1.0"
+    "gl-matrix": "^3.0.0-0"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
@@ -53,6 +52,7 @@
     "html-webpack-plugin": "^3.0.7",
     "jsdom": "~9.9.1",
     "mapbox-gl": "~0.49.0",
+    "math.gl": "^2.1.0",
     "mock-browser": "^0.92.14",
     "module-alias": "^2.0.0",
     "pre-commit": "^1.2.2",
