@@ -39,6 +39,9 @@ export function scaleToZoom(scale) {
  * @return {Array} [x,y] coordinates.
  */
 export function lngLatToWorld([lng, lat], scale) {
+  assert(Number.isFinite(lng) && Number.isFinite(scale));
+  assert(Number.isFinite(lat) && lat >= -90 && lat <= 90, 'invalid latitude');
+
   scale *= TILE_SIZE;
   const lambda2 = lng * DEGREES_TO_RADIANS;
   const phi2 = lat * DEGREES_TO_RADIANS;
@@ -286,7 +289,7 @@ export function worldToPixels(xyz, pixelProjectionMatrix) {
  */
 export function pixelsToWorld(xyz, pixelUnprojectionMatrix, targetZ = 0) {
   const [x, y, z] = xyz;
-  assert(Number.isFinite(x) && Number.isFinite(y));
+  assert(Number.isFinite(x) && Number.isFinite(y), 'invalid pixel coordinate');
 
   if (Number.isFinite(z)) {
     // Has depth component
