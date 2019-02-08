@@ -2,6 +2,11 @@
 
 ## 6.0 Release
 
+### 6.1.1
+
+- Bump gl-matrix dependency to prod version (#90)
+- Add user-friendly error messages on malformed coordinates (#91)
+
 ### 6.1.0
 
 - Replace gl packages with original gl-matrix (#85)
