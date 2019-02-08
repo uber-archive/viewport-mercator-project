@@ -38,6 +38,13 @@ test('Viewport#imports', t => {
   t.end();
 });
 
+test('lngLatToWorld', t => {
+  t.throws(() => lngLatToWorld([38, -122], 128), /latitude/i, 'throws on invalid latitude');
+  t.ok(equals(lngLatToWorld([-122, 38], 128), [10558.577777777778, 25279.113534227028]),
+    'returns correct result');
+  t.end();
+});
+
 test('getDistanceScales', t => {
   for (const vc in VIEWPORT_PROPS) {
     const props = VIEWPORT_PROPS[vc];
