@@ -40,4 +40,233 @@
         }
       }
     })
-  </script><link as="script" rel="preload" href="/viewport-mercator-project/component---ocular-modules-gatsby-src-templates-index-jsx-b7b9793a2ee783a3275b.js"/><link as="script" rel="preload" href="/viewport-mercator-project/app-744ea77f12a0e56ba9c5.js"/><link as="script" rel="preload" href="/viewport-mercator-project/webpack-runtime-358ab024a68a4263862a.js"/><link as="fetch" rel="preload" href="/viewport-mercator-project/static/d/173/path---index-6a9-NZuapzHg3X9TaN1iIixfv1W23E.json" crossorigin="use-credentials"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" role="group"><main><div class="fg"><section class="banner"><div class="f hero"></div><div class="container"><h1></h1><p></p><a class="btn" href="/viewport-mercator-project/docs/get-started">GET STARTED</a></div></section><div class="fg p4"><div class="container f fw"><div class="f1 p" style="min-width:10rem"><h2></h2><hr class="short"/></div><div class="f1 p" style="min-width:10rem">...</div></div></div></div></main></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.page={"componentChunkName":"component---ocular-modules-gatsby-src-templates-index-jsx","jsonName":"index","path":"/"};window.dataPath="173/path---index-6a9-NZuapzHg3X9TaN1iIixfv1W23E";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"app":["/app.1c76b3141dc16775ce64.css","/app-744ea77f12a0e56ba9c5.js"],"component---ocular-modules-gatsby-src-templates-index-jsx":["/component---ocular-modules-gatsby-src-templates-index-jsx-b7b9793a2ee783a3275b.js"],"component---ocular-modules-gatsby-src-templates-doc-n-jsx":["/component---ocular-modules-gatsby-src-templates-doc-n-jsx-ec26d881f5ca198daf59.js"],"component---ocular-modules-gatsby-src-templates-search-jsx":["/component---ocular-modules-gatsby-src-templates-search-jsx-843f3e1266900fe0677a.js"],"pages-manifest":["/pages-manifest-6a1e0d88a78ccaf9fb48.js"]};/*]]>*/</script><script src="/viewport-mercator-project/webpack-runtime-358ab024a68a4263862a.js" async=""></script><script src="/viewport-mercator-project/app-744ea77f12a0e56ba9c5.js" async=""></script><script src="/viewport-mercator-project/component---ocular-modules-gatsby-src-templates-index-jsx-b7b9793a2ee783a3275b.js" async=""></script></body></html>
+  </script><link as="script" rel="preload" href="/viewport-mercator-project/component---ocular-modules-gatsby-src-templates-doc-n-jsx-ec26d881f5ca198daf59.js"/><link as="script" rel="preload" href="/viewport-mercator-project/app-744ea77f12a0e56ba9c5.js"/><link as="script" rel="preload" href="/viewport-mercator-project/webpack-runtime-358ab024a68a4263862a.js"/><link as="fetch" rel="preload" href="/viewport-mercator-project/static/d/199/path---docs-api-reference-web-mercator-viewport-285-06f-yB4JjmaQt6jWII06bNrdwFe9cd8.json" crossorigin="use-credentials"/></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" role="group"><div><div class="markdown-body"><h1 id="webmercatorviewport"><a href="#webmercatorviewport" aria-hidden class="anchor"><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>WebMercatorViewport</h1>
+<p>The main purpose of the <code class="language-text">PerspectiveMercatorViewport</code> is to enable 3D rendering to
+seamlessly overlay on top of map components that take web mercator style
+map coordinates (<code class="language-text">lat</code>, <code class="language-text">lon</code>, <code class="language-text">zoom</code>, <code class="language-text">pitch</code>, <code class="language-text">bearing</code> etc),
+and to facilite the necessary mercator projections by breaking them into a
+minimal non-linear piece followed by a standard projection chain.</p>
+<h2 id="methods"><a href="#methods" aria-hidden class="anchor"><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Methods</h2>
+<h3 id="constructor"><a href="#constructor" aria-hidden class="anchor"><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Constructor</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">width</code></td>
+<td><code class="language-text">Number</code></td>
+<td><code class="language-text">1</code></td>
+<td>Width of "viewport" or window</td>
+</tr>
+<tr>
+<td><code class="language-text">height</code></td>
+<td><code class="language-text">Number</code></td>
+<td><code class="language-text">1</code></td>
+<td>Height of "viewport" or window</td>
+</tr>
+<tr>
+<td><code class="language-text">latitude</code></td>
+<td><code class="language-text">Number</code></td>
+<td><code class="language-text">37</code></td>
+<td>Center of viewport on map (alternative to center)</td>
+</tr>
+<tr>
+<td><code class="language-text">longitude</code></td>
+<td><code class="language-text">Number</code></td>
+<td><code class="language-text">-122</code></td>
+<td>Center of viewport on map (alternative to center)</td>
+</tr>
+<tr>
+<td><code class="language-text">zoom</code></td>
+<td><code class="language-text">Number</code></td>
+<td><code class="language-text">11</code></td>
+<td>Scale = Math.pow(2,zoom) on map (alternative to opt.scale)</td>
+</tr>
+<tr>
+<td><code class="language-text">pitch</code></td>
+<td><code class="language-text">Number</code></td>
+<td><code class="language-text">0</code></td>
+<td>Camera angle in degrees (0 is straight down)</td>
+</tr>
+<tr>
+<td><code class="language-text">bearing</code></td>
+<td><code class="language-text">Number</code></td>
+<td><code class="language-text">0</code></td>
+<td>Map rotation in degrees (0 means north is up)</td>
+</tr>
+<tr>
+<td><code class="language-text">altitude</code></td>
+<td><code class="language-text">Number</code></td>
+<td><code class="language-text">1.5</code></td>
+<td>Altitude of camera in screen units</td>
+</tr>
+</tbody>
+</table>
+<p>Remarks:</p>
+<ul>
+<li>Altitude has a default value that matches assumptions in mapbox-gl</li>
+<li><code class="language-text">width</code> and <code class="language-text">height</code> are forced to 1 if supplied as 0, to avoid
+division by zero. This is intended to reduce the burden of apps to
+to check values before instantiating a <code class="language-text">Viewport</code>.</li>
+<li>When using mercatorProjection, per cartographic tradition, longitudes and
+latitudes are specified as degrees.</li>
+</ul>
+<h3 id="code-classlanguage-textprojectlnglatz-optscode"><a href="#code-classlanguage-textprojectlnglatz-optscode" aria-hidden class="anchor"><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">project(lngLatZ, opts)</code></h3>
+<p>Projects latitude and longitude to pixel coordinates on screen.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">lngLatZ</code></td>
+<td><code class="language-text">Array</code></td>
+<td>(required)</td>
+<td>map coordinates, <code class="language-text">[lng, lat]</code> or <code class="language-text">[lng, lat, Z]</code> where <code class="language-text">Z</code> is elevation in meters</td>
+</tr>
+<tr>
+<td><code class="language-text">opts</code></td>
+<td><code class="language-text">Object</code></td>
+<td><code class="language-text">{}</code></td>
+<td>named options</td>
+</tr>
+<tr>
+<td><code class="language-text">opts.topLeft</code></td>
+<td><code class="language-text">Boolean</code></td>
+<td><code class="language-text">true</code></td>
+<td>If <code class="language-text">true</code> projected coords are top left, otherwise bottom left</td>
+</tr>
+</tbody>
+</table>
+<p>Returns: <code class="language-text">[x, y]</code> or <code class="language-text">[x, y, z]</code> in pixels coordinates. <code class="language-text">z</code> is pixel depth.</p>
+<ul>
+<li>If input is <code class="language-text">[lng, lat]</code>: returns <code class="language-text">[x, y]</code>.</li>
+<li>If input is <code class="language-text">[lng, lat, Z]</code>: returns <code class="language-text">[x, y, z]</code>.</li>
+</ul>
+<p>Remarks:</p>
+<ul>
+<li>By default, returns top-left coordinates suitable for canvas/SVG type
+rendering.</li>
+</ul>
+<h3 id="code-classlanguage-textunprojectxyz-optscode"><a href="#code-classlanguage-textunprojectxyz-optscode" aria-hidden class="anchor"><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">unproject(xyz, opts)</code></h3>
+<p>Unproject pixel coordinates on screen to longitude and latitude on map.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">xyz</code></td>
+<td><code class="language-text">Array</code></td>
+<td>(required)</td>
+<td>pixel coordinates, <code class="language-text">[x, y]</code> or <code class="language-text">[x, y, z]</code> where <code class="language-text">z</code> is pixel depth</td>
+</tr>
+<tr>
+<td><code class="language-text">opts</code></td>
+<td><code class="language-text">Object</code></td>
+<td><code class="language-text">{}</code></td>
+<td>named options</td>
+</tr>
+<tr>
+<td><code class="language-text">opts.topLeft</code></td>
+<td><code class="language-text">Boolean</code></td>
+<td><code class="language-text">true</code></td>
+<td>If <code class="language-text">true</code> projected coords are top left, otherwise bottom left</td>
+</tr>
+<tr>
+<td><code class="language-text">opts.targetZ</code></td>
+<td><code class="language-text">Number</code></td>
+<td><code class="language-text">0</code></td>
+<td>If pixel depth <code class="language-text">z</code> is not specified in <code class="language-text">xyz</code>, use <code class="language-text">opts.targetZ</code> as the desired elevation</td>
+</tr>
+</tbody>
+</table>
+<p>Returns: <code class="language-text">[lng, lat]</code> or <code class="language-text">[longitude, lat, Z]</code> in map coordinates. <code class="language-text">Z</code> is elevation in meters.</p>
+<ul>
+<li>If input is <code class="language-text">[x, y]</code> without specifying <code class="language-text">opts.targetZ</code>: returns <code class="language-text">[lng, lat]</code>.</li>
+<li>If input is <code class="language-text">[x, y]</code> with <code class="language-text">opts.targetZ</code>: returns <code class="language-text">[lng, lat, targetZ]</code>.</li>
+<li>If input is <code class="language-text">[x, y, z]</code>: returns <code class="language-text">[lng, lat, Z]</code>.</li>
+</ul>
+<h4 id="code-classlanguage-textprojectflatlnglat-scalecode"><a href="#code-classlanguage-textprojectflatlnglat-scalecode" aria-hidden class="anchor"><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">projectFlat(lngLat, scale)</code></h4>
+<p>Project longitude and latitude onto Web Mercator coordinates.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="language-text">lngLat</code></td>
+<td><code class="language-text">Array</code></td>
+<td>(required)</td>
+<td>map coordinates, <code class="language-text">[lng, lat]</code></td>
+</tr>
+<tr>
+<td><code class="language-text">scale</code></td>
+<td><code class="language-text">Number</code></td>
+<td><code class="language-text">this.scale</code></td>
+<td>Web Mercator scale</td>
+</tr>
+</tbody>
+</table>
+<p>Returns:</p>
+<ul>
+<li><code class="language-text">[x, y]</code>, representing Web Mercator coordinates.</li>
+</ul>
+<h4 id="code-classlanguage-textunprojectflatxy-scalecode"><a href="#code-classlanguage-textunprojectflatxy-scalecode" aria-hidden class="anchor"><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">unprojectFlat(xy, scale)</code></h4>
+<p>Unprojects a Web Mercator coordinate to longitude and latitude.
+| Parameter      | Type      | Default  | Description                     |
+| -------------- | --------- | -------- | ------------------------------- |
+| <code class="language-text">xy</code>          | <code class="language-text">Array</code>   | (required) | Web Mercator coordinates, <code class="language-text">[x, y]</code>   |
+| <code class="language-text">scale</code>         | <code class="language-text">Number</code>  | <code class="language-text">this.scale</code>     | Web Mercator scale  |</p>
+<p>Returns:</p>
+<ul>
+<li><code class="language-text">[longitude, latitude]</code></li>
+</ul>
+<h4 id="code-classlanguage-textfitboundsbounds-optionscode"><a href="#code-classlanguage-textfitboundsbounds-optionscode" aria-hidden class="anchor"><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">fitBounds(bounds, options)</code></h4>
+<p>Get a new flat viewport that fits around the given bounding box.</p>
+<ul>
+<li><code class="language-text">bounds</code> ([[Number,Number],[Number,Number]]) - an array of two opposite corners of
+the bounding box. Each corner is specified in <code class="language-text">[lon, lat]</code>.</li>
+<li>
+<p><code class="language-text">options</code> (Object)</p>
+<ul>
+<li><code class="language-text">options.padding</code> (Number|{top:Number, bottom: Number, left: Number, right: Number}, optional) - The amount of
+padding in pixels to add to the given bounds from the edge of the viewport. If padding is set as object, all parameters are
+required.</li>
+<li><code class="language-text">options.offset</code> ([Number,Number], optional) - The center of the given bounds relative to the viewport's center, <code class="language-text">[x, y]</code> measured in pixels.</li>
+</ul>
+</li>
+</ul>
+<h4 id="code-classlanguage-textgetmapcenterbylnglatpositionoptscode"><a href="#code-classlanguage-textgetmapcenterbylnglatpositionoptscode" aria-hidden class="anchor"><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code class="language-text">getMapCenterByLngLatPosition(opts)</code></h4>
+<p>Returns the map center that place a given [lng, lat] coordinate at screen point [x, y].</p>
+<p>Parameters:</p>
+<ul>
+<li><code class="language-text">opts</code> (Object) - options</li>
+<li><code class="language-text">opts.lngLat</code> (Array, required) - [lng,lat] coordinates of a location on the sphere.</li>
+<li><code class="language-text">opts.pos</code> (Array, required) - [x,y] coordinates of a pixel on screen.</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li><code class="language-text">[longitude, latitude]</code> new map center</li>
+</ul></div></div></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.page={"componentChunkName":"component---ocular-modules-gatsby-src-templates-doc-n-jsx","jsonName":"docs-api-reference-web-mercator-viewport-285","path":"/docs/api-reference/web-mercator-viewport"};window.dataPath="199/path---docs-api-reference-web-mercator-viewport-285-06f-yB4JjmaQt6jWII06bNrdwFe9cd8";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"app":["/app.1c76b3141dc16775ce64.css","/app-744ea77f12a0e56ba9c5.js"],"component---ocular-modules-gatsby-src-templates-index-jsx":["/component---ocular-modules-gatsby-src-templates-index-jsx-b7b9793a2ee783a3275b.js"],"component---ocular-modules-gatsby-src-templates-doc-n-jsx":["/component---ocular-modules-gatsby-src-templates-doc-n-jsx-ec26d881f5ca198daf59.js"],"component---ocular-modules-gatsby-src-templates-search-jsx":["/component---ocular-modules-gatsby-src-templates-search-jsx-843f3e1266900fe0677a.js"],"pages-manifest":["/pages-manifest-6a1e0d88a78ccaf9fb48.js"]};/*]]>*/</script><script src="/viewport-mercator-project/webpack-runtime-358ab024a68a4263862a.js" async=""></script><script src="/viewport-mercator-project/app-744ea77f12a0e56ba9c5.js" async=""></script><script src="/viewport-mercator-project/component---ocular-modules-gatsby-src-templates-doc-n-jsx-ec26d881f5ca198daf59.js" async=""></script></body></html>
