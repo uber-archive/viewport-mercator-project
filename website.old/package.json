@@ -1,0 +1,14 @@
+{
+  "name": "viewport-mercator-project-website",
+  "main": "index.js",
+  "scripts": {
+    "start": "ocular start open",
+    "build": "ocular build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ocular": "^0.4.2"
+  }
+}
