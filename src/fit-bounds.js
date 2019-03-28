@@ -17,6 +17,7 @@ import assert from './assert';
  * @param {Number} width - viewport width
  * @param {Number} height - viewport height
  * @param {Array} bounds - [[lon, lat], [lon, lat]]
+ * @param {Array} minExtent - The width/height of the bounded area will never be smaller than this
  * @param {Number|PaddingObject} [padding] - The amount of padding in pixels
  *  to add to the given bounds. Can also be an object with top, bottom, left and right
  *  properties defining the padding.
@@ -28,6 +29,8 @@ export default function fitBounds({
   width,
   height,
   bounds,
+  minExtent = 0,  // 0.01 would be about 1000 meters (degree is ~110KM)
+  maxZoom = 24, // ~x4,000,000 => About 10 meter extents
   // options
   padding = 0,
   offset = [0, 0]
@@ -64,8 +67,8 @@ export default function fitBounds({
 
   // width/height on the Web Mercator plane
   const size = [
-    Math.abs(se[0] - nw[0]),
-    Math.abs(se[1] - nw[1])
+    Math.abs(Math.max(se[0] - nw[0], minExtent)),
+    Math.abs(Math.max(se[1] - nw[1], minExtent))
   ];
 
   const targetSize = [
@@ -94,6 +97,6 @@ export default function fitBounds({
   return {
     longitude: centerLngLat[0],
     latitude: centerLngLat[1],
-    zoom
+    zoom: Math.min(zoom, maxZoom)
   };
 }

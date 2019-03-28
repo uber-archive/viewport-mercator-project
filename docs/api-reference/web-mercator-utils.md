@@ -159,11 +159,18 @@ Parameters:
 - `opts.width` (Number, required)
 - `opts.height` (Number, required)
 - `opts.bounds` (Array, required) - opposite corners specified as `[[lon, lat], [lon, lat]]`
-- `opts.padding` (Number, optional) - the amount of padding in pixels to add to the given bounds. Default `0`.
-- `opts.offset` (Array, optional) - the center of the given bounds relative to the map's center, `[x, y]` measured in pixels.
+- `opts.minExtent` (Number, optional) - If supplied, the bounds used to calculate the new map settings will be expanded if the delta width or height of the supplied `bounds` is smaller than this value.
+- `opts.maxZoom`=`24` (Number, optional) - The returned zoom value will be capped to this value. Avoids returning infinite `zoom` when the supplied `bounds` have zero width or height deltas.
+- `opts.padding`=`0` (Number, optional) - the amount of padding in pixels to add to the given bounds.
+- `opts.offset`=`[0,0]` (Array, optional) - the center of the given bounds relative to the map's center, `[x, y]` measured in pixels.
 
 Returns:
 - `{longitude, latitude, zoom}`
+
+Notes:
+* `minExtent` - Note that this value represents delta latitude/longitudes and value of `0.01` would roughly represent 1km.
+
+
 
 ### `normalizeViewportProps(viewport)`
 
