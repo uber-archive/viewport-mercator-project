@@ -9,36 +9,24 @@ import * as vec2 from 'gl-matrix/vec2';
 
 const EPSILON = 0.01;
 const VIEWPORT_TRANSITION_PROPS = ['longitude', 'latitude', 'zoom'];
+const DEFAULT_PROPS = {
+  curve: 1.414,
+  speed: 1.2
+};
 
 /**
  * mapbox-gl-js flyTo : https://www.mapbox.com/mapbox-gl-js/api/#map#flyto.
  * It implements “Smooth and efficient zooming and panning.” algorithm by
  * "Jarke J. van Wijk and Wim A.A. Nuij"
 */
-/* eslint-disable max-statements */
 export default function flyToViewport(startProps, endProps, t) {
   // Equations from above paper are referred where needed.
 
   const viewport = {};
 
-  // TODO: add this as an option for applications.
-  const rho = 1.414;
-
-  const startZoom = startProps.zoom;
-  const startCenter = [startProps.longitude, startProps.latitude];
-  const startScale = zoomToScale(startZoom);
-  const endZoom = endProps.zoom;
-  const endCenter = [endProps.longitude, endProps.latitude];
-  const scale = zoomToScale(endZoom - startZoom);
-
-  const startCenterXY = lngLatToWorld(startCenter, startScale);
-  const endCenterXY = lngLatToWorld(endCenter, startScale);
-  const uDelta = vec2.sub([], endCenterXY, startCenterXY);
-
-  const w0 = Math.max(startProps.width, startProps.height);
-  const w1 = w0 / scale;
-  const u1 = vec2.length(uDelta);
-  // u0 is treated as '0' in Eq (9).
+  const {
+    startZoom, startCenterXY, uDelta, w0, u1, S, rho, rho2, r0
+  } = getFlyToTransitionParams(startProps, endProps);
 
   // If change in center is too small, do linear interpolaiton.
   if (Math.abs(u1) < EPSILON) {
@@ -50,13 +38,6 @@ export default function flyToViewport(startProps, endProps, t) {
     return viewport;
   }
 
-  // Implement Equation (9) from above algorithm.
-  const rho2 = rho * rho;
-  const b0 = (w1 * w1 - w0 * w0 + rho2 * rho2 * u1 * u1) / (2 * w0 * rho2 * u1);
-  const b1 = (w1 * w1 - w0 * w0 - rho2 * rho2 * u1 * u1) / (2 * w1 * rho2 * u1);
-  const r0 = Math.log(Math.sqrt(b0 * b0 + 1) - b0);
-  const r1 = Math.log(Math.sqrt(b1 * b1 + 1) - b1);
-  const S = (r1 - r0) / rho;
   const s = t * S;
 
   const w = (Math.cosh(r0) / Math.cosh(r0 + rho * s));
@@ -77,4 +58,45 @@ export default function flyToViewport(startProps, endProps, t) {
   viewport.zoom = newZoom;
   return viewport;
 }
-/* eslint-enable max-statements */
+
+// returns transition duration in milliseconds
+export function getFlyToDuration(startProps, endProps, opts = {}) {
+
+  const {S} = getFlyToTransitionParams(startProps, endProps);
+  const {speed} = opts;
+
+  return 1000 * S / (speed || DEFAULT_PROPS.speed);
+}
+
+// Private Methods
+
+// Calculate all parameters that are static for given startProps and endProps
+function getFlyToTransitionParams(startProps, endProps) {
+
+  const rho = endProps.curve || DEFAULT_PROPS.curve;
+  const startZoom = startProps.zoom;
+  const startCenter = [startProps.longitude, startProps.latitude];
+  const startScale = zoomToScale(startZoom);
+  const endZoom = endProps.zoom;
+  const endCenter = [endProps.longitude, endProps.latitude];
+  const scale = zoomToScale(endZoom - startZoom);
+
+  const startCenterXY = lngLatToWorld(startCenter, startScale);
+  const endCenterXY = lngLatToWorld(endCenter, startScale);
+  const uDelta = vec2.sub([], endCenterXY, startCenterXY);
+
+  const w0 = Math.max(startProps.width, startProps.height);
+  const w1 = w0 / scale;
+  const u1 = vec2.length(uDelta);
+  // u0 is treated as '0' in Eq (9).
+
+  // Implement Equation (9) from above algorithm.
+  const rho2 = rho * rho;
+  const b0 = (w1 * w1 - w0 * w0 + rho2 * rho2 * u1 * u1) / (2 * w0 * rho2 * u1);
+  const b1 = (w1 * w1 - w0 * w0 - rho2 * rho2 * u1 * u1) / (2 * w1 * rho2 * u1);
+  const r0 = Math.log(Math.sqrt(b0 * b0 + 1) - b0);
+  const r1 = Math.log(Math.sqrt(b1 * b1 + 1) - b1);
+  const S = (r1 - r0) / rho;
+
+  return {startZoom, startCenterXY, uDelta, w0, u1, S, rho, rho2, r0, r1};
+}
