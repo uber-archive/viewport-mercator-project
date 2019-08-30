@@ -89,7 +89,7 @@ export default function fitBounds({
   ];
 
   const centerLngLat = viewport.unproject(center);
-  const zoom = Math.min(16, viewport.zoom + Math.log2(Math.abs(Math.min(scaleX, scaleY))));
+  const zoom = Math.min(22, viewport.zoom + Math.log2(Math.abs(Math.min(scaleX, scaleY))));
 
   return {
     longitude: centerLngLat[0],
