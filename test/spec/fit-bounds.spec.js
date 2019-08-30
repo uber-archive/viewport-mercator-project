@@ -18,6 +18,18 @@ const FITBOUNDS_TEST_CASES = [
   ],
   [
     {
+      width: 100,
+      height: 100,
+      bounds: [[-73.9876, 40.7661], [-73.9876, 40.7661]]
+    },
+    {
+      longitude: -73.9876,
+      latitude: 40.7661,
+      zoom: 16
+    }
+  ],
+  [
+    {
       width: 600,
       height: 400,
       bounds: [[-23.407, 64.863], [-23.406, 64.874]],
