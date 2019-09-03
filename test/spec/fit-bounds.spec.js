@@ -83,3 +83,32 @@ test('WebMercatorViewport.fitBounds', (t) => {
   }
   t.end();
 });
+
+test('fitBounds#degenerate', (t) => {
+  const OPTIONS = {
+    height: 100,
+    width: 100,
+    bearing: 0,
+    pitch: 0,
+    zoom: 2
+  };
+
+  const viewport = new WebMercatorViewport(OPTIONS);
+  t.doesNotThrow(
+    () => viewport.fitBounds([[-70, 10], [-70, 10]]),
+    'degenerate bounds do not throw by default'
+  );
+  t.throws(
+    () => viewport.fitBounds([[-70, 10], [-70, 10]], {maxZoom: Infinity}),
+    'degenerate bounds throw if maxZoom removed'
+  );
+  t.doesNotThrow(
+    () => viewport.fitBounds([[-70, 10], [-70, 10]], {minExtent: 0.01, maxZoom: Infinity}),
+    'degenerate bounds does not throw if maxZoo removed and minExtents added'
+  );
+
+  t.ok(viewport instanceof WebMercatorViewport, 'get viewport');
+
+  t.end();
+});
+

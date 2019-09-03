@@ -1,8 +1,21 @@
 # What's New
 
+## v6.2
+
+Release date: TBD April, 2019
+
+- `fitBounds` now supports a `minExtent` parameter to prevent infinite `zoom` from being returned when fitting a "degenerate" bounding box with zero extents.
+
+## v6.1
+
+Release date: Feb 2, 2019
+
+- NEW: User friendly error messages to help catch incorrectly formatted input data
+- Now uses gl-matrix@3.0.0
+
 ## v6.0
 
-Release date: TBD
+Release date: Nov 30, 2018
 
 * NEW: `getProjectionMatrix` can now match the z-buffer of the latest Mapbox (when called with `nearZMultipler: 1 / viewport.height, farZMultiplier: 1.01`)
 * NEW: `addMetersToLngLat` utility
