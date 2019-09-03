@@ -59,13 +59,13 @@ export default function flyToViewport(startProps, endProps, t) {
   return viewport;
 }
 
-// returns length of flyTo transition between start and end viewports.
-export function getFlyToLength(startProps, endProps) {
+// returns transition duration in milliseconds
+export function getFlyToDuration(startProps, endProps, opts = {}) {
 
   const {S} = getFlyToTransitionParams(startProps, endProps);
+  const {speed} = opts;
 
-  return S;
-
+  return 1000 * S / (speed || DEFAULT_PROPS.speed);
 }
 
 // Private Methods

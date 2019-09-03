@@ -208,9 +208,9 @@ Parameters:
 Returns:
 - `{longitude, latitude, zoom}`
 
-### `getFlyToLength(startProps, endProps)`
+### `getFlyToDuration(startProps, endProps, opts)`
 
-Returns length of the fly-to path. Length returned is proportional to the distance between start and end viewports.This util function implements the algorithm described in “Smooth and efficient zooming and panning.” by Jarke J. van Wijk and Wim A.A. Nuij.
+Returns time in milliseconds, that is required perform transition from one viewport to another. Time returned is proportional to the distance we are transitioning to. This util function implements the algorithm described in “Smooth and efficient zooming and panning.” by Jarke J. van Wijk and Wim A.A. Nuij.
 
 Parameters:
 - `startProps` (Object) - viewport to fly from
@@ -223,6 +223,8 @@ Parameters:
 - `endProps.longitude` (Number, required)
 - `endProps.latitude` (Number, required)
 - `endProps.zoom` (Number, required)
+- `opts` (Object, optional) - optional parameters.
+- `opts.speed` (Number, optional) - linearly affects the duration, higher speed returns smaller durations and vice versa.
 
 Returns:
-- `length` (Number).
+- `duration` Number, in milliseconds.

@@ -1,5 +1,5 @@
 import test from 'tape-catch';
-import {flyToViewport, getFlyToLength} from 'viewport-mercator-project';
+import {flyToViewport, getFlyToDuration} from 'viewport-mercator-project';
 import {toLowPrecision} from '../utils/test-utils';
 
 /* eslint-disable max-len */
@@ -28,18 +28,33 @@ const FLY_TO_TEST_CASES = [
   }
 ];
 
-const LENGTH_TEST_CASES = [
+const DURATION_TEST_CASES = [
   {
     startProps: START_PROPS,
     endProps: END_PROPS,
-    expect: 8.7909532
+    expect: 7325.7943
   },
   {
-    // length to a neary by view state
+    // duration to a neary by view state
     startProps: START_PROPS,
-    endProps: Object.assign({}, START_PROPS, {longitude: START_PROPS.longitude + 0.005}),
-    expect: 0.051470808
+    endProps: Object.assign({}, START_PROPS, {longitude: START_PROPS.longitude + 0.001}),
+    expect: 8.5802857
+  },
+  {
+    // duration with low speed
+    startProps: START_PROPS,
+    endProps: END_PROPS,
+    opts: {speed: 1},
+    expect: 8790.9532
+  },
+  {
+    // duration with high speed
+    startProps: START_PROPS,
+    endProps: END_PROPS,
+    opts: {speed: 5},
+    expect: 1758.1906
   }
+
 ];
 
 test('flyToViewport', t => {
@@ -54,12 +69,12 @@ test('flyToViewport', t => {
   t.end();
 });
 
-test('getFlyToLength', t => {
+test('getFlyToDuration', t => {
 
-  LENGTH_TEST_CASES
+  DURATION_TEST_CASES
   .forEach(testCase => {
-    const length = getFlyToLength(testCase.startProps, testCase.endProps);
-    t.deepEqual(toLowPrecision(length, 8), testCase.expect, 'should get correct duration');
+    const duration = getFlyToDuration(testCase.startProps, testCase.endProps, testCase.opts);
+    t.deepEqual(toLowPrecision(duration, 8), testCase.expect, 'should get correct duration');
   });
 
   t.end();
