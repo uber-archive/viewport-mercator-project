@@ -2,7 +2,7 @@
 
 ## v6.2
 
-Release date: TBD April, 2019
+Release date: September 2, 2019
 
 - `fitBounds` now supports a `minExtent` parameter to prevent infinite `zoom` from being returned when fitting a "degenerate" bounding box with zero extents.
 
