@@ -30,7 +30,7 @@ module.exports = {
   PROJECT_ORG: 'uber-common',
   PROJECT_URL: 'https://github.com/uber-common/viewport-mercator-project',
   PROJECT_DESC: 'Utilities for working with Web Mercator Projections',
-  PATH_PREFIX: '',
+  PATH_PREFIX: '/viewport-mercator-project/',
 
   FOOTER_LOGO: '',
 
