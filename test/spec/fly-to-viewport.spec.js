@@ -30,31 +30,60 @@ const FLY_TO_TEST_CASES = [
 
 const DURATION_TEST_CASES = [
   {
+    title: 'default props',
     startProps: START_PROPS,
     endProps: END_PROPS,
     expect: 7325.7943
   },
   {
     // duration to a neary by view state
+    title: 'duration to near by view state',
     startProps: START_PROPS,
     endProps: Object.assign({}, START_PROPS, {longitude: START_PROPS.longitude + 0.001}),
     expect: 8.5802857
   },
   {
-    // duration with low speed
+    title: 'low speed',
     startProps: START_PROPS,
     endProps: END_PROPS,
     opts: {speed: 1},
     expect: 8790.9532
   },
   {
-    // duration with high speed
+    title: 'high speed',
     startProps: START_PROPS,
     endProps: END_PROPS,
     opts: {speed: 5},
     expect: 1758.1906
+  },
+  {
+    title: 'screenSpeed should take precedence over speed',
+    startProps: START_PROPS,
+    endProps: END_PROPS,
+    opts: {speed: 5, screenSpeed: 2},
+    expect: 6215.2039
+  },
+  {
+    title: 'low curve',
+    startProps: START_PROPS,
+    endProps: END_PROPS,
+    opts: {curve: 0.5},
+    expect: 13787.929
+  },
+  {
+    title: 'high curve',
+    startProps: START_PROPS,
+    endProps: END_PROPS,
+    opts: {curve: 2.0},
+    expect: 5757.2078
+  },
+  {
+    title: 'maxDuration',
+    startProps: START_PROPS,
+    endProps: END_PROPS,
+    opts: {maxDuration: 5000},
+    expect: 0
   }
-
 ];
 
 test('flyToViewport', t => {
@@ -74,7 +103,8 @@ test('getFlyToDuration', t => {
   DURATION_TEST_CASES
   .forEach(testCase => {
     const duration = getFlyToDuration(testCase.startProps, testCase.endProps, testCase.opts);
-    t.deepEqual(toLowPrecision(duration, 8), testCase.expect, 'should get correct duration');
+    t.deepEqual(toLowPrecision(duration, 8), testCase.expect,
+      `${testCase.title}: should get correct duration`);
   });
 
   t.end();

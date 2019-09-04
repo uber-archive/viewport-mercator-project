@@ -9,9 +9,10 @@ import * as vec2 from 'gl-matrix/vec2';
 
 const EPSILON = 0.01;
 const VIEWPORT_TRANSITION_PROPS = ['longitude', 'latitude', 'zoom'];
-const DEFAULT_PROPS = {
+const DEFAULT_OPTS = {
   curve: 1.414,
   speed: 1.2
+  // screenSpeed and maxDuration are used only if specified
 };
 
 /**
@@ -19,14 +20,14 @@ const DEFAULT_PROPS = {
  * It implements “Smooth and efficient zooming and panning.” algorithm by
  * "Jarke J. van Wijk and Wim A.A. Nuij"
 */
-export default function flyToViewport(startProps, endProps, t) {
+export default function flyToViewport(startProps, endProps, t, opts = {}) {
   // Equations from above paper are referred where needed.
 
   const viewport = {};
 
   const {
     startZoom, startCenterXY, uDelta, w0, u1, S, rho, rho2, r0
-  } = getFlyToTransitionParams(startProps, endProps);
+  } = getFlyToTransitionParams(startProps, endProps, opts);
 
   // If change in center is too small, do linear interpolaiton.
   if (Math.abs(u1) < EPSILON) {
@@ -62,18 +63,27 @@ export default function flyToViewport(startProps, endProps, t) {
 // returns transition duration in milliseconds
 export function getFlyToDuration(startProps, endProps, opts = {}) {
 
-  const {S} = getFlyToTransitionParams(startProps, endProps);
-  const {speed} = opts;
+  opts = Object.assign({}, DEFAULT_OPTS, opts);
+  const {screenSpeed, speed, maxDuration} = opts;
+  const {S, rho} = getFlyToTransitionParams(startProps, endProps, opts);
+  const length =  1000 * S;
+  let duration;
+  if (Number.isFinite(screenSpeed)) {
+    duration = length / (screenSpeed / rho);
+  } else {
+    duration = length / speed;
+  }
 
-  return 1000 * S / (speed || DEFAULT_PROPS.speed);
+  return Number.isFinite(maxDuration) && duration > maxDuration ? 0 : duration;
 }
 
 // Private Methods
 
 // Calculate all parameters that are static for given startProps and endProps
-function getFlyToTransitionParams(startProps, endProps) {
+function getFlyToTransitionParams(startProps, endProps, opts) {
 
-  const rho = endProps.curve || DEFAULT_PROPS.curve;
+  opts = Object.assign({}, DEFAULT_OPTS, opts);
+  const rho = opts.curve;
   const startZoom = startProps.zoom;
   const startCenter = [startProps.longitude, startProps.latitude];
   const startScale = zoomToScale(startZoom);

@@ -210,7 +210,7 @@ Returns:
 
 ### `getFlyToDuration(startProps, endProps, opts)`
 
-Returns time in milliseconds, that is required perform transition from one viewport to another. Time returned is proportional to the distance we are transitioning to. This util function implements the algorithm described in “Smooth and efficient zooming and panning.” by Jarke J. van Wijk and Wim A.A. Nuij.
+Returns time in milliseconds, that is required perform transition from one viewport to another. Time returned is proportional to the distance we are transitioning to. This util function implements mapbox-gl-js (https://docs.mapbox.com/mapbox-gl-js/api/#map#flyto) duration calculation.
 
 Parameters:
 - `startProps` (Object) - viewport to fly from
@@ -223,8 +223,11 @@ Parameters:
 - `endProps.longitude` (Number, required)
 - `endProps.latitude` (Number, required)
 - `endProps.zoom` (Number, required)
-- `opts` (Object, optional) - optional parameters.
-- `opts.speed` (Number, optional) - linearly affects the duration, higher speed returns smaller durations and vice versa.
+- `opts` (Object, optional) - optional parameters that effect duration calculation.
+- `opts.curve` (Number, optional, default: 1.414) - The zooming "curve" that will occur along the flight path, .
+- `opts.speed` (Number, optional, default: 1.2) - The average speed of the animation defined in relation to `options.curve`, it linearly affects the duration, higher speed returns smaller durations and vice versa.
+- `opts.screenSpeed` (Number, optional) - The average speed of the animation measured in screenfuls per second. Similar to `opts.speed` it linearly affects the duration,  when specified `opts.speed` is ignored.
+- `opts.maxDuration` (Number, optional) - Maximum duration in milliseconds, if calculated duration exceeds this value, `0` is returned.
 
 Returns:
 - `duration` Number, in milliseconds.
