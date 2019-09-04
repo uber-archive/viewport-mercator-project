@@ -18,6 +18,32 @@ const FITBOUNDS_TEST_CASES = [
   ],
   [
     {
+      width: 100,
+      height: 100,
+      bounds: [[-73, 10], [-73, 10]],
+      maxZoom: 22
+    },
+    {
+      longitude: -73,
+      latitude: 10,
+      zoom: 22
+    }
+  ],
+  [
+    {
+      width: 100,
+      height: 100,
+      bounds: [[-73, 10], [-73, 10]],
+      minExtent: 0.01
+    },
+    {
+      longitude: -73,
+      latitude: 10,
+      zoom: 13.28771238
+    }
+  ],
+  [
+    {
       width: 600,
       height: 400,
       bounds: [[-23.407, 64.863], [-23.406, 64.874]],
@@ -104,11 +130,10 @@ test('fitBounds#degenerate', (t) => {
   );
   t.doesNotThrow(
     () => viewport.fitBounds([[-70, 10], [-70, 10]], {minExtent: 0.01, maxZoom: Infinity}),
-    'degenerate bounds does not throw if maxZoo removed and minExtents added'
+    'degenerate bounds does not throw if maxZoom removed and minExtents added'
   );
 
   t.ok(viewport instanceof WebMercatorViewport, 'get viewport');
 
   t.end();
 });
-
