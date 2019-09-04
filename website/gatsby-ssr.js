@@ -1,1 +1,1 @@
-module.exports = require('ocular-gatsby/gatsby-ssr');
+module.exports.wrapPageElement = require('ocular-gatsby/gatsby-ssr').wrapPageElement;
