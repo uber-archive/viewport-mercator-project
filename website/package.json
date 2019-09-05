@@ -1,14 +1,24 @@
 {
-  "name": "viewport-mercator-project-website",
+  "name": "viewport-mercator-project",
+  "version": "1.0.0",
+  "description": "Utilities for working with Web Mercator Projections",
   "main": "index.js",
   "scripts": {
-    "start": "ocular start open",
-    "build": "ocular build"
+    "start": "yarn clean && yarn develop",
+    "build": "yarn clean && yarn clean-public && gatsby build --prefix-paths",
+    "clean": "rm -rf ./.cache",
+    "clean-public": "rm -rf ./public",
+    "develop": "gatsby develop",
+    "serve": "gatsby serve  --prefix-paths",
+    "deploy": "NODE_DEBUG=gh-pages gh-pages -d public"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "ocular": "^0.4.2"
+    "gatsby": "^2.15.6",
+    "ocular-gatsby": "^1.0.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
   }
 }
