@@ -1,6 +1,17 @@
 # Change Log
 
-## 6.0 Release
+## 6.2 Release
+
+### 6.2.1
+
+- flyToViewport: add support for speed, screenSpeed, curve and maxDuration (#97)
+- Add specs for maxZoom / minExtents (#100)
+
+### 6.2.0
+
+- fitBounds: Handle "degenerate" bounds (#93)
+
+## 6.1 Release
 
 ### 6.1.1
 

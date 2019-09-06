@@ -188,7 +188,7 @@ Parameters:
 Returns:
 - `viewport` - normalized `{width, height, longitude, latitude, zoom, pitch, bearing}`
 
-### `flyToViewport(startProps, endProps, t)`
+### `flyToViewport(startProps, endProps, t, opts)`
 
 While flying from one viewport to another, returns in-transition viewport props at a given time. This util function implements the algorithm described in “Smooth and efficient zooming and panning.” by Jarke J. van Wijk and Wim A.A. Nuij.
 
@@ -204,6 +204,8 @@ Parameters:
 - `endProps.latitude` (Number, required)
 - `endProps.zoom` (Number, required)
 - `t` (Number) - a time factor between 0 and 1. `0` indicates the start of the transition, `1` indicates the end of the transition.
+- `opts` (Object, optional)
+- `opts.curve` (Number, optional, default: 1.414) - The zooming "curve" that will occur along the flight path, .
 
 Returns:
 - `{longitude, latitude, zoom}`
@@ -224,7 +226,7 @@ Parameters:
 - `endProps.latitude` (Number, required)
 - `endProps.zoom` (Number, required)
 - `opts` (Object, optional) - optional parameters that effect duration calculation.
-- `opts.curve` (Number, optional, default: 1.414) - The zooming "curve" that will occur along the flight path, .
+- `opts.curve` (Number, optional, default: 1.414) - The zooming "curve" that will occur along the flight path.
 - `opts.speed` (Number, optional, default: 1.2) - The average speed of the animation defined in relation to `options.curve`, it linearly affects the duration, higher speed returns smaller durations and vice versa.
 - `opts.screenSpeed` (Number, optional) - The average speed of the animation measured in screenfuls per second. Similar to `opts.speed` it linearly affects the duration,  when specified `opts.speed` is ignored.
 - `opts.maxDuration` (Number, optional) - Maximum duration in milliseconds, if calculated duration exceeds this value, `0` is returned.
