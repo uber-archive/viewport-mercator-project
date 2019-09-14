@@ -8,7 +8,21 @@ const FITBOUNDS_TEST_CASES = [
     {
       width: 100,
       height: 100,
+      // southwest bound first
       bounds: [[-73.9876, 40.7661], [-72.9876, 41.7661]]
+    },
+    {
+      longitude: -73.48759999999997,
+      latitude: 41.26801443944763,
+      zoom: 5.723804361273887
+    }
+  ],
+  [
+    {
+      width: 100,
+      height: 100,
+      // northeast bound first
+      bounds: [[-72.9876, 41.7661], [-73.9876, 40.7661]]
     },
     {
       longitude: -73.48759999999997,
