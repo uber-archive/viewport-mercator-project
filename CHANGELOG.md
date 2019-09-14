@@ -2,6 +2,10 @@
 
 ## 6.2 Release
 
+### 6.2.2
+
+- fitBounds(): accept bounds coordinates in either order (#102) Thanks @apete343
+
 ### 6.2.1
 
 - flyToViewport: add support for speed, screenSpeed, curve and maxDuration (#97)
