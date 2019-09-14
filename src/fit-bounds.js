@@ -67,8 +67,8 @@ export default function fitBounds({
 
   // width/height on the Web Mercator plane
   const size = [
-    Math.abs(Math.max(se[0] - nw[0], minExtent)),
-    Math.abs(Math.max(se[1] - nw[1], minExtent))
+    Math.max(Math.abs(se[0] - nw[0]), minExtent),
+    Math.max(Math.abs(se[1] - nw[1]), minExtent)
   ];
 
   const targetSize = [
