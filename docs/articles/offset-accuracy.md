@@ -1,5 +1,7 @@
 # Accuracy of Offset Projection
 
+> viewport-mercator-project has been moved to https://math.gl/. This repository is archived and read-only.
+
 `getDistanceScales` offers a cheap way to project lng/lat or meter offset to pixels. It is useful when using the GPU to project a cluster of coordinates near an origin point, without suffering the precision loss of WebGL.
 
 This article discusses the usage and accuracy of the distance scales.

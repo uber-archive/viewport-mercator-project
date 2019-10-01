@@ -13,6 +13,9 @@
   </a>
 </p>
 
+
+> This repository is archived and no longer maintained. The code has been moved to https://github.com/uber-web/math.gl. 
+
 # viewport-mercator-project | [Docs](http://uber-common.github.io/viewport-mercator-project/#/documentation/overview)
 
 Projection and camera utilities supporting the Web Mercator Projection. At its core this is a utility for converting to and from map coordinates (i.e. latitude, longitude) to screen coordinates and back.

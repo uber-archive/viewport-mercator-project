@@ -1,5 +1,7 @@
 # WebMercatorViewport
 
+> viewport-mercator-project has been moved to https://math.gl/. This repository is archived and read-only.
+
 The main purpose of the `PerspectiveMercatorViewport` is to enable 3D rendering to
 seamlessly overlay on top of map components that take web mercator style
 map coordinates (`lat`, `lon`, `zoom`, `pitch`, `bearing` etc),

@@ -1,5 +1,7 @@
 # Web Mercator Utility Functions
 
+> viewport-mercator-project has been moved to https://math.gl/. This repository is archived and read-only.
+
 ### `lngLatToWorld(lngLat, scale)`
 
 Project a coordinate on sphere onto the Web Mercator coordinate system at a given zoom level.
