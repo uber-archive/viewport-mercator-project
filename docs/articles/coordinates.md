@@ -1,5 +1,7 @@
 # Coordinates
 
+> viewport-mercator-project has been moved to https://math.gl/. This repository is archived and read-only.
+
 | Coordinates | Description |
 |---------|-------------|
 | LngLat | `[lng, lat, alt]` on earth |
