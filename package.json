@@ -46,7 +46,7 @@
     "babel-eslint": "^6.0.0",
     "babel-loader": "^8.0.0",
     "babel-plugin-version-inline": "^1.0.0",
-    "eslint": "^3.0.0",
+    "eslint": "^4.19.1",
     "eslint-config-uber-es2015": "^3.0.0",
     "faucet": "0.0.1",
     "html-webpack-plugin": "^3.0.7",
