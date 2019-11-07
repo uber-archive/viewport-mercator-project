@@ -9,9 +9,9 @@
     "url": "git+https://github.com/uber-common/viewport-mercator-project.git"
   },
   "homepage": "https://github.com/uber-common/viewport-mercator-project#readme",
-  "main": "dist/es5/index.js",
-  "module": "dist/esm/index.js",
-  "esnext": "dist/es6/index.js",
+  "main": "dist/viewport-mercator-project.es5.js",
+  "module": "dist/viewport-mercator-project.esm.js",
+  "esnext": "dist/viewport-mercator-project.es6.js",
   "files": [
     "src",
     "dist"
@@ -19,18 +19,17 @@
   "sideEffects": false,
   "scripts": {
     "start": "npm run test",
-    "clean": "rm -fr dist && mkdir -p dist/es5 dist/esm dist/es6",
-    "build": "npm run clean && ./scripts/build.sh && ./scripts/collect-metrics.sh",
+    "build": "rm -rf dist && rollup -c && ./scripts/collect-metrics.sh",
     "lint": "eslint src test examples && npm run lint-yarn",
     "lint-yarn": "!(grep -q unpm.u yarn.lock) || (echo 'Please rebuild yarn file using public npmrc' && false)",
     "precommit": "npm test",
     "publish-prod": "npm run build && npm run test && npm publish",
     "publish-beta": "npm run build && npm run test && npm publish --tag beta",
-    "test": "npm run lint && npm run test-node && ./scripts/build.sh",
+    "test": "npm run lint && npm run test-node && npm run build",
     "test-fast": "npm run test-node",
     "test-node": "node test/node.js",
     "test-browser": "webpack-dev-server --config test/webpack.config.js --env.testBrowser --progress --hot --open",
-    "test-bundle-size": "./scripts/build.sh && webpack --config test/webpack.config.js --env.analyze --env.es6"
+    "test-bundle-size": "npm run build && webpack --config test/webpack.config.js --env.analyze --env.es6"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
@@ -57,6 +56,8 @@
     "module-alias": "^2.0.0",
     "pre-commit": "^1.2.2",
     "reify": "^0.5.4",
+    "rollup": "^1.15.6",
+    "rollup-plugin-babel": "^4.3.2",
     "round-precision": "^1.0.0",
     "sinon": "^1.17.7",
     "source-map-loader": "^0.2.3",
